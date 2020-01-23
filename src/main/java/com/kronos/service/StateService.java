@@ -20,7 +20,7 @@ public class StateService {
 	
 	@Autowired
     private JdbcTemplate jdbcTemplate;
-	
+
 	public List<State> findAll(){
 		try {
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
