@@ -22,7 +22,8 @@
                 </div>
             </div>
             <div class="container" id="container" style="border-radius: 1px 50px 50px 50px; border: solid #003366">
-                <form id="uploadForm"  enctype="multipart/form-data" method="POST" action="javascript:addAccord()">
+               <form  th:action="@{/accords/saveAccord}" method="POST" th:object="${accord}"
+						 enctype="multipart/form-data">
                     <div class="border-bottom">
                         <div class="row">
                             <div class="col-3">
@@ -35,7 +36,7 @@
                             <div class="col-4">
                                 <div class="form-group">
                                     <div class="col-sm-8">
-                                        <input id="generalSession" name="sessionDate"class="form-control" type="date" required>
+                                        <input id="generalSession" th:field="*{sessionDate}" name="sessionDate"class="form-control" type="date" required>
                                     </div>
                                 </div>
                          
@@ -55,7 +56,7 @@
                                         <input type="text" class="form-control" name="desc" value="MSPH-CM-ACUER-" disabled>
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="office" name="accNumber" required>
+                                        <input type="text" class="form-control" th:field="*{accNumber}"  id="accNumber" name="accNumber" required>
                                     </div>
                                 </div>
                             </span>
@@ -77,7 +78,7 @@
                             <div class="form-group">
                                 <div class="col-sm-11">
                                     <label for="form-control" class="form-label" >Vencimiento:</label>
-                                    <input type="date" class="form-control" name="deadline" id="deadline" disabled="true">
+                                    <input type="date" class="form-control" th:field="*{deadline}" name="deadline" id="deadline" >
                                     <button class="btn btn-outline-primary" type="button" onclick="javascript:setDeadline()" id="daysButton" name="daysButton">Confirmar Plazo</button>
                                 </div>
                             </div>
@@ -88,11 +89,15 @@
                             <div class="form-group ">
                                 <div class="col-8">
                                     <label for="form-control col-6" class="form-label"> Tipo de acuerdo: </label>
-                                    <select  class="form-control" id="comboTypes" name="comboTypes" onchange="changeComboType()"></select>
+                                    <select th:field=*{type.id} class="form-control" id="comboTypes" name="type" >
+                                    <option th:each="type:${types}" th:value="${type.id}" th:text="${type.description}"></option>
+                                    </select>
                                 </div>
                                   <div class="col-8">   
                                 <label for="form-control col-6" class="form-label" id="labelState" style="visibility: hidden">Estado:</label>
-                                <select  class="form-control" id="comboStates" name="comboStates" style="visibility: hidden"> </select>
+                                <select  class="form-control"  id="comboStates" name="state" style="visibility: hidden">
+            <!-- 							<option th:each="state:${states}" th:value="${states.id}" th:text="${state.description}"></option> -->
+                                 </select>
                                   </div>
                                   </div>
                         </div>
@@ -117,7 +122,7 @@
                             <div class="form-group ">
                                 <div class="col-12">
                                     <label for="" class="form-label" > Observaciones</label>
-                                    <textarea  placeholder="Digite en este espacio sus observaciones" class="form-control" rows="5" cols="40" name ="observations" id="observations" style ="resize: none"></textarea>
+                                    <textarea  placeholder="Digite en este espacio sus observaciones" th:fiedl="*{observations}" class="form-control" rows="5" cols="40"  name ="observations" id="observations" style ="resize: none"></textarea>
                                 </div>
                             </div>
                         </div>

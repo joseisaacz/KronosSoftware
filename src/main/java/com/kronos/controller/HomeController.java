@@ -8,8 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.kronos.repository.TypeRepository;
+import com.kronos.service.StateService;
 import com.kronos.service.TypeService;
+import com.kronos.model.State;
 import com.kronos.model.Type;
 
 @Controller
@@ -20,15 +21,19 @@ public class HomeController {
 //	 
 	 @Autowired
 	 private TypeService typeRepo;
+	 
+	 @Autowired
+	 private StateService stateRepo;
+	 
 	
 	@GetMapping("/")
 	public String mostrarHome() {
 		
-		List<Type> list= this.typeRepo.findAll();
-		
-		for(Type type : list) {
-			System.out.println(type);
-		}
+//		List<State> list= this.stateRepo.findAll();
+//		
+//		for(State state : list) {
+//			System.out.println(state);
+//		}
 
 		
 		

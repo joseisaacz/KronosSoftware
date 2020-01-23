@@ -18,10 +18,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.kronos.model.Type;
-import com.kronos.repository.TypeRepository;
+
 
 @Repository
-public class TypeService implements TypeRepository {
+public class TypeService {
 
 	@Autowired
     private JdbcTemplate jdbcTemplate;
@@ -42,7 +42,6 @@ public class TypeService implements TypeRepository {
 	
 	
 	
-	@Override
 	public List<Type> findAll()  {
 		
 		try {
