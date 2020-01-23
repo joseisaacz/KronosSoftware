@@ -32,7 +32,7 @@ public class AccordsController {
 	@PostMapping("/saveAccord")
 	public String saveAccord(Accord accord) {
 		
-		System.out.print(accord);
+		System.out.println(accord);
 		
 		return "accord/accordForm";
 	}
