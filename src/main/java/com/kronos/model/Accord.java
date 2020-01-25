@@ -16,6 +16,7 @@ public class Accord {
 	private boolean published;
 	private boolean notified;
 	private State state;
+	private User user;
 	List<Pdf> URL;
 	
 	
@@ -85,17 +86,26 @@ public class Accord {
 	public void setURL(List<Pdf> uRL) {
 		URL = uRL;
 	}
+
+
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	@Override
 	public String toString() {
 		return "Accord [accNumber=" + accNumber + ", incorporatedDate=" + incorporatedDate + ", incorporatedTime="
 				+ incorporatedTime + ", deadline=" + deadline + ", sessionDate=" + sessionDate + ", type=" + type
 				+ ", observations=" + observations + ", published=" + published + ", notified=" + notified + ", state="
-				+ state + ", URL=" + URL + "]";
+				+ state + ", user=" + user + ", URL=" + URL + "]";
 	}
-	
-	
-	
-	
+
+
+
+	public static final char ADMIN_TYPE = 'A';
 	
 	
 	

@@ -14,11 +14,11 @@
 		<ul class="navbar-nav">
 
 			<li class="nav-item"><a
-				class="nav-link text-light font-weight-bold px-3" href="#">Gestor de Acuerdos</a>
+				class="nav-link text-light font-weight-bold px-3" th:href="@{/}">Gestor de Acuerdos</a>
 
 			</li>
 
-			<li class="nav-item dropdown" data-toggle="dropdown"><a
+		<!-- 	<li class="nav-item dropdown" data-toggle="dropdown"><a
 				class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
 				href="#">ACUERDOS</a>
 
@@ -27,7 +27,17 @@
 					<a class="dropdown-item" th:href="@{/accords/addAccord}">Agregar Acuerdo</a> 
 					<a
 						class="dropdown-item" href="#">Ver Acuerdos</a> 
-				</div></li>
+				</div></li> -->
+						<li class="nav-item dropdown">
+      <a class="nav-link text-light font-weight-bold px-3 dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        Acuerdos
+      </a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" th:href="@{/accords/addAccord}">Agregar Acuerdo</a>
+        <a class="dropdown-item" href="#">Lista de Acuerdos</a>
+        <a class="dropdown-item" href="#">Link 3</a>
+      </div>
+    </li>
 
 			<li class="nav-item"><a
 				class="nav-link text-light font-weight-bold px-3" th:href="@{/accords/addAccord}">ACTAS</a></li>
