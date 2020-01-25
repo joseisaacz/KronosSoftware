@@ -6,15 +6,21 @@
 <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 <link th:href="@{/css/default.css}" rel="stylesheet">
 <link th:href="@{/css/menu.css}" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" >
 </head>
 <body>
 	<header th:insert="fragments/header :: header-prin"> </header>
-
+<div class="mt-2 col-md-1">
+      <br>
+      <br>
+      <br>
+</div>
 	<main role="main">
-		        <div id="wrapper">
-            <div class="container" >
+
+		        <div class="container mx-auto" >
+            <div class="container mx-auto" >
                 <div class="border-bottom" style="width: 97%">
-                    <div class="row" style="background-color: white; width: 50%; border-radius: 50px 50px 1px 1px; background-color: #1f3140; border: solid #003366">
+                    <div class="row " style="background-color: white; width: 50%; border-radius: 50px 50px 1px 1px; background-color: #1f3140; border: solid #003366">
                         <div class="col-12">
                             <h3 align="center" style="color: #BBC9B4"id="pageTitle">Agregar Acuerdo</h3>
                         </div>
@@ -26,7 +32,7 @@
 						 enctype="multipart/form-data">
                     <div class="border-bottom">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-3 ">
                                 <div class="form-group">
                                     <div class="col-sm-8">
                                         <label for="form-control col-4" class="form-label">Fecha de Sesion:</label>
@@ -36,7 +42,7 @@
                             <div class="col-4">
                                 <div class="form-group">
                                     <div class="col-sm-8">
-                                        <input id="generalSession" th:field="*{sessionDate}" name="sessionDate"class="form-control" type="date" required>
+                                        <input id="sessionDate" th:field="*{sessionDate}" name="sessionDate"class="form-control" type="text" required>
                                     </div>
                                 </div>
                          
@@ -78,7 +84,7 @@
                             <div class="form-group">
                                 <div class="col-sm-11">
                                     <label for="form-control" class="form-label" >Vencimiento:</label>
-                                    <input type="date" class="form-control" th:field="*{deadline}" name="deadline" id="deadline" >
+                                    <input type="text" class="form-control" th:field="*{deadline}" name="deadline" id="deadline" >
                                     <button class="btn btn-outline-primary" type="button" onclick="javascript:setDeadline()" id="daysButton" name="daysButton">Confirmar Plazo</button>
                                 </div>
                             </div>
@@ -89,7 +95,7 @@
                             <div class="form-group ">
                                 <div class="col-8">
                                     <label for="form-control col-6" class="form-label"> Tipo de acuerdo: </label>
-                                    <select th:field=*{type.id} class="form-control" id="comboTypes" name="type" >
+                                    <select th:field=*{type.id} class="form-control" id="comboTypes" name="type" onchange='javascript:changeComboType()' >
                                     <option th:each="type:${types}" th:value="${type.id}" th:text="${type.description}"></option>
                                     </select>
                                 </div>
@@ -122,7 +128,7 @@
                             <div class="form-group ">
                                 <div class="col-12">
                                     <label for="" class="form-label" > Observaciones</label>
-                                    <textarea  placeholder="Digite en este espacio sus observaciones" th:fiedl="*{observations}" class="form-control" rows="5" cols="40"  name ="observations" id="observations" style ="resize: none"></textarea>
+                                    <textarea  placeholder="Digite en este espacio sus observaciones" th:field="*{observations}" class="form-control" rows="5" cols="40"  name ="observations" id="observations" style ="resize: none"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -166,6 +172,24 @@
         </div>
 	</main>
 	<script th:src="@{/bootstrap/js/jquery.js}"></script>
+	    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
 	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/addAccord.js}"></script>
+	  
+	
+	   <script>
+      
+      $(function () {
+          $("#deadline").datepicker({dateFormat: 'dd-mm-yy'});
+        }
+      );
+      
+      $(function () {
+          $("#sessionDate").datepicker({dateFormat: 'dd-mm-yy'});
+        }
+      );
+      
+      
+      </script>
 </body>
 </html>
