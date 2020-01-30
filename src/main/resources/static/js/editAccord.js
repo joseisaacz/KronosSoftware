@@ -1,7 +1,7 @@
 /**
  * 
  */
-let globalAccord=null;
+globalAccord=null;
 
 $(document).ready(()=>{
 	
@@ -16,14 +16,18 @@ function listPdf(accNumber){
 	url='/api/accords/get/'+accNumber
 	fetch(url).then(response=>response.json())
 	.then(accord => {
-		goblalAccord=accord;
-		console.log(accord);
+		globalAccord=accord;
 		let parent=$("#pdfBody");
 		accord.url.forEach(url=>{
 			list(parent,url.url)
 		})
+	}).finally(()=>{
+		initTable()
 	})
+	
+	
 }
+
 
 function list(parent,url){
 	console.log(url)
@@ -58,10 +62,65 @@ function deletePdf(pdf,finalName){
 
 }
 
+function uploadPdf(){
+	console.log(globalAccord);
+	let _url='/api/accords/uploadPdf/'+globalAccord.accNumber;
+	let form=document.getElementById('accordForm');
+	
+	let count= $("input:file")[0].files.length;
+	if(count > 0){
+		
+		let _data=new FormData(form);		
+		
+	 $.ajax({
+	        type: "POST",
+	        encType: "multipart/form-data",
+	        url: _url,
+	        cache: false,
+	        processData: false,
+	        contentType: false,
+	        data: _data,
+	        success: function (msg) {
+            alert("ACUERDO AGREGADO EXITOSAMENTE");
+	        },
+	        error: function (response) {
+	            console.log(response);
+	            if (response.status === 503) {
+	                alert("OCURRIO UN ERROR");
+	            } else
+	                alert("OCURRIO UN ERROR");
+	        }
+	    })
+		
+	}
+}
 
 
 
 
+function initTable() {
+    $('#pdfTable').DataTable({
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ Acuerdos",
+            "zeroRecords": "",
+            "info": "Mostrando Acuerdos del _START_ al _END_ de un total de _TOTAL_ registros",
+            "infoEmpty": "Mostrando Acuerdos del 0 al 0 de un total de 0 registros",
+            "infoFiltered": "(filtrado de un total de _MAX_ Acuerdos)",
+            "sSearch": "Filtrar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "sProcessing": "Procesando..."
+        },
+        "lengthChange": false,
+        "destroy": true,
+        "searching":false,
+        "info": false
+    });
+}
 
 
 

@@ -26,6 +26,7 @@ function initTable() {
         },
         "lengthChange": false,
         "destroy": true
+        
     });
 }
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,7 +161,9 @@ public class AccordsController {
 		
 		
 		Accord acc=opt.get();
-		System.out.println(acc);
+	//	System.out.println(acc);
+		List<State> list =(List<State>) model.getAttribute("states");
+		System.out.println(list);
 		model.addAttribute("accord", acc);
 		
 		}
