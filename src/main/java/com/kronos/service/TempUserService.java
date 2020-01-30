@@ -3,6 +3,7 @@ package com.kronos.service;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class TempUserService {
 		return Optional.empty();
 	}
 
-	public void insertTempUser(TempUser tmp) {
-		try {
+	public void insertTempUser(TempUser tmp) throws Exception {
+		
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
 			CallableStatement statement = connection.prepareCall("{call insertTempUser(?, ?)}");
 			statement.setString(1, tmp.getName());
@@ -46,11 +47,7 @@ public class TempUserService {
 			statement.close();
 		
 
-		}
-
-		catch (Exception e) {
-
-		}
+	
 	}
 
 }

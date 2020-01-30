@@ -14,15 +14,21 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kronos.model.Accord;
+import com.kronos.model.AccordTempUser;
 import com.kronos.model.Pdf;
+import com.kronos.model.State;
 import com.kronos.model.TempUser;
+import com.kronos.model.User;
 import com.kronos.service.AccordService;
+import com.kronos.service.AccordTempUserService;
 import com.kronos.service.ActService;
 import com.kronos.service.StateService;
 import com.kronos.service.TempUserService;
@@ -48,6 +54,8 @@ public class AccordsController {
 	@Autowired
 	private AccordService accordRepo;
 	
+	@Autowired
+	private AccordTempUserService tUserAccRepo;
 	
 	
 	@PostMapping("/saveAccord")
@@ -55,25 +63,23 @@ public class AccordsController {
 			
 	@RequestParam(value="email",required=false) String email,
 	
-	@RequestParam("accord") MultipartFile[] uploadingFiles	) {
+	@RequestParam("accord") MultipartFile[] uploadingFiles, RedirectAttributes attributes	) {
+
 		
 		try {
-	
-		}
-		catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
-		try {
-			
+				String fullAccName= "MSPH-CM-ACUER-"+accord.getAccNumber();
+				accord.setAccNumber(fullAccName);
 				accord.setIncorporatedDate(new Date());
 				accord.setIncorporatedTime(LocalTime.now());
+				accord.setState(new State(Accord.PENDING_STATE));
 				
+				//System.out.println(accord);
 				
 			if(!this.actRepo.isActInDB(accord.getSessionDate())) 
 				this.actRepo.insertAct(accord.getSessionDate());
 			
 			TempUser tmp=null;
+			
 			if(accord.getType().getId() != Accord.ADMIN_TYPE) {
 				
 				if(email.isEmpty() || username.isEmpty())
@@ -103,15 +109,23 @@ public class AccordsController {
 			accord.getURL().add(new Pdf(url));
 			
 		}
-			
+			User user= new User();
+			user.setTempUser("concejomunicipal@sanpablo.go.cr");
+			accord.setUser(user);
+			System.out.println(accord);
 			this.accordRepo.insertAccord(accord);
+			
+			if(accord.getType().getId() != Accord.ADMIN_TYPE)
+				this.tUserAccRepo.insertAccord_TempUser(accord, tmp);
+			
 		}
 		
 		catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 		
-		return "accord/accordForm";
+		attributes.addFlashAttribute("msg", "Acuerdo Agregado con Exito");
+		return "redirect:/accords/list";
 	}
 	
 	
@@ -120,6 +134,43 @@ public class AccordsController {
 		
 		model.addAttribute("accord", accord);
 		return "accord/accordForm";
+	}
+	
+	@GetMapping("/list")
+	public String listAccord(Model model) {
+		
+		try {
+		model.addAttribute("listAccords", this.accordRepo.searchAllAccords());
+		}
+		catch(Exception e) {
+			
+			System.out.println(e.getMessage());
+		}
+		return "accord/listAccord";
+	}
+	
+	
+	@GetMapping("/edit/{accNumber}")
+	public String goToEdit(@PathVariable("accNumber") String accNumber,Model model) {
+		
+		try {
+		Optional<Accord> opt= this.accordRepo.getAccord(accNumber);
+		if(!opt.isPresent())
+			throw new Exception("No se encontro el acuerdo");
+		
+		
+		Accord acc=opt.get();
+		System.out.println(acc);
+		model.addAttribute("accord", acc);
+		
+		}
+		
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		
+		return "accord/editAccord";
 	}
 	
 	@InitBinder

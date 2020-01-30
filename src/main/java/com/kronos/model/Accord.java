@@ -1,6 +1,7 @@
 package com.kronos.model;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Accord {
 	private boolean notified;
 	private State state;
 	private User user;
-	List<Pdf> URL;
+	List<Pdf> URL= new ArrayList<>();
 	
 	
 	public String getAccNumber() {
@@ -106,6 +107,7 @@ public class Accord {
 
 
 	public static final char ADMIN_TYPE = 'A';
+	public static final int PENDING_STATE=2;
 	
 	
 	
