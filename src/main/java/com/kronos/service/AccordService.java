@@ -3,6 +3,7 @@ package com.kronos.service;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class AccordService {
         statement.setBoolean(8, acc.isPublished());
         statement.setBoolean(9, acc.isNotified());
         statement.setInt(10, acc.getState().getId());
-        statement.setString(11, acc.getUser().getTempUser());
+        statement.setString(11, acc.getUser().getTempUser().getEmail());
         statement.executeUpdate();
         statement.close();
 
@@ -283,5 +284,32 @@ public class AccordService {
     	   return Optional.of(list.get(0));
     }
     
+    public void insertActPdf(String accNumber, Pdf pdf) throws Exception {
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call insertAccPdf(?,?,?)}");
+        statement.setString(1, accNumber);
+        statement.setString(2, pdf.getURL());
+        statement.setBoolean(3, pdf.isFinalResponse());
+        statement.executeUpdate();
+        statement.close();
+    }
+    
+    public void deleteAccPdf(String accNumber, String url) throws Exception {
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call deletePdf(?,?)}");
+        statement.setString(1, accNumber);
+        statement.setString(2, url);
+        statement.executeUpdate();
+        statement.close();
+    }
+    
+    public void deleteAccord(String accNumber, String user) throws Exception {
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call deleteAccord(?,?)}");
+        statement.setString(1, accNumber);
+        statement.setString(2, user);
+        statement.executeUpdate();
+        statement.close();
+    }
     
 }

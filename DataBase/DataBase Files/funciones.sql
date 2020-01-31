@@ -287,12 +287,12 @@ DELIMITER ;
 
 
 USE `KRONOS`;
-DROP procedure IF EXISTS getUserSecure;
+DROP procedure IF EXISTS getUserByEmail;
 DELIMITER $$
 USE `KRONOS`$$
-create procedure getUserSecure( in _user varchar(45))
+create procedure getUserByEmail( in _user varchar(45))
 begin
-SELECT T_TEMPUSER, DEPARTMENT FROM T_USER WHERE T_TEMPUSER=_user; 
+SELECT TEMPUSER,T_TEMPUSER.NAME AS NAME,PASSWORD, DEPARTMENT, T_DEPARTMENT.NAME AS DEPARTMENT_NAME  FROM T_USER,T_TEMPUSER, T_DEPARTMENT WHERE T_USER.DEPARTMENT=T_DEPARTMENT.ID AND T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND TEMPUSER=_user; 
 end$$
 DELIMITER ;
 
@@ -358,12 +358,12 @@ DELIMITER ;
 
 USE `KRONOS`;
 DROP procedure IF EXISTS deletePdf;
-DELIMiTER $$
+DELIMITER $$
 USE `KRONOS`$$
 create procedure deletePdf(
-in accord varchar(45), in url varchar(100))
+in accordNum varchar(45), in path varchar(100))
 begin
-delete from T_ACCPDF where ACCORD=accord and URL= url; 
+delete from T_ACCPDF where ACCORD=accordNum and URL= path; 
 commit;  
 end$$ 
 DELIMITER ;
@@ -403,8 +403,8 @@ insert into T_STATE (ID, DESCRIPTION)values (4, 'Desestimado');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Concejo Municipal','concejomunicipal@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Secretaria de Alcaldia','alcaldia@sanpablo.go.cr');
 insert T_DEPARTMENT (ID,NAME) values (1,'SUPERUSER');
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT) values ('concejomunicipal@sanpablo.go.cr','{noop}concejo',1);
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT) values ('alcaldia@sanpablo.go.cr','{noop}alcaldia',1);
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','{noop}concejo',1,1);
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','{noop}alcaldia',1,1);
 insert into T_ROLE values (1,'Concejo Municipal');
 insert into T_ROLE values (2,'Secretaria de Alcaldia');
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('concejomunicipal@sanpablo.go.cr',1);

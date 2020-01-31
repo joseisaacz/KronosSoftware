@@ -17,9 +17,10 @@ function listPdf(accNumber){
 	fetch(url).then(response=>response.json())
 	.then(accord => {
 		globalAccord=accord;
+		console.log(accord);
 		let parent=$("#pdfBody");
 		accord.url.forEach(url=>{
-			list(parent,url.url)
+			list(parent,url.url,url.finalResponse)
 		})
 	}).finally(()=>{
 		initTable()
@@ -28,22 +29,32 @@ function listPdf(accNumber){
 	
 }
 
+function isInRole(){
+	let role = document.getElementById('role').value;
+	return (role != 'Concejo Municipal') ? "disabled" : "";
+}
 
-function list(parent,url){
+function list(parent,url,finalResponse){
+	console.log(isInRole());
 	console.log(url)
 	var tr=$("<tr/>");
 	let urlAux=url;
+	let role = document.getElementById('role').value;
 	let names=urlAux.split('/');
 	console.log(names);
 	console.log(url);
 	let finalName=names[names.length-1];
 	tr.html(
-	"<td>"+finalName+"</td>"+		
+	"<td>"+finalName+"</td>"+
 	"<td><button type=\"button\" class=\"btn btn-success\" onclick=\"javascript:openPdf('" + url + "')\">Abrir</button></td>"+	
-	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + url + "','"+finalName+"')\">Eliminar</button></td>"
+	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + url + "','"+finalName+"')\" "+isInRole()+">Eliminar</button></td>"+
+	"<td><input type=\"checkbox\" id=\""+finalName+"checkBox\" style=\"text-aling: center; vertical-align:middle \"></td>"
 	);
 	tr.attr('id',finalName);
 	parent.append(tr);
+	let checkBox=document.getElementById(finalName+"checkBox");
+	if(finalResponse)
+		checkBox.checked=true;
 }
 
 function openPdf(pdf){
@@ -56,10 +67,11 @@ function openPdf(pdf){
 }
 
 function deletePdf(pdf,finalName){
-	//let url='/api/accords/deletePdf/'+globalAccord.accNumber+'?path='+pdf;
-	//fetch(url);
-	document.getElementById(finalName).remove();
-
+	if(confirm("Esta seguro que desea eliminar este archivo ?")){
+	let url='/api/accords/deletePdf/'+globalAccord.accNumber+'?path='+pdf;
+	fetch(url)
+	.then(()=>{document.getElementById(finalName).remove()})
+	}
 }
 
 function uploadPdf(){
@@ -80,22 +92,21 @@ function uploadPdf(){
 	        processData: false,
 	        contentType: false,
 	        data: _data,
-	        success: function (msg) {
-            alert("ACUERDO AGREGADO EXITOSAMENTE");
-	        },
+	        success : updateTable,
+            
 	        error: function (response) {
 	            console.log(response);
-	            if (response.status === 503) {
-	                alert("OCURRIO UN ERROR");
-	            } else
-	                alert("OCURRIO UN ERROR");
+	           
 	        }
 	    })
 		
 	}
 }
 
-
+function updateTable(){
+	$('#pdfTable').DataTable().clear().destroy();
+	listPdf(globalAccord.accNumber)
+}
 
 
 function initTable() {
@@ -122,5 +133,12 @@ function initTable() {
     });
 }
 
-
+function deleteAccord(){
+	if(confirm("Estas seguro que deseas eliminar el acuerdo?")){
+		let url='/accords/deleteAccord/'+globalAccord.accNumber;
+		 fetch(url).then(()=>{
+			 window.location.replace('/accords/list');
+		 })
+	}
+}
 

@@ -12,6 +12,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -111,7 +112,7 @@ public class AccordsController {
 			
 		}
 			User user= new User();
-			user.setTempUser("concejomunicipal@sanpablo.go.cr");
+			user.setTempUser(new TempUser("concejomunicipal@sanpablo.go.cr"));
 			accord.setUser(user);
 			System.out.println(accord);
 			this.accordRepo.insertAccord(accord);
@@ -129,7 +130,21 @@ public class AccordsController {
 		return "redirect:/accords/list";
 	}
 	
-	
+	@GetMapping("/deleteAccord/{accNumber}")
+	public String deleteAccord( @PathVariable("accNumber") String accNumber, 
+			RedirectAttributes attributes) {
+		
+		try {
+			System.out.println(accNumber);
+			String user="concejomunicipal@sanpablo.go.cr";
+			this.accordRepo.deleteAccord(accNumber, user);
+			attributes.addFlashAttribute("msg", "Acuerdo Eliminado con exito");
+		}
+		catch(Exception e) {
+			attributes.addFlashAttribute("msgError", "El Acuerdo n pudo ser eliminado correctamente");
+		}
+		return "redirect:/accords/list";
+	}
 	@GetMapping("/addAccord")
 	public String createAccord(Accord accord, Model model) {
 		
@@ -152,6 +167,7 @@ public class AccordsController {
 	
 	
 	@GetMapping("/edit/{accNumber}")
+	
 	public String goToEdit(@PathVariable("accNumber") String accNumber,Model model) {
 		
 		try {
@@ -161,9 +177,6 @@ public class AccordsController {
 		
 		
 		Accord acc=opt.get();
-	//	System.out.println(acc);
-		List<State> list =(List<State>) model.getAttribute("states");
-		System.out.println(list);
 		model.addAttribute("accord", acc);
 		
 		}

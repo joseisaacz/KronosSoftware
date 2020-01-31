@@ -196,6 +196,24 @@ public class AccordsRestController {
 		
 	}
 	
+	@GetMapping("/deletePdf/{accNumber}")
+	public ResponseEntity deletePdf(@PathVariable("accNumber") String accNumber,
+			@RequestParam("path") String filepath ) {
+		
+		try {
+			this.accordRepo.deleteAccPdf(accNumber, filepath);
+			return ResponseEntity.ok().build();
+		}
+		
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw new ResponseStatusException(
+					  HttpStatus.resolve(500), "entity not found"
+					);
+		}
+	}
+	
+	
 	@PostMapping("/uploadPdf/{accNumber}")
 	public ResponseEntity uploadPdf(@PathVariable("accNumber")String accNumber,
 			@RequestParam("accord") MultipartFile[] uploadingFiles) {
@@ -205,11 +223,9 @@ public class AccordsRestController {
 				String url= uploadFolder+uploadFile.getOriginalFilename();
 				File file= new File(url);
 				uploadFile.transferTo(file);
-				/*
-				 * TO DO
-				 * upload path to DB
-				 * 
-				 */
+				Pdf pdf=new Pdf(url);
+				this.accordRepo.insertActPdf(accNumber, pdf);
+				
 				
 			}
 			
