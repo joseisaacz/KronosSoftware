@@ -1,6 +1,7 @@
 package com.kronos.model;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,8 @@ public class Accord {
 	private boolean published;
 	private boolean notified;
 	private State state;
-	List<Pdf> URL;
+	private User user;
+	List<Pdf> URL= new ArrayList<>();
 	
 	
 	public String getAccNumber() {
@@ -85,17 +87,27 @@ public class Accord {
 	public void setURL(List<Pdf> uRL) {
 		URL = uRL;
 	}
+
+
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	@Override
 	public String toString() {
 		return "Accord [accNumber=" + accNumber + ", incorporatedDate=" + incorporatedDate + ", incorporatedTime="
 				+ incorporatedTime + ", deadline=" + deadline + ", sessionDate=" + sessionDate + ", type=" + type
 				+ ", observations=" + observations + ", published=" + published + ", notified=" + notified + ", state="
-				+ state + ", URL=" + URL + "]";
+				+ state + ", user=" + user + ", URL=" + URL + "]";
 	}
-	
-	
-	
-	
+
+
+
+	public static final char ADMIN_TYPE = 'A';
+	public static final int PENDING_STATE=2;
 	
 	
 	

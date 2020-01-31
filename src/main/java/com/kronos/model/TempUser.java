@@ -5,6 +5,15 @@ public class TempUser {
 	private String name;
 	private String email;
 
+	public TempUser(String name, String email) {
+		this.name=name;
+		this.email=email;
+	}
+	
+	public TempUser(String email) {
+		this.email=email;
+	}
+	
 	public String getName() {
 		return name;
 	}

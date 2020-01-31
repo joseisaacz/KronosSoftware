@@ -5,6 +5,11 @@ public class Pdf {
 	private String URL;
 	private boolean finalResponse=false;
 	
+	public Pdf(String URL) {
+		this.URL=URL;
+	}
+	
+	
 	public String getURL() {
 		return URL;
 	}

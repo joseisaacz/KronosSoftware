@@ -47,7 +47,7 @@ public class StateService {
 		while (rs.next()) {
 			State t = new State();
 			t.setDescription(rs.getString("DESCRIPTION"));
-			t.setId(rs.getString("ID").charAt(0));
+			t.setId(Character.getNumericValue(rs.getString("ID").charAt(0)));
 			result.add(t);
 		}
 
