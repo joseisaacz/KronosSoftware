@@ -5,6 +5,18 @@ public class Type {
     private char id;
     private String description;
     
+    public Type() {
+    	
+    }
+    
+    public Type(char id) {
+    	this.id = id;
+    }
+    
+    public Type(char id, String description) {
+    	this.id = id;
+    	this.description = description; 
+    }
 
 	public char getId() {
 		return id;

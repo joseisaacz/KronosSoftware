@@ -4,6 +4,18 @@ public class State {
 	private int id;
 	private String description;
 	
+	public State() {
+		
+	}
+	
+	public State(int id) {
+		
+		this.id = id;
+	}
+	public State(int id, String description) {
+		this.id = id;
+		this.description = description; 
+	}
 	
 	public int getId() {
 		return id;

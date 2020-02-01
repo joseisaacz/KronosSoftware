@@ -43,6 +43,7 @@ ID int auto_increment,
 DEPARTMENT int NOT NULL,
 PASSWORD varchar(100) NOT NULL,
 TEMPUSER varchar(45) NOT NULL,
+STATUS tinyint NOT NULL,
 constraint PK_USER primary key (ID),
 constraint FK_TEMPUSER foreign key (TEMPUSER) references T_TEMPUSER(EMAIL),
 constraint FK_DEPARTMENT foreign key (DEPARTMENT) references T_DEPARTMENT(ID)

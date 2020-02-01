@@ -3,6 +3,7 @@ package com.kronos.service;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ public class ActService {
 	@Autowired
     private JdbcTemplate jdbcTemplate;
 	
-	public boolean isActInDB(Date date) {
+	public boolean isActInDB(Date date) throws Exception {
 		
-		try {
+		
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
 			CallableStatement statement = connection.prepareCall("{call isActInDB(?) }");
 			statement.setDate(1, new java.sql.Date(date.getTime()));
@@ -27,17 +28,14 @@ public class ActService {
 			boolean isInDb=rs.next();
 			statement.close();
 			return isInDb;
-		}
-		catch(Exception e) {
-			
-		}
-		return false;
+		
+		
 		
 	}
 	
 	
-	public boolean insertAct(Date date) {
-		try {
+	public boolean insertAct(Date date) throws Exception {
+	
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
 			CallableStatement statement = connection.prepareCall("{call  insertTempAct(?) }");
 			statement.setDate(1, new java.sql.Date(date.getTime()));
@@ -49,11 +47,7 @@ public class ActService {
 			System.out.println(aux);
 			return true;
 			
-		}
-		catch(Exception e) {
-			
-		}
-		return false;
+	
 	}
 	
 	

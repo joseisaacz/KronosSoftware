@@ -10,6 +10,10 @@ public class TempUser {
 		this.email=email;
 	}
 	
+	public TempUser(String email) {
+		this.email=email;
+	}
+	
 	public String getName() {
 		return name;
 	}
