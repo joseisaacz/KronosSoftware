@@ -39,8 +39,8 @@
 			</div>
 			<div class="container" id="container"
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
-				<form th:action="@{/accords/saveAccord}" method="POST"
-					th:object="${accord}" enctype="multipart/form-data">
+				<form th:action="@{/accords/saveEdit}" method="POST"
+					th:object="${accord}" >
 					<div class="border-bottom">
 						<div class="row">
 							<div class="col-3 ">
@@ -88,9 +88,9 @@
 
 									<div class="col-sm-6">
 										<label for="form-control" class="form-label">Numero de
-											Acuerdo:</label> <input type="text"  th:disabled="${session.roleName != 'Concejo Municipal'}" class="form-control"
+											Acuerdo:</label> <input type="text"  class="form-control"
 											th:field="*{accNumber}" id="accNumber" name="accNumber"
-											disabled>
+											readonly>
 									</div>
 								</div>
 							</span>
@@ -102,7 +102,7 @@
 								<label for="form-control col-6" class="form-label"> Tipo
 									de acuerdo: </label> <select  th:disabled="${session.roleName != 'Concejo Municipal'}"  th:field=*{type.id} class="form-control"
 									id="comboTypes" name="type"
-									onchange='javascript:changeComboType()'>
+									>
 									<option th:each="type:${types}" th:value="${type.id}"
 										th:text="${type.description}"></option>
 								</select>
@@ -116,7 +116,7 @@
 							<div class="col-6">
 								<label for="form-control col-6" class="form-label"
 									id="labelState">Estado:</label> <select  th:disabled="${session.roleName != 'Concejo Municipal'}" class="form-control"
-									id="state" name="state" th:field="*{state.id}">
+									id="state" name="state" th:field="*{state.id}" >
 									<option th:each="state:${states}" th:value="${state.id}"
 										th:text="${state.description}"></option>
 								</select>
@@ -264,6 +264,7 @@
 	<script th:src="@{/bootstrap/js/jquery.js}"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 	<script th:src="@{/js/editAccord.js}"></script>
 	<script
 		src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>

@@ -218,7 +218,7 @@ function setDeadline() {
     } 
     else {
     	
-    	alert('Por favor ingrese un plazo');
+    	bootbox.alert('Por favor ingrese un plazo');
         
     }
 }

@@ -312,4 +312,34 @@ public class AccordService {
         statement.close();
     }
     
+    
+    
+    
+    
+    public void updateAccord(Accord acc) throws Exception {
+
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call updateAccord(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+        
+        
+        statement.setString(1, acc.getAccNumber());
+        statement.setDate(2, new java.sql.Date(acc.getDeadline().getTime()));
+        statement.setDate(3, new java.sql.Date(acc.getSessionDate().getTime()));
+        statement.setString(4, acc.getObservations());
+        statement.setBoolean(5, acc.isPublished());
+        statement.setBoolean(6, acc.isNotified());
+        statement.setInt(7, acc.getState().getId());
+        statement.setString(8, String.valueOf(acc.getType().getId()));
+        statement.setString(9, acc.getUser().getTempUser().getEmail());
+        statement.executeUpdate();
+        statement.close();
+
+    
+
+    }
+    
+    
+    
+    
+    
 }
