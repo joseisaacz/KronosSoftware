@@ -7,7 +7,7 @@ $(document).ready(()=>{
 	
 	let name = $("#accNumber").val();
 	listPdf(name);
-	
+	$("#comboTypes").on('change',comboBoxType)
 })
 
 
@@ -67,12 +67,37 @@ function openPdf(pdf){
 }
 
 function deletePdf(pdf,finalName){
-	if(confirm("Esta seguro que desea eliminar este archivo ?")){
-	let url='/api/accords/deletePdf/'+globalAccord.accNumber+'?path='+pdf;
-	fetch(url)
-	.then(()=>{document.getElementById(finalName).remove()})
+	bootbox.confirm("¿Esta seguro que desea eliminar este archivo ?", (result) => {
+		
+		if(result){
+			
+			let url='/api/accords/deletePdf/'+globalAccord.accNumber+'?path='+pdf;
+			fetch(url)
+			.then(()=>{document.getElementById(finalName).remove()});
+			
+			}
+		})
+		
 	}
+	
+function comboBoxType(){
+	let comboType= $("#comboTypes").val();
+	let username=$("#username");
+	let email=$("#email");
+	
+	if(comboType != 'A'){
+		username.prop("disabled",false)
+		email.prop("disabled",false)
+	}
+	else{
+		username.val('');
+		email.val('');
+		username.prop("disabled",true)
+		email.prop("disabled",true)
+	}
+		
 }
+
 
 function uploadPdf(){
 	console.log(globalAccord);
@@ -134,11 +159,16 @@ function initTable() {
 }
 
 function deleteAccord(){
-	if(confirm("Estas seguro que deseas eliminar el acuerdo?")){
-		let url='/accords/deleteAccord/'+globalAccord.accNumber;
-		 fetch(url).then(()=>{
-			 window.location.replace('/accords/list');
-		 })
-	}
+	bootbox.confirm("¿Está seguro que desea eliminar el acuerdo?",result=>{
+		
+		if(result){
+			let url='/accords/deleteAccord/'+globalAccord.accNumber;
+			 fetch(url).then(()=>{
+				 window.location.replace('/accords/list');
+			 })
+		}
+		
+	})
+
 }
 
