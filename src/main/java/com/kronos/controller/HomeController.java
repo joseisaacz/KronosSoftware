@@ -44,7 +44,7 @@ public class HomeController {
 //			System.out.println(state);
 //		}
 
-		return "index";
+		return "redirect:/index";
 	}
 
 	@GetMapping("/forbidden")
@@ -69,12 +69,23 @@ public class HomeController {
 					role = rol.getAuthority();
 				}
 				session.setAttribute("roleName", role);
+				switch(role) {
+				case "Concejo Municipal":
+					return "redirect:/accords/list";
+				
+				default: 
+					return "/index";
+				
+				}
+				
+				
+				
 			}
 
 		} catch (Exception e) {
 
 			System.out.println(e.getMessage());
 		}
-		return "redirect:/";
+		return "/index";
 	}
 }

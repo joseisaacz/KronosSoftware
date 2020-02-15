@@ -30,12 +30,12 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				// Los recursos estáticos no requieren autenticación
-				.antMatchers("/bootstrap/**", "/js/**", "/css/**").permitAll()
+				.antMatchers("/push/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register").permitAll()
 				// Las vistas públicas no requieren autenticación
-				.antMatchers("/","/api/accords/**","/accords/list","/accords/edit/**").permitAll()
+				.antMatchers("/push/**","/","/push/register","/api/accords/**","/accords/list","/accords/edit/**").permitAll()
 				// Todas las demás URLs de la Aplicación requieren autenticación
 				
-				.antMatchers("/accords/addAccord/**").hasAnyAuthority("Concejo Municipal")
+				.antMatchers("/accords/addAccord/**","/push/register").hasAnyAuthority("Concejo Municipal")
 				
 				.anyRequest().authenticated()
 				
