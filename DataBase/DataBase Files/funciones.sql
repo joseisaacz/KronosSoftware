@@ -176,6 +176,20 @@ select NAME, EMAIL  from T_TEMPUSER where EMAIL= email;
 end$$
 DELIMITER ; 
 
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateAccord;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateAccord( in _accNumber varchar(45), in _deadline date, in _sessionDate date, in _observations longtext, in _public tinyint, in _notified tinyint, in _state int(11), in _type char(1), in _user varchar(45)) 
+begin
+UPDATE T_ACCORD SET DEADLINE=_deadline, SESSIONDATE=_sessionDate, OBSERVATIONS=_observations,PUBLIC=_public , NOTIFIED=_notified, STATE=_state, 
+TYPE_ID=_type, USER_ID=_user WHERE ACCNUMBER=_accNumber;
+end$$
+DELIMITER ; 
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS updateAccordSessionDate;
 DELIMITER $$
@@ -232,9 +246,9 @@ USE `KRONOS`;
 DROP procedure IF EXISTS updateAccordUser;
 DELIMITER $$
 USE `KRONOS`$$
-create procedure updateAccordUser( in accord varchar(45), in newuser varchar(45), in antuser varchar(45))
+create procedure updateAccordUser( in accord varchar(45), in newuser varchar(45))
 begin
-update T_USERACC set TEMPUSER = newuser where ACCORD = accord and TEMPUSER= antuser;
+update T_USERACC set TEMPUSER = newuser where ACCORD = accord;
 end$$
 DELIMITER ; 
 
