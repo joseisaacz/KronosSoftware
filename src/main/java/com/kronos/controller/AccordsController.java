@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import com.kronos.model.Accord;
 import com.kronos.model.AccordTempUser;
@@ -48,7 +49,10 @@ import com.kronos.service.TypeService;
 public class AccordsController {
 
 	private Accord oldAccord=new Accord();
-	private final String uploadFolder = "/home/jonathan/uploads/";
+	
+	@Value("${kronos.path.folder}")
+	private String uploadFolder;
+	
 	@Autowired
 	private TypeService typesRepo;
 
@@ -157,6 +161,7 @@ public class AccordsController {
 	public String listAccord(Model model) {
 
 		try {
+			System.out.println(uploadFolder);
 			model.addAttribute("listAccords", this.accordRepo.searchAllAccords());
 		} catch (Exception e) {
 
