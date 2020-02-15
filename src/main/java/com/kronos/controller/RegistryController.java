@@ -26,12 +26,8 @@ public class RegistryController {
 
 
   @Autowired
-  private final FcmClient fcmClient;
+  private FcmClient fcmClient;
 
-  public RegistryController(FcmClient fcmClient) {
-    this.fcmClient = fcmClient;
-  
-  }
  
   @GetMapping("/register/{token}")
   @ResponseStatus(HttpStatus.NO_CONTENT)

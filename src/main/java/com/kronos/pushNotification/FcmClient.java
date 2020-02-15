@@ -28,13 +28,17 @@ public class FcmClient {
 
 
   public FcmClient(FcmSettings settings) {
+	  
     Path p = Paths.get(settings.getServiceAccountFile());
     try (InputStream serviceAccount = Files.newInputStream(p)) {
+    	if(FirebaseApp.getApps().isEmpty()) {
       FirebaseOptions options = new FirebaseOptions.Builder()
           .setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
 
       FirebaseApp.initializeApp(options);
+    	}
     }
+	  
     catch (IOException e) {
      System.out.println(e.getMessage());
     }
