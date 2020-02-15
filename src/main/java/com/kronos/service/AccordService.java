@@ -339,7 +339,18 @@ public class AccordService {
     }
     
     
-    
+    public List<Accord> emailInfo(Date today, Date limit) throws Exception{ 
+    	Connection connection = jdbcTemplate.getDataSource().getConnection(); 
+    	CallableStatement statement = connection.prepareCall("{call emailInfo(?,?)}"); 
+    	statement.setDate(1, new java.sql.Date(today.getTime())); 
+    	statement.setDate(2, new java.sql.Date(limit.getTime())); 
+    	ResultSet rs= statement.executeQuery();
+    	Map<String, Accord> map = new HashMap();
+    		while(rs.next()) {
+    			
+    		}
+    	
+    	return null; }
     
     
 }
