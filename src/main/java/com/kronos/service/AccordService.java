@@ -339,7 +339,40 @@ public class AccordService {
     }
     
     
-    
+    public List<Accord> emailInfo(Date today, Date limit) throws Exception{ 
+    	Connection connection = jdbcTemplate.getDataSource().getConnection(); 
+    	CallableStatement statement = connection.prepareCall("{call emailInfo(?,?)}"); 
+    	statement.setDate(1, new java.sql.Date(today.getTime())); 
+    	statement.setDate(2, new java.sql.Date(limit.getTime())); 
+    	ResultSet rs= statement.executeQuery();
+    	Map<String, Accord> map = new HashMap();
+    		while(rs.next()) {
+    			String accNumber = rs.getString("ACCNUMBER");
+                if (map.isEmpty() || ! map.containsKey(accNumber)) { //if the map is empty or the result isn't
+                    Accord a = new Accord();                                                 //in the map
+                    a.setAccNumber(accNumber);
+                    a.setIncorporatedDate(rs.getDate("INCORDATE"));
+                    a.setDeadline(rs.getDate("DEADLINE"));
+                    a.setSessionDate(rs.getDate("SESSIONDATE")); 
+                    a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
+                    a.setObservations(rs.getString("OBSERVATIONS"));
+                    a.setNotified(rs.getBoolean("NOTIFIED"));
+                    a.setPublished(rs.getBoolean("PUBLIC"));
+                    a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
+                    a.getURL().add(new Pdf(rs.getString("URL")));
+                    map.put(accNumber, a);
+                }
+                else {
+                        //if the result isn't  in the map or the map isn't empty, just add the URL into result
+                        map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
+                    
+                }
+    		}
+    	
+    		statement.close();
+    		  
+    	      return new ArrayList<>(map.values());
+    }
     
     
 }
