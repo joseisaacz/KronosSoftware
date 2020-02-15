@@ -3,17 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <title>Kronos</title>
-    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+<link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body>
- <header th:insert="fragments/header :: header-prin">
+	<header th:insert="fragments/header :: header-prin"> </header>
+	<main>
+		<div class="mt-2 col-md-1">
+			<br> <br> <br>
+		</div>
+		<button id='but' >Click Me!</button>
 
-    </header>
-
-	 <script th:src="@{/bootstrap/js/jquery.js}"></script>
-    <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-messaging.js"></script>
-<script th:src="@{/js/index.js}"></script>
+	</main>
+	<script th:src="@{/bootstrap/js/jquery.js}"></script>
+	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
+	<script
+		src="https://www.gstatic.com/firebasejs/5.9.2/firebase-messaging.js"></script>
+	<script th:src="@{/js/index.js}"></script>
 </body>
 </html>
