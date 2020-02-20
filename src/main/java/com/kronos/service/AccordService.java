@@ -358,19 +358,7 @@ public class AccordService {
                     a.setAccNumber(accNumber);
                     a.setIncorporatedDate(rs.getDate("INCORDATE"));
                     a.setDeadline(rs.getDate("DEADLINE"));
-                    a.setSessionDate(rs.getDate("SESSIONDATE")); 
-                    a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
-                    a.setObservations(rs.getString("OBSERVATIONS"));
-                    a.setNotified(rs.getBoolean("NOTIFIED"));
-                    a.setPublished(rs.getBoolean("PUBLIC"));
-                    a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
-                    a.getURL().add(new Pdf(rs.getString("URL")));
                     map.put(accNumber, a);
-                }
-                else {
-                        //if the result isn't  in the map or the map isn't empty, just add the URL into result
-                        map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
-                    
                 }
     		}
     	
