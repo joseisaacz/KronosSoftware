@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -21,23 +22,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kronos.model.Accord;
 import com.kronos.model.Pdf;
+import com.kronos.pushNotification.FcmClient;
 import com.kronos.service.AccordService;
 
 @RestController
 @RequestMapping("/api/accords")
 public class AccordsRestController {
 	
-	private final String uploadFolder="/home/jonathan/uploads/";
+	@Value("${kronos.path.folder}")
+	private String uploadFolder;
 	
 	@Autowired
 	private AccordService accordRepo;
+	
+	@Autowired
+	private FcmClient pushService;
 	
 	@GetMapping("/allAccords")
 	public List<Accord> searchAll(){
@@ -214,9 +222,10 @@ public class AccordsRestController {
 	}
 	
 	
-	@PostMapping("/uploadPdf/{accNumber}")
+	@RequestMapping(value = "/uploadPdf/{accNumber}", method = RequestMethod.POST)
 	public ResponseEntity uploadPdf(@PathVariable("accNumber")String accNumber,
-			@RequestParam("accord") MultipartFile[] uploadingFiles) {
+			@RequestParam("accord") MultipartFile[] uploadingFiles,
+			 @SessionAttribute("roleName") String roleName) {
 		
 		try {
 			for(MultipartFile uploadFile : uploadingFiles) {
@@ -227,6 +236,11 @@ public class AccordsRestController {
 				this.accordRepo.insertActPdf(accNumber, pdf);
 				
 				
+			}
+			if(roleName != null && roleName.equals("Secretaria de Alcaldia")) {
+				String body="Se ha agregado una nueva respuesta al acuerdo  "+accNumber+"\n";
+				
+				this.pushService.send("ConcejoMunicipal", "Respuesta Recibida", body);
 			}
 			
 			return ResponseEntity.ok().build();

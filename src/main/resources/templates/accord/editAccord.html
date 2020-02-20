@@ -40,7 +40,7 @@
 			<div class="container" id="container"
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
 				<form th:action="@{/accords/saveEdit}" method="POST"
-					th:object="${accord}" >
+					th:object="${accord}">
 					<div class="border-bottom">
 						<div class="row">
 							<div class="col-3 ">
@@ -54,8 +54,10 @@
 							<div class="col-3">
 								<div class="form-group">
 									<div class="col-sm-8">
-										<input  th:disabled="${session.roleName != 'Concejo Municipal'}" id="sessionDate" th:field="*{sessionDate}"
-											name="sessionDate" class="form-control" type="text" required>
+										<input
+											th:readonly="${session.roleName != 'Concejo Municipal'}"
+											id="sessionDate" th:field="*{sessionDate}" name="sessionDate"
+											class="form-control" type="text" required>
 									</div>
 								</div>
 
@@ -72,7 +74,9 @@
 								<div class="form-group">
 									<div class="col-sm-8">
 
-										<input  th:disabled="${session.roleName != 'Concejo Municipal'}" type="text" class="form-control" th:field="*{deadline}"
+										<input
+											th:readonly="${session.roleName != 'Concejo Municipal'}"
+											type="text" class="form-control" th:field="*{deadline}"
 											name="deadline" id="deadline">
 									</div>
 								</div>
@@ -88,7 +92,7 @@
 
 									<div class="col-sm-6">
 										<label for="form-control" class="form-label">Numero de
-											Acuerdo:</label> <input type="text"  class="form-control"
+											Acuerdo:</label> <input type="text" class="form-control"
 											th:field="*{accNumber}" id="accNumber" name="accNumber"
 											readonly>
 									</div>
@@ -100,9 +104,10 @@
 						<div class="col">
 							<div class="col-8">
 								<label for="form-control col-6" class="form-label"> Tipo
-									de acuerdo: </label> <select  th:disabled="${session.roleName != 'Concejo Municipal'}"  th:field=*{type.id} class="form-control"
-									id="comboTypes" name="type"
-									>
+									de acuerdo: </label> <select
+									th:readonly="${session.roleName != 'Concejo Municipal'}"
+									th:field=*{type.id} class="form-control" id="comboTypes"
+									name="type">
 									<option th:each="type:${types}" th:value="${type.id}"
 										th:text="${type.description}"></option>
 								</select>
@@ -115,8 +120,10 @@
 
 							<div class="col-6">
 								<label for="form-control col-6" class="form-label"
-									id="labelState">Estado:</label> <select  th:disabled="${session.roleName != 'Concejo Municipal'}" class="form-control"
-									id="state" name="state" th:field="*{state.id}" >
+									id="labelState">Estado:</label> <select
+									th:disabled="${session.roleName != 'Concejo Municipal'}"
+									class="form-control" id="state" name="state"
+									th:field="*{state.id}">
 									<option th:each="state:${states}" th:value="${state.id}"
 										th:text="${state.description}"></option>
 								</select>
@@ -126,10 +133,20 @@
 						<div class="col">
 							<div class="col-8">
 								<div class="form-group ">
-									<label id="labelName" for="form-control col-6"
+									<!-- 	<label id="labelName" for="form-control col-6"
 										class="form-label"> Nombre del Responsable </label> <input
 										type="text" class="form-control" name="username" id="username"
-										disabled>
+										disabled> -->
+										<!-- ${session.roleName == 'Secretaria de Alcaldia'}" -->
+									<th:block th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia')}">
+										<label for="form-control col-6" class="form-label">Departamento Responsable</label> 
+										<select class="form-control">
+											<option>Hola</option>
+										</select>
+									</th:block>
+
+
+
 								</div>
 							</div>
 							<div class="col-8">
@@ -150,29 +167,28 @@
 							<div class="form-group ">
 
 								<label for="" class="form-label"> Observaciones</label>
-								<textarea  th:disabled="${session.roleName != 'Concejo Municipal'}" placeholder="Digite en este espacio sus observaciones"
+								<textarea
+									th:disabled="${session.roleName != 'Concejo Municipal'}"
+									placeholder="Digite en este espacio sus observaciones"
 									th:field="*{observations}" class="form-control" rows="5"
 									cols="40" name="observations" id="observations"
 									style="resize: none"></textarea>
 
+
 							</div>
 						</div>
-					
-							
-							  
-							<br>
-							<br>
-							<div class="col-6">
-							<br>
-							<br>
-							<br>
-							<br>
+
+
+
+						<br> <br>
+						<div class="col-6">
+							<br> <br> <br> <br>
 							<div class="col-sm-5">
-								<label for="" class="form-label"> Archivos Adjuntos</label>
-							<br>
+								<label for="" class="form-label"> Archivos Adjuntos</label> <br>
 								<!-- Button trigger modal -->
-								<button type="button"  class="btn btn-outline-info"
-									data-toggle="modal" data-target="#exampleModal">Ver Archivos Adjuntos</button>
+								<button type="button" class="btn btn-outline-info"
+									data-toggle="modal" data-target="#exampleModal">Ver
+									Archivos Adjuntos</button>
 							</div>
 						</div>
 					</div>
@@ -182,18 +198,20 @@
 
 
 						<div class="col-5">
-							<button th:disabled="${session.roleName != 'Concejo Municipal'}" type="submit" class="btn btn-outline-success"
-								id="okButton">Guardar Cambios</button>
+							<button th:disabled="${session.roleName != 'Concejo Municipal'}"
+								type="submit" class="btn btn-outline-success" id="okButton">Guardar
+								Cambios</button>
 						</div>
 
 						<div class="col">
-							<a th:href="@{/accords/list}"><button type="button" class="btn btn-outline-danger"
-								id="cancelButton">Cancelar</button></a>
+							<a th:href="@{/accords/list}"><button type="button"
+									class="btn btn-outline-danger" id="cancelButton">Cancelar</button></a>
 						</div>
 
 						<div class="col-sm-3">
-							<button  th:disabled="${session.roleName != 'Concejo Municipal'}" type="button" class="btn btn-outline-danger"
-								id="deleteButton" onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
+							<button th:disabled="${session.roleName != 'Concejo Municipal'}"
+								type="button" class="btn btn-outline-danger" id="deleteButton"
+								onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
 
 
 
@@ -207,7 +225,7 @@
 			</div>
 		</div>
 
-		<!-- Modal -->
+		<!-- PDF UPLOADS -->
 		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -241,17 +259,20 @@
 							<form id="accordForm">
 								<label for="table table-striped table-bordered border-info"
 									class="form-label"> Adjuntar PDF</label> <input type="file"
-									 th:disabled="${session.roleName != 'Concejo Municipal'}" class="form-control" name="accord" id="accord"
+									
+									class="form-control" name="accord" id="accord"
 									placeholder="Inserte aquí el PDF" required multiple
-									accept="application/pdf">
-									<input type="hidden" th:value="${session.roleName}" id='role'>
+									accept="application/pdf"> <input type="hidden"
+									th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+								<input type="hidden" th:value="${session.roleName}" id='role'>
 							</form>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary"
 							data-dismiss="modal">Cerrar</button>
-						<button  th:disabled="${session.roleName != 'Concejo Municipal'}" type="button" class="btn btn-success"
+						<button 
+							type="button" class="btn btn-success"
 							onclick="javascript:uploadPdf()">Guardar Cambios</button>
 					</div>
 				</div>
@@ -264,25 +285,25 @@
 	<script th:src="@{/bootstrap/js/jquery.js}"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 	<script th:src="@{/js/editAccord.js}"></script>
 	<script
 		src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 	<script
 		src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-			   <script>
-      
-      $(function () {
-          $("#deadline").datepicker({dateFormat: 'dd-mm-yy'});
-        }
-      );
-      
-      $(function () {
-          $("#sessionDate").datepicker({dateFormat: 'dd-mm-yy'});
-        }
-      );
-      
-      
-      </script>
+	<script>
+		$(function() {
+			$("#deadline").datepicker({
+				dateFormat : 'dd-mm-yy'
+			});
+		});
+
+		$(function() {
+			$("#sessionDate").datepicker({
+				dateFormat : 'dd-mm-yy'
+			});
+		});
+	</script>
 </body>
 </html>

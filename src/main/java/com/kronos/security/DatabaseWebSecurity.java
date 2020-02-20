@@ -17,7 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private DataSource dataSource;
-
+		
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.jdbcAuthentication().dataSource(dataSource)
@@ -30,19 +31,22 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				// Los recursos estáticos no requieren autenticación
-				.antMatchers("/push/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register").permitAll()
+				.antMatchers("/push/**","/images/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
 				// Las vistas públicas no requieren autenticación
-				.antMatchers("/push/**","/","/push/register","/api/accords/**","/accords/list","/accords/edit/**").permitAll()
+				.antMatchers("/push/**","/images/**","/","/push/register","/api/accords/**","/accords/list","/accords/edit/**","/api/accords/uploadPdf/**","/icon.jpg").permitAll()
 				// Todas las demás URLs de la Aplicación requieren autenticación
 				
-				.antMatchers("/accords/addAccord/**","/push/register").hasAnyAuthority("Concejo Municipal")
+				.antMatchers("/accords/addAccord/**").hasAnyAuthority("Concejo Municipal")
 				
 				.anyRequest().authenticated()
 				
 				// El formulario de Login no requiere autenticacion
-				.and().formLogin().permitAll()
+				.and().formLogin().loginPage("/login").failureUrl("/login-error")
+				.permitAll()
 				.and()
 				.exceptionHandling().accessDeniedPage("/forbidden");
+				//.and()
+				//.csrf().disable();
 			
 		
 	}

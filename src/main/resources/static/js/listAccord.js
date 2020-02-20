@@ -5,6 +5,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     initTable();
+    //subsButton();
 });
 
 function initTable() {
@@ -25,6 +26,7 @@ function initTable() {
             "sProcessing": "Procesando..."
         },
         "lengthChange": false,
+        "iDisplayLength": 5,
         "destroy": true
         
     });

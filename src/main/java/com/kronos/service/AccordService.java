@@ -29,6 +29,7 @@ public class AccordService {
     public void insertAccord(Accord acc) throws Exception {
 
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
+    	
         CallableStatement statement = connection.prepareCall("{call insertAccord(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 ;
         statement.setString(1, acc.getAccNumber());
@@ -61,6 +62,7 @@ public class AccordService {
     
     public List<Accord> searchAllAccords() throws Exception{
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
+    	System.out.println(connection.getNetworkTimeout());
        CallableStatement statement = connection.prepareCall("{call searchAllAccords()}");
        ResultSet rs = statement.executeQuery();
        Map<String, Accord> map = new HashMap();
