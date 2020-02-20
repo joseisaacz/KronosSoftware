@@ -24,11 +24,33 @@
 						<div class="col-12">
 							<h3 align="center" style="color: #BBC9B4" id="pageTitle">Agregar
 								Usuario</h3>
+								
 						</div>
 					</div>
 				</div>
 			</div>
+			<div class="container" id="container"
+				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
+				<form th:action="@{/administration/saveUser}" method="POST"
+					th:object="${accord}" enctype="multipart/form-data">
+					<div class="border-bottom">
+						<div class="row">
+							<div class="col-3 ">
+							<div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+  </div>
+  </div>
+  </div>
+  </form>
 	</div>
-	</main>		
+	</main>	
+	<script th:src="@{/bootstrap/js/jquery.js}"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>	
 </body>
 </html>
