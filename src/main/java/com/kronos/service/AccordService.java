@@ -90,7 +90,7 @@ public class AccordService {
        }
       
        statement.close();
-  
+       connection.close();
       return new ArrayList<>(map.values());
    }
     
@@ -127,7 +127,7 @@ public class AccordService {
        }
       
        statement.close();
-  
+       connection.close();
       return new ArrayList<>(map.values());
    }
 	
@@ -166,7 +166,7 @@ public class AccordService {
        }
       
        statement.close();
-  
+       connection.close();
       return new ArrayList<>(map.values());
    }
     
@@ -203,7 +203,7 @@ public class AccordService {
        }
       
        statement.close();
-  
+       connection.close();
       return new ArrayList<>(map.values());
    }
     
@@ -239,7 +239,7 @@ public class AccordService {
        }
       
        statement.close();
-  
+       connection.close();
       return new ArrayList<>(map.values());
    }
     
@@ -276,7 +276,7 @@ public class AccordService {
         }
        
         statement.close();
-   
+        connection.close();
        List<Accord> list= new ArrayList<Accord>(map.values());
        if(list.size() > 1 || list.isEmpty())
     	   return Optional.empty();
@@ -292,6 +292,7 @@ public class AccordService {
         statement.setBoolean(3, pdf.isFinalResponse());
         statement.executeUpdate();
         statement.close();
+        connection.close();
     }
     
     public void deleteAccPdf(String accNumber, String url) throws Exception {
@@ -301,6 +302,7 @@ public class AccordService {
         statement.setString(2, url);
         statement.executeUpdate();
         statement.close();
+        connection.close();
     }
     
     public void deleteAccord(String accNumber, String user) throws Exception {
@@ -310,6 +312,7 @@ public class AccordService {
         statement.setString(2, user);
         statement.executeUpdate();
         statement.close();
+        connection.close();
     }
     
     
@@ -333,7 +336,7 @@ public class AccordService {
         statement.setString(9, acc.getUser().getTempUser().getEmail());
         statement.executeUpdate();
         statement.close();
-
+        connection.close();
     
 
     }
@@ -358,6 +361,7 @@ public class AccordService {
     		}
     	
     		statement.close();
+    		connection.close();
     		  
     	      return new ArrayList<>(map.values());
     }
