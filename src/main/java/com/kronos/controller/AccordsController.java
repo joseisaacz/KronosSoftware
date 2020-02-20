@@ -3,10 +3,15 @@ package com.kronos.controller;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -30,13 +35,13 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 import com.kronos.model.Accord;
 import com.kronos.model.AccordTempUser;
 import com.kronos.model.Pdf;
 import com.kronos.model.State;
 import com.kronos.model.TempUser;
 import com.kronos.model.User;
+import com.kronos.pushNotification.FcmClient;
 import com.kronos.service.AccordService;
 import com.kronos.service.AccordTempUserService;
 import com.kronos.service.ActService;
@@ -71,6 +76,8 @@ public class AccordsController {
 	@Autowired
 	private AccordTempUserService tUserAccRepo;
 
+	@Autowired
+	private FcmClient pushService;
 	
 	
 	@PostMapping("/saveAccord")
@@ -78,7 +85,8 @@ public class AccordsController {
 
 			@RequestParam(value = "email", required = false) String email,
 
-			@RequestParam("accord") MultipartFile[] uploadingFiles, RedirectAttributes attributes) {
+			@RequestParam("accord") MultipartFile[] uploadingFiles, RedirectAttributes attributes,
+			 @SessionAttribute("roleName") String roleName) {
 
 		try {
 			String fullAccName = "MSPH-CM-ACUER-" + accord.getAccNumber();
@@ -125,6 +133,13 @@ public class AccordsController {
 
 			if (accord.getType().getId() != Accord.ADMIN_TYPE)
 				this.tUserAccRepo.insertAccord_TempUser(accord, tmp);
+			
+			  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+			  String body="Se ha agregado un nuevo Acuerdo\n"+
+			  "Agregado por: "+roleName+"\n"+
+			  "En la fecha:" + LocalDateTime.now().format(formatter)+  "\n";
+			  
+			pushService.send("SecretariadeAlcaldia", "Acuerdo Agregado", body);
 
 		}
 
@@ -198,7 +213,8 @@ public class AccordsController {
 			@RequestParam(value = "username", required = false) String username,
 
 			@RequestParam(value = "email", required = false) String email, RedirectAttributes attributes,
-			 @SessionAttribute("user") User user) {
+			 @SessionAttribute("user") User user, 
+			 @SessionAttribute("roleName") String roleName) {
 
 		try {
 			
@@ -237,6 +253,11 @@ public class AccordsController {
 			System.out.println(user);
 			System.out.println("Nuevo: "+ acc);
 			this.accordRepo.updateAccord(acc);
+			if(roleName != null && roleName.equals("Secretaria de Alcaldia")) {
+				String body="El acuerdo "+acc.getAccNumber()+" ha sido editado\n";
+				
+				this.pushService.send("ConcejoMunicipal", "Acuerdo Actualizado", body);
+			}
 			attributes.addFlashAttribute("msg", "Acuerdo Editado Correctamente");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

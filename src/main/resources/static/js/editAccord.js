@@ -31,7 +31,7 @@ function listPdf(accNumber){
 
 function isInRole(){
 	let role = document.getElementById('role').value;
-	return (role != 'Concejo Municipal') ? "disabled" : "";
+	return (role != 'Concejo Municipal' && role != 'Secretaria de Alcaldia') ? "disabled" : "";
 }
 
 function list(parent,url,finalResponse){
@@ -62,12 +62,15 @@ function openPdf(pdf){
 	let url='/api/accords/getPdf?path='+pdf;
 	fetch(url)
 	.then(response=>response.blob())
-	.then(data=>window.open(URL.createObjectURL(data)));
+	.then(data=>{
+		console.log(data)
+		window.open(URL.createObjectURL(data))
+		});
 	
 }
 
 function deletePdf(pdf,finalName){
-	bootbox.confirm("¿Esta seguro que desea eliminar este archivo ?", (result) => {
+	bootbox.confirm("¿Esta seguro que desea eliminar este archivo ?", result => {
 		
 		if(result){
 			

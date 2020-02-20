@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+<link th:href="@{/css/default.css}" rel="stylesheet">
+<link th:href="@{/css/menu.css}" rel="stylesheet">
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+	rel="stylesheet">
+</head>
+<body>
+	<header th:insert="fragments/header :: header-prin"> </header>
+<div class="mt-2 col-md-1">
+		<br> <br> <br>
+	</div>
+	<main role="main">
+
+		<div class="container mx-auto">
+			<div class="container mx-auto">
+				<div class="border-bottom" style="width: 97%">
+					<div class="row "
+						style="background-color: white; width: 50%; border-radius: 50px 50px 1px 1px; background-color: #1f3140; border: solid #003366">
+						<div class="col-12">
+							<h3 align="center" style="color: #BBC9B4" id="pageTitle">Agregar
+								Usuario</h3>
+								
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container" id="container"
+				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
+				<form th:action="@{/administration/saveUser}" method="POST"
+					th:object="${accord}" enctype="multipart/form-data">
+					<div class="border-bottom">
+						<div class="row">
+							<div class="col-3 ">
+							<div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+  </div>
+  </div>
+  </div>
+  </form>
+	</div>
+	</main>	
+	<script th:src="@{/bootstrap/js/jquery.js}"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>	
+</body>
+</html>

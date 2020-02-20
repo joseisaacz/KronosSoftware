@@ -1,5 +1,7 @@
 package com.kronos.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +50,13 @@ public class RegistryController {
 	  data.put("id","1");
 	  data.put("joke","Hola Mundo");
 	  try {
-	  this.fcmClient.send(data,"ConcejoMunicipal");
+		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		  String body="Se ha agregado un nuevo Acuerdo\n"+
+				  "Agregado por: "+"Concejo Municipal"+"\n"+
+				  "En la fecha:" + LocalDateTime.now().format(formatter)+  "\n";
+				  
+				
+	  this.fcmClient.send("SecretariadeAlcaldia", "Acuerdo Agregado", body);
 	  }
 	  catch(Exception e) {
 		  System.out.println(e.getMessage());

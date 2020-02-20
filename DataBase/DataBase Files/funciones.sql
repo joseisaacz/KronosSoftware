@@ -389,8 +389,8 @@ USE `KRONOS`$$
 create procedure emailInfo(
 in today date, in limt date)
 begin
-  select ACCNUMBER, INCORDATE, INCORTIME
-  from T_ACCORD where T_ACCORD.INCORDATE <= today and T_ACCORD.INCORDATE >=limt;
+  select ACCNUMBER, INCORDATE, DEADLINE
+  from T_ACCORD, T_TYPE where T_ACCORD.INCORDATE <= today and T_ACCORD.INCORDATE >=limt and T_TYPE.DESCRIPTION='Administración Municipal';
 end$$ 
 DELIMITER ;
 

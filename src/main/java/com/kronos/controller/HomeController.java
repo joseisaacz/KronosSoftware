@@ -3,15 +3,21 @@ package com.kronos.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.kronos.service.StateService;
 import com.kronos.service.TypeService;
@@ -36,15 +42,20 @@ public class HomeController {
 	private UserService userRepo;
 
 	@GetMapping("/")
-	public String mostrarHome() {
+	public String mostrarHome( HttpSession session) {
 
+		String role=(String)session.getAttribute("roleName");
+		System.out.println(role);
 //		List<State> list= this.stateRepo.findAll();
 //		
 //		for(State state : list) {
 //			System.out.println(state);
 //		}
-
-		return "redirect:/index";
+		
+			return (role != null) ? "redirect:/accords/list": "redirect:/index";
+		
+			
+		
 	}
 
 	@GetMapping("/forbidden")
@@ -52,6 +63,11 @@ public class HomeController {
 		return "accessDenied";
 	}
 
+	@GetMapping("/login")
+	public String login() {
+		
+		return "login";
+	}
 	@GetMapping("/index")
 	public String showIndex(Authentication auth, HttpSession session) {
 
@@ -74,7 +90,7 @@ public class HomeController {
 					return "redirect:/accords/list";
 				
 				default: 
-					return "/index";
+					return "index";
 				
 				}
 				
@@ -86,6 +102,27 @@ public class HomeController {
 
 			System.out.println(e.getMessage());
 		}
-		return "/index";
+		return "index";
 	}
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest request) {
+		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+		logoutHandler.logout(request, null, null);
+		return "redirect:/";
+	}
+	
+	@GetMapping("/login-error")
+    public String login(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        String errorMessage = null;
+        if (session != null) {
+            AuthenticationException ex = (AuthenticationException) session
+                    .getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+            if (ex != null) {
+                errorMessage = "Usuario o contraseña incorrectos";
+            }
+        }
+        model.addAttribute("errorMessage", errorMessage);
+        return "login";
+    }
 }
