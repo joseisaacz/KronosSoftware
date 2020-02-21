@@ -384,7 +384,7 @@ DELIMITER ;
 
 USE `KRONOS`;
 DROP procedure IF EXISTS emailInfo;
-DELIMiTER $$
+DELIMITER $$
 USE `KRONOS`$$
 create procedure emailInfo(
 in today date, in limt date)
@@ -394,6 +394,25 @@ begin
 end$$ 
 DELIMITER ;
 
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllDepartments;
+DELIMITER $$
+USE `KRONOS` $$
+create procedure searchAllDepartments()
+begin
+ select ID, NAME from T_DEPARTMENT;
+end $$
+DELIMITER;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllRoles;
+DELIMITER $$
+USE `KRONOS` $$
+create procedure searchAllRoles()
+begin
+ select ID, NAME from T_ROLE;
+end $$
+DELIMITER;
 
 
 insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');

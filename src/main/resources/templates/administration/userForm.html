@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Add User</title>
 <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 <link th:href="@{/css/default.css}" rel="stylesheet">
 <link th:href="@{/css/menu.css}" rel="stylesheet">
@@ -11,7 +11,7 @@
 </head>
 <body>
 	<header th:insert="fragments/header :: header-prin"> </header>
-<div class="mt-2 col-md-1">
+	<div class="mt-2 col-md-1">
 		<br> <br> <br>
 	</div>
 	<main role="main">
@@ -24,7 +24,7 @@
 						<div class="col-12">
 							<h3 align="center" style="color: #BBC9B4" id="pageTitle">Agregar
 								Usuario</h3>
-								
+
 						</div>
 					</div>
 				</div>
@@ -32,25 +32,103 @@
 			<div class="container" id="container"
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
 				<form th:action="@{/administration/saveUser}" method="POST"
-					th:object="${accord}" enctype="multipart/form-data">
+					th:object="${user}" enctype="multipart/form-data">
 					<div class="border-bottom">
 						<div class="row">
-							<div class="col-3 ">
+							<div class="col-8 ">
+								<div class="form-group">
+									<label for="email">Correo electrónico</label> <input
+										type="email" class="form-control" th:field="*{tempUser.email}"
+										id="email" aria-describedby="emailHelp"
+										placeholder="Enter email" required>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-8">
+								<div>
+									<label for="email">Nombre Completo</label> <input type="text"
+										class="form-control" th:field="*{tempUser.name}" id="name"
+										required>
+								</div>
+							</div>
+						</div>
+						<div class="border-bottom">
 							<div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-  </div>
-  </div>
-  </div>
-  </div>
-  </form>
-	</div>
-	</main>	
+								<div class="row">
+									<div class="col-8">
+
+										<label for="form-control col-6" class="form-label">
+											Departamento: </label> <select th:field=*{department}
+											class="form-control" id="comboDepartments" name="department"
+											onchange='javascript:putVisible()'>
+											<option th:each="department:${departments}"
+												th:value="${department.id}" th:text="${department.name}"></option>
+											<option value="NS">No se encuentra</option>
+										</select>
+									</div>
+
+								</div>
+							</div>
+							<div class="col">
+								<div class="row">
+
+									<div class="col-4">
+										<div>
+											<label id="labelName" for="form-control col-9"
+												class="form-label" style="visibility: hidden">Nombre
+												del Deparmento</label> <input type="hidden" class="form-control"
+												id="nameDepartment" name="nameDeparment">
+										</div>
+									</div>
+								</div>
+								<div class="col-8">
+
+									<label for="form-control col-6" class="form-label">
+										Roles: </label> <select th:object=${role} class="form-control"
+										id="comboRoles" name="role"
+										onchange='javascript:visibleRoles()'>
+										<option th:each="role:${roles}" th:value="${role.id}"
+											th:text="${role.name}"></option>
+										<option value="NS">No se encuentra</option>
+									</select>
+								</div>
+								<div class="row">
+
+									<div class="col-4">
+										<div>
+											<label id="labelRole" for="form-control col-9"
+												class="form-label" style="visibility: hidden">Nombre
+												del Rol</label> <input type="hidden" class="form-control"
+												id="nameRole" name="nameRole">
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="col">
+							<div class="row">
+
+								<div class="col-4">
+									<div>
+										<label id="labelName" for="form-control col-9"
+											class="form-label">Contraseña</label> <input type="password"
+											class="form-control" id="password" name="password">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</main>
 	<script th:src="@{/bootstrap/js/jquery.js}"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/addUser.js}"></script>
 	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>	
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 </body>
 </html>

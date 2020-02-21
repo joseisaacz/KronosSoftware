@@ -4,15 +4,17 @@ public class User {
 
 	private TempUser tempUser;
 	private String password;
-	private Department deparment;
+	private Department department;
+	private Boolean status;
 
 	public User() {
 		
 	}
 	public User(TempUser temp, String password, Department dep) {
-		this.deparment = dep;
+		this.department = dep;
 		this.password = password;
 		this.tempUser = temp;
+		this.setStatus(true); 
 	}
 
 	public TempUser getTempUser() {
@@ -31,17 +33,23 @@ public class User {
 		this.password = password;
 	}
 
-	public Department getDeparment() {
-		return deparment;
+	public Department getDepartment() {
+		return department;
 	}
 
-	public void setDeparment(Department deparment) {
-		this.deparment = deparment;
+	public void setDepartment(Department department) {
+		this.department = department;
 	}
 
 	@Override
 	public String toString() {
-		return "User [tempUser=" + tempUser + ", password=" + password + ", deparment=" + deparment + "]";
+		return "User [tempUser=" + tempUser + ", password=" + password + ", department=" + department + "]";
+	}
+	public Boolean getStatus() {
+		return status;
+	}
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
 }
