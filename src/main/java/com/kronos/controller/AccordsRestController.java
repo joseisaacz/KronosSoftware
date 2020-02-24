@@ -37,219 +37,205 @@ import com.kronos.service.AccordService;
 @RestController
 @RequestMapping("/api/accords")
 public class AccordsRestController {
-	
+
 	@Value("${kronos.path.folder}")
 	private String uploadFolder;
-	
+
 	@Autowired
 	private AccordService accordRepo;
-	
+
 	@Autowired
 	private FcmClient pushService;
-	
+
 	@GetMapping("/allAccords")
-	public List<Accord> searchAll(){
-		try  {
-			
-		return this.accordRepo.searchAllAccords();
-		
-		 }
-		
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+	public List<Accord> searchAll() {
+		try {
+
+			return this.accordRepo.searchAllAccords();
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
-	
+
 	@GetMapping("/sessionDate/{date}")
-	public List<Accord> searchBySessionDate(@PathVariable("date") String date){
-		try  {
-			//System.out.println(date);
-			DateFormat dateformat= new SimpleDateFormat("dd-MM-yyyy");
+	public List<Accord> searchBySessionDate(@PathVariable("date") String date) {
+		try {
+			// System.out.println(date);
+			DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
 			Date dateDb = dateformat.parse(date);
-			DateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String date2 = sdf.format(dateDb);
-			Date db2= sdf.parse(date2);
+			Date db2 = sdf.parse(date2);
 			System.out.println(db2);
 			return this.accordRepo.searchBySessionDate(db2);
-		
-			
-	
-		 }
-		
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
-	
-	
+
 	@GetMapping("/incorDate/{date}")
-	public List<Accord> searchByIncorDate(@PathVariable("date") String date){
-		try  {
-			//System.out.println(date);
-			DateFormat dateformat= new SimpleDateFormat("dd-MM-yyyy");
+	public List<Accord> searchByIncorDate(@PathVariable("date") String date) {
+		try {
+			// System.out.println(date);
+			DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
 			Date dateDb = dateformat.parse(date);
-			DateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String date2 = sdf.format(dateDb);
-			Date db2= sdf.parse(date2);
+			Date db2 = sdf.parse(date2);
 			System.out.println(db2);
 			return this.accordRepo.searchByIncorDate(db2);
-		
-			
-	
-		 }
-		
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
-	
-	
+
 	@GetMapping("/type/{type}")
-	public List<Accord> searchByType(@PathVariable("type") char type){
-		try  {
-			
-	
+	public List<Accord> searchByType(@PathVariable("type") char type) {
+		try {
+
 			return this.accordRepo.searchByType(type);
-		
-			
-	
-		 }
-		
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
-	
+
 	@GetMapping("/accNumber/{number}")
-	public List<Accord> searchByAccNumber(@PathVariable("number") String accNumber){
-		try  {
-			
-	
+	public List<Accord> searchByAccNumber(@PathVariable("number") String accNumber) {
+		try {
+
 			return this.accordRepo.searchByAccNumber(accNumber);
-		
-			
-	
-		 }
-		
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
-	
-	
+
 	@GetMapping("/get/allAccords")
-	public List<Accord> searchAllAccordsApi(){
-		try  {
-			
-	
+	public List<Accord> searchAllAccordsApi() {
+		try {
+
 			return this.accordRepo.searchAllAccords();
-		
-			
-	
-		 }
-		
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
-	
+
 	@GetMapping("/get/{accNumber}")
 	public Accord getAccord(@PathVariable("accNumber") String accNumber) {
-		
+
 		try {
 			Optional<Accord> opt = this.accordRepo.getAccord(accNumber);
-			if(!opt.isPresent())
+			if (!opt.isPresent())
 				throw new Exception();
 			return opt.get();
-			
+
 		}
-		
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
-	
-	
+
 	@GetMapping("/getPdf")
-	 public ResponseEntity<Resource> getPdf(@RequestParam("path") String filepath){
-		Path path= Paths.get(filepath);
+	public ResponseEntity<Resource> getPdf(@RequestParam("path") String filepath) {
+		Path path = Paths.get(filepath);
 		Resource resource = null;
 		try {
 			resource = new UrlResource(path.toUri());
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
 					.body(resource);
-			
-			
-		}
-		catch(Exception e) {
+
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
-		
+
 	}
-	
+
 	@GetMapping("/deletePdf/{accNumber}")
 	public ResponseEntity deletePdf(@PathVariable("accNumber") String accNumber,
-			@RequestParam("path") String filepath ) {
-		
+			@RequestParam("path") String filepath) {
+
 		try {
 			this.accordRepo.deleteAccPdf(accNumber, filepath);
 			return ResponseEntity.ok().build();
 		}
-		
-		catch(Exception e) {
+
+		catch (Exception e) {
 			System.out.println(e.getMessage());
-			throw new ResponseStatusException(
-					  HttpStatus.resolve(500), "entity not found"
-					);
+			throw new ResponseStatusException(HttpStatus.resolve(500), "entity not found");
 		}
 	}
-	
-	
+
 	@RequestMapping(value = "/uploadPdf/{accNumber}", method = RequestMethod.POST)
-	public ResponseEntity uploadPdf(@PathVariable("accNumber")String accNumber,
+	public ResponseEntity uploadPdf(@PathVariable("accNumber") String accNumber,
 			@RequestParam("accord") MultipartFile[] uploadingFiles,
-			 @SessionAttribute("roleName") String roleName) {
-		
+			@RequestParam(value = "finalResponse", required = false) String finalResponse,
+			@SessionAttribute("roleName") String roleName) {
+
 		try {
-			for(MultipartFile uploadFile : uploadingFiles) {
-				String url= uploadFolder+uploadFile.getOriginalFilename();
-				File file= new File(url);
-				uploadFile.transferTo(file);
-				Pdf pdf=new Pdf(url);
-				this.accordRepo.insertActPdf(accNumber, pdf);
-				
-				
+
+			if (finalResponse != null && !finalResponse.isEmpty()) {
+				Pdf pdf = new Pdf(uploadFolder + finalResponse, true);
+
+				Optional<Pdf> opt = this.accordRepo.haveFinalResponse(accNumber);
+				if (opt.isPresent()) {
+					Pdf pdfOpt = opt.get();
+
+					if (!pdf.getURL().equals(pdfOpt.getURL())) {
+
+						pdfOpt.setFinalResponse(false);
+						this.accordRepo.updatePDF(accNumber, pdfOpt);
+						this.accordRepo.updatePDF(accNumber, pdf);
+					}
+
+				} 
+				else {
+					this.accordRepo.updatePDF(accNumber, pdf);
+				}
+				// this.pushService.send("", "Acuerdo Finalizado", body); Secretaria
+				// this.pushService.send("", "Acuerdo Finalizado", body); Responsables
+
 			}
-			if(roleName != null && roleName.equals("Secretaria de Alcaldia")) {
-				String body="Se ha agregado una nueva respuesta al acuerdo  "+accNumber+"\n";
-				
+			for (MultipartFile uploadFile : uploadingFiles) {
+				if (!uploadFile.isEmpty()) {
+					String url = uploadFolder + uploadFile.getOriginalFilename();
+					File file = new File(url);
+					uploadFile.transferTo(file);
+					Pdf pdf = new Pdf(url);
+					this.accordRepo.insertActPdf(accNumber, pdf);
+				}
+
+			}
+			if (roleName != null && roleName.equals("Secretaria de Alcaldia")) {
+				String body = "Se ha agregado una nueva respuesta al acuerdo  " + accNumber + "\n";
+
 				this.pushService.send("ConcejoMunicipal", "Respuesta Recibida", body);
 			}
-			
+
 			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
-		catch(Exception e) {
-			throw new ResponseStatusException(
-					  HttpStatus.NOT_FOUND, "entity not found"
-					);
-		}
-		
+
 	}
 }

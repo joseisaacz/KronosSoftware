@@ -29,7 +29,9 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+		http 
+		.authorizeRequests()
+		 
 				// Los recursos estáticos no requieren autenticación
 				.antMatchers("/push/**","/images/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
 				// Las vistas públicas no requieren autenticación

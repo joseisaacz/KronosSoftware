@@ -9,6 +9,12 @@ public class Pdf {
 		this.URL=URL;
 	}
 	
+	public Pdf(String URL, boolean finalResponse) {
+		this.URL=URL;
+		this.finalResponse=finalResponse;
+		
+	}
+	
 	
 	public String getURL() {
 		return URL;

@@ -13,7 +13,7 @@ $(document).ready(()=>{
 
 function listPdf(accNumber){
 	
-	url='/api/accords/get/'+accNumber
+	let url='/api/accords/get/'+accNumber
 	fetch(url).then(response=>response.json())
 	.then(accord => {
 		globalAccord=accord;
@@ -31,7 +31,7 @@ function listPdf(accNumber){
 
 function isInRole(){
 	let role = document.getElementById('role').value;
-	return (role != 'Concejo Municipal' && role != 'Secretaria de Alcaldia') ? "disabled" : "";
+	return (role != 'Concejo Municipal') ? "disabled" : "";
 }
 
 function list(parent,url,finalResponse){
@@ -48,7 +48,7 @@ function list(parent,url,finalResponse){
 	"<td>"+finalName+"</td>"+
 	"<td><button type=\"button\" class=\"btn btn-success\" onclick=\"javascript:openPdf('" + url + "')\">Abrir</button></td>"+	
 	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + url + "','"+finalName+"')\" "+isInRole()+">Eliminar</button></td>"+
-	"<td><input type=\"checkbox\" id=\""+finalName+"checkBox\" style=\"text-aling: center; vertical-align:middle \"></td>"
+	"<td><input type=\"radio\" name=\"finalResponse\" id=\""+finalName+"checkBox\" value=\""+finalName+"\""+isInRole()+" style=\"text-aling: center; vertical-align:middle \"></td>"
 	);
 	tr.attr('id',finalName);
 	parent.append(tr);
@@ -108,7 +108,6 @@ function uploadPdf(){
 	let form=document.getElementById('accordForm');
 	
 	let count= $("input:file")[0].files.length;
-	if(count > 0){
 		
 		let _data=new FormData(form);		
 		
@@ -128,7 +127,7 @@ function uploadPdf(){
 	        }
 	    })
 		
-	}
+
 }
 
 function updateTable(){
@@ -157,7 +156,8 @@ function initTable() {
         "lengthChange": false,
         "destroy": true,
         "searching":false,
-        "info": false
+        "info": false,
+        "iDisplayLength": 3
     });
 }
 
@@ -173,5 +173,19 @@ function deleteAccord(){
 		
 	})
 
+}
+
+function cleanPdfForm(){
+	if(globalAccord != null){
+		let finalResponseArray = globalAccord.url.filter(item=>item.finalResponse==true);
+		if(!finalResponseArray.length){
+			let radioButtons=document.getElementsByName("finalResponse");
+			for(let radio of radioButtons){
+				radio.checked=false;
+			}
+		}
+		
+	}
+	document.getElementById('accord').value='';
 }
 
