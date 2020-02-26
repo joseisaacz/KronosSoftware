@@ -77,7 +77,7 @@ public class HomeController {
 			if (opt.isPresent()) {
 				User user = opt.get();
 				user.setPassword(null);
-				if (session.getAttribute("usuario") == null)
+				if (session.getAttribute("user") == null)
 					session.setAttribute("user", user);
 
 				String role = "";

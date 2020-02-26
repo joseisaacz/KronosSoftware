@@ -70,6 +70,11 @@ function openPdf(pdf){
 }
 
 function deletePdf(pdf,finalName){
+	let table=document.getElementById('pdfTable');
+	if(table.rows.length-1 === 1){
+		bootbox.alert("Por favor agregue otro documento antes de eliminar");
+	}
+	else
 	bootbox.confirm("¿Esta seguro que desea eliminar este archivo ?", result => {
 		
 		if(result){
@@ -119,7 +124,14 @@ function uploadPdf(){
 	        processData: false,
 	        contentType: false,
 	        data: _data,
-	        success : updateTable,
+	        success : accord=>{
+
+	        		if(accord.state.id === 0){
+	        			document.getElementById('state').value=0;
+	        		}
+	        		updateTable();
+
+	        },
             
 	        error: function (response) {
 	            console.log(response);
@@ -162,6 +174,7 @@ function initTable() {
 }
 
 function deleteAccord(){
+
 	bootbox.confirm("¿Está seguro que desea eliminar el acuerdo?",result=>{
 		
 		if(result){

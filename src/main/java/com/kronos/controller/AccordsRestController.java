@@ -31,6 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.kronos.model.Accord;
 import com.kronos.model.Pdf;
+import com.kronos.model.User;
 import com.kronos.pushNotification.FcmClient;
 import com.kronos.service.AccordService;
 
@@ -186,13 +187,21 @@ public class AccordsRestController {
 	}
 
 	@RequestMapping(value = "/uploadPdf/{accNumber}", method = RequestMethod.POST)
-	public ResponseEntity uploadPdf(@PathVariable("accNumber") String accNumber,
+	public ResponseEntity<Accord> uploadPdf(@PathVariable("accNumber") String accNumber,
 			@RequestParam("accord") MultipartFile[] uploadingFiles,
 			@RequestParam(value = "finalResponse", required = false) String finalResponse,
-			@SessionAttribute("roleName") String roleName) {
+			@SessionAttribute("roleName") String roleName,
+			@SessionAttribute("user") User user) {
 
 		try {
-
+			
+			//System.out.println(accNumber);
+			Optional<Accord> optAcc=this.accordRepo.getAccord(accNumber);
+			System.out.println(optAcc.get());
+			if(!optAcc.isPresent())
+				throw new Exception();
+			
+			Accord acc=optAcc.get();
 			if (finalResponse != null && !finalResponse.isEmpty()) {
 				Pdf pdf = new Pdf(uploadFolder + finalResponse, true);
 
@@ -211,6 +220,14 @@ public class AccordsRestController {
 				else {
 					this.accordRepo.updatePDF(accNumber, pdf);
 				}
+				
+				acc.setUser(user);
+				if(acc.getState().getId()!= 0) {
+				acc.getState().setId(0);
+				acc.getState().setDescription("Cumplido");
+				this.accordRepo.updateAccord(acc);
+				}
+				
 				// this.pushService.send("", "Acuerdo Finalizado", body); Secretaria
 				// this.pushService.send("", "Acuerdo Finalizado", body); Responsables
 
@@ -230,8 +247,10 @@ public class AccordsRestController {
 
 				this.pushService.send("ConcejoMunicipal", "Respuesta Recibida", body);
 			}
-
-			return ResponseEntity.ok().build();
+		
+	 
+			
+			return ResponseEntity.ok(acc);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
