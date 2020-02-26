@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -174,11 +175,21 @@ public class AccordsController {
 
 	//list of all accords
 	@GetMapping("/list")
-	public String listAccord(Model model) {
+	public String listAccord(Model model, HttpSession session) {
 
 		try {
-			System.out.println(uploadFolder);
+			String roleName= (String)session.getAttribute("roleName");
+			if(roleName != null && roleName.equals("Concejo Municipal")) {
+				Date today= new Date();
+				Calendar cal= Calendar.getInstance();
+				cal.add(Calendar.DAY_OF_YEAR, 1);
+				Date limit= cal.getTime();
+				model.addAttribute("listAccords", this.accordRepo.searchByLimitDate(today, limit));
+				
+			}
+			else {
 			model.addAttribute("listAccords", this.accordRepo.searchAllAccords());
+			}
 		} catch (Exception e) {
 
 			System.out.println(e.getMessage());
@@ -288,6 +299,7 @@ public class AccordsController {
 
 	@ModelAttribute
 	public void setGenericos(Model model) {
+	
 		model.addAttribute("states", this.statesRepo.findAll());
 		model.addAttribute("types", this.typesRepo.findAll());
 	}

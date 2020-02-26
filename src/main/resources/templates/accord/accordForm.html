@@ -28,7 +28,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="container" id="container"
+			<div class="container-fluid" id='container'
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
 				<form th:action="@{/accords/saveAccord}" method="POST"
 					th:object="${accord}" enctype="multipart/form-data">
@@ -106,7 +106,7 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group ">
-								<div class="col-8">
+								<div class="col-sm-6">
 									<label for="form-control col-6" class="form-label">
 										Tipo de acuerdo: </label> <select th:field=*{type.id}
 										class="form-control" id="comboTypes" name="type"
