@@ -63,14 +63,15 @@ function changeComboType() {
     let labelEmail = document.getElementById('labelEmail');
     let textName = document.getElementById('username');
     let textEmail = document.getElementById('email');
+    let buttonAdd = document.getElementById('btnAdd');
     if (combo !== 'A') {
-
         textName.value = '';
         textEmail.value = '';
         textName.type = 'text';
         textEmail.type = 'text';
         labelName.style.visibility = 'visible';
         labelEmail.style.visibility = 'visible';
+        buttonAdd.style.visibility = 'visible';
     } else {
         textName.value = '';
         textEmail.value = '';
@@ -78,6 +79,7 @@ function changeComboType() {
         textEmail.type = 'hidden';
         labelName.style.visibility = 'hidden';
         labelEmail.style.visibility = 'hidden';
+        buttonAdd.style.visibility = 'hidden';
     }
 
 }

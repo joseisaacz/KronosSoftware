@@ -172,6 +172,7 @@ public class AccordsController {
 		return "accord/accordForm";
 	}
 
+	//list of all accords
 	@GetMapping("/list")
 	public String listAccord(Model model) {
 
@@ -183,6 +184,19 @@ public class AccordsController {
 			System.out.println(e.getMessage());
 		}
 		return "accord/listAccord";
+	}
+	
+	//Department list
+	@GetMapping("/listDepart")
+	public String listAccordDepart(Model model) {
+		try {
+			System.out.println("Entramos");
+			model.addAttribute("listAccordsDepart", this.accordRepo.searchAllAccords());
+		} catch (Exception e) {
+
+			System.out.println(e.getMessage());
+		}
+		return "accord/listAccordDepartment";
 	}
 
 	@GetMapping("/edit/{accNumber}")
