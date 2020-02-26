@@ -15,7 +15,6 @@
 		<br> <br> <br>
 	</div>
 	<main role="main">
-
 		<div class="container mx-auto">
 			<div class="container mx-auto">
 				<div class="border-bottom" style="width: 97%">
@@ -49,7 +48,6 @@
 											name="sessionDate" class="form-control" type="text" required>
 									</div>
 								</div>
-
 							</div>
 							<div class="custom-control custom-switch" id='divSwitch'>
 								<input type="checkbox" class="custom-control-input"
@@ -125,23 +123,24 @@
 								</div>
 							</div>
 						</div>
+							<div class="col-mid-2" id="responsable">
+								<div class="form-group" id="nameR">
+									<label id="labelName" for="form-control col-9"
+										class="form-label" style="visibility: hidden"> Nombre
+										del Responsable </label> <input type="hidden" class="form-control"
+										name="username" id="username">
+								</div>
+								<div class="form-group" id="emailR">
+									<label id="labelEmail" for="form-control col-9"
+										class="form-label" style="visibility: hidden"> Correo
+										Electronico del Responsable </label> <input type="hidden"
+										class="form-control" name="email" id="email">
+								</div>
+							</div>
 						<div class="col">
-							<div class="form-group ">
-								<label id="labelName" for="form-control col-9"
-									class="form-label" style="visibility: hidden"> Nombre
-									del Responsable </label> <input type="hidden" class="form-control"
-									name="username" id="username">
-							</div>
-							<div class="form-group ">
-								<label id="labelEmail" for="form-control col-9"
-									class="form-label" style="visibility: hidden"> Correo
-									Electronico del Responsable </label> <input type="hidden"
-									class="form-control" name="email" id="email">
-							</div>
-							<div class="form-group "><input type="button"
-							 class="btn btn-primary"  id="btnAdd" 
-							 onClick="javascript:setDeadline()" value="+" style="visibility: hidden" />
-							</div>
+							<input type="button" class="btn btn-primary" id="btnAdd"
+								onClick="javascript:accord_Responsables()" value="+"
+								style="visibility: hidden" />
 						</div>
 					</div>
 					<div class="row">
