@@ -26,7 +26,13 @@ public class TownHallController {
 		
 		return "townHallsecretariat/redirectAccord";
 	}
-
+	
+	
+	@GetMapping("/homeTownHall")
+	public String homeTownHall(User user, Model model) {
+		
+		return "townHallsecretariat/homeTownHall";
+	}
 	
 	
 

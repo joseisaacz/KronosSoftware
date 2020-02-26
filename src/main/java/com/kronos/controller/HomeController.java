@@ -89,7 +89,7 @@ public class HomeController {
 				case "Concejo Municipal":
 					return "redirect:/accords/list";
 				case "Secretaria de Alcaldia":
-					return "redirect:/townHall/redirectAccord";
+					return "redirect:/townHall/homeTownHall";
 				default: 
 					return "index";
 				
