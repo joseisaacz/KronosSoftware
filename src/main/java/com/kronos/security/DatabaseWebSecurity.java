@@ -55,6 +55,9 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	     .expiredUrl("/logout");
 	}
 	
-	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+	return new BCryptPasswordEncoder();
+	}
 
 }

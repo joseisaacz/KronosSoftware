@@ -84,7 +84,8 @@ create table T_USERACC(
 TEMPUSER varchar(45),
 ACCORD varchar(45),
 constraint FK_TEMPUSER1 foreign key (TEMPUSER) references T_TEMPUSER(EMAIL),
-constraint FK_ACCORD1 foreign key (ACCORD) references T_ACCORD(ACCNUMBER)
+constraint FK_ACCORD1 foreign key (ACCORD) references T_ACCORD(ACCNUMBER),
+constraint UK_TEMPUSER UNIQUE(TEMPUSER)
 );
 
 create table T_NOTIFICATION(

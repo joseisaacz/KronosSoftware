@@ -31,7 +31,7 @@ public class TownHallController {
 	@GetMapping("/homeTownHall")
 	public String homeTownHall(User user, Model model) {
 		
-		return "townHallsecretariat/homeTownHall";
+		return "townHallSecretariat/homeTownHall";
 	}
 	
 	
