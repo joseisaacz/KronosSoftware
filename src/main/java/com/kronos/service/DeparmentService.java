@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kronos.model.Department;
 import com.kronos.model.State;
+import com.kronos.model.TempUser;
 
 @Repository
 public class DeparmentService {
@@ -53,4 +55,31 @@ public class DeparmentService {
 		return result;
 
 	}
+	
+	public void insertDepartment(String name)throws Exception{
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call insertDepartment(?)}");
+        statement.setString(1, name);
+        statement.executeUpdate();
+        statement.close();
+	}
+	
+	public Optional<Department> searchDepartment(String name){
+		try {
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call searchDepartment(?)}");
+		statement.setString(1, name);
+		
+		ResultSet rs= statement.executeQuery();
+		Department dp= new Department(rs.getInt("ID"), rs.getString("NAME"));
+		statement.close();
+		connection.close();
+		return Optional.of(dp);
+		}catch(Exception e) {
+			
+		}
+		return Optional.empty();
+	}
+	
+	
 }

@@ -25,7 +25,7 @@ constraint UK_SESSIONDATE unique key (SESSIONDATE)
 );
 
 create table T_DEPARTMENT (
-ID int, 
+ID int auto_increment, 
 NAME varchar(100) NOT NULL,
 constraint PK_DEPARMENT primary key(ID)
 );
@@ -103,7 +103,7 @@ constraint FK_ACCORD3 foreign key (ACCORD) references T_ACCORD(ACCNUMBER)
 );
 
 create table T_ROLE(
-ID int,
+ID int auto_increment,
 NAME varchar(45),
 constraint PK_ROLE primary key(ID)
 );

@@ -6,11 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kronos.model.Department;
 import com.kronos.model.Role;
 
 @Repository
@@ -54,5 +56,29 @@ public class RoleService {
 
 	}
 	
+	public void insertRole(String name) throws Exception {
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call insertRole(?)}");
+        statement.setString(1, name);
+        statement.executeUpdate();
+        statement.close();
+	}
+	
+	public Optional<Role> searchRole(String name){
+		try {
+			Connection connection = jdbcTemplate.getDataSource().getConnection();
+	        CallableStatement statement = connection.prepareCall("{call searchRole(?)}");
+	        statement.setString(1, name);
+	        
+	        ResultSet rs= statement.executeQuery();
+			Role r= new Role(rs.getInt("ID"), rs.getString("NAME"));
+			statement.close();
+			connection.close();
+			return Optional.of(r);
+		}catch(Exception e) {
+			
+		}
+		return Optional.empty();
+	}
 	
 }

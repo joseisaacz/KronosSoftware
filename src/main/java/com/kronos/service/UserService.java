@@ -41,4 +41,15 @@ public class UserService {
 		  
 		  return Optional.of(user);
 	}
+	
+	public void insertUser(User user) throws Exception {
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call insertUser(?, ?, ?, ?)}");
+        statement.setInt(1, user.getDepartment().getId());
+        statement.setString(2, user.getPassword());
+        statement.setString(3, user.getTempUser().getEmail());
+        statement.setBoolean(4, user.getStatus());
+        statement.executeUpdate();
+        statement.close();
+	}
 }

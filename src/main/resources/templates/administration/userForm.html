@@ -64,7 +64,7 @@
 											onchange='javascript:putVisible()'>
 											<option th:each="department:${departments}"
 												th:value="${department.id}" th:text="${department.name}"></option>
-											<option value="NS">No se encuentra</option>
+											<option value=-1 >No se encuentra</option>
 										</select>
 									</div>
 
@@ -78,7 +78,7 @@
 											<label id="labelName" for="form-control col-9"
 												class="form-label" style="visibility: hidden">Nombre
 												del Deparmento</label> <input type="hidden" class="form-control"
-												id="nameDepartment" name="nameDeparment">
+												id="nameDepartment" name="nameDeparment" required>
 										</div>
 									</div>
 								</div>
@@ -90,7 +90,7 @@
 										onchange='javascript:visibleRoles()'>
 										<option th:each="role:${roles}" th:value="${role.id}"
 											th:text="${role.name}"></option>
-										<option value="NS">No se encuentra</option>
+										<option value= -1 >No se encuentra</option>
 									</select>
 								</div>
 								<div class="row">
@@ -100,7 +100,7 @@
 											<label id="labelRole" for="form-control col-9"
 												class="form-label" style="visibility: hidden">Nombre
 												del Rol</label> <input type="hidden" class="form-control"
-												id="nameRole" name="nameRole">
+												id="nameRole" name="nameRole" required>
 										</div>
 									</div>
 								</div>
@@ -117,6 +117,18 @@
 											class="form-control" id="password" name="password">
 									</div>
 								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-md-4">
+								<button type="submit" class="btn btn-outline-success"
+									id="okButton">Agregar</button>
+							</div>
+							<div class="col-md-4">
+								<button type="button" class="btn btn-outline-danger"
+									id="cancelButton" onclick='javascript:cancelAction()'>Cancelar</button>
 							</div>
 						</div>
 					</div>

@@ -46,11 +46,11 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 			
 		
 	}
-	/*@Bean
+	@Bean
 	public PasswordEncoder passwordEncoder() {
 		
 		return new BCryptPasswordEncoder();
-	}*/
+	}
 	
 
 }
