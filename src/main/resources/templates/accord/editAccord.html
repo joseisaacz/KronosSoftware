@@ -142,8 +142,9 @@
 										th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia')}">
 										<label for="form-control col-6" class="form-label">Departamento
 											Responsable</label>
-										<select class="form-control">
-											<option>TI</option>
+										<select class="form-control" name="department">
+										<option th:each="department:${departments}" th:value="${department.name}"
+											th:text="${department.name}"></option>
 										</select>
 									</th:block>
 
@@ -151,7 +152,7 @@
 
 								</div>
 							</div>
-							<div class="col-8">
+							<div class="col-8" th:if="${(#strings.toString(accord.type.id) != 'A')}">
 								<div class="form-group ">
 									<label id="labelEmail" for="form-control col-6"
 										class="form-label"> Correo Electronico del Responsable
@@ -206,12 +207,12 @@
 								Cambios</button>
 						</div>
 
-						<div class="col">
+						<div class="col-2">
 							<a th:href="@{/accords/list}"><button type="button"
 									class="btn btn-outline-danger" id="cancelButton">Cancelar</button></a>
 						</div>
 
-						<div class="col-sm-3">
+						<div class="col-sm-3" th:if="${session.roleName == 'Concejo Municipal'}">
 							<button th:disabled="${session.roleName != 'Concejo Municipal'}"
 								type="button" class="btn btn-outline-danger" id="deleteButton"
 								onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>

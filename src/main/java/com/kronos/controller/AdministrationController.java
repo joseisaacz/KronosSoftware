@@ -26,12 +26,14 @@ import com.kronos.service.UserRoleService;
 import com.kronos.service.UserService;
 import com.kronos.model.TempUser;
 import com.kronos.model.User;
+import com.kronos.model.UserRole;
 import com.kronos.model.Department;
 import com.kronos.model.Role;
 
 @Controller
 @RequestMapping(value = "/administration")
 public class AdministrationController {
+
 
 	@Autowired
 	private TempUserService tempUserRepo;

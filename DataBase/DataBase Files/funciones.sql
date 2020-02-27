@@ -166,6 +166,19 @@ DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PU
 end$$
 DELIMITER ; 
 
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllAccords_NotCompleted;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllAccords_NotCompleted()
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL , T_ACCPDF.FINALRESPONSE AS FINALRESPONSE from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND  T_ACCORD.STATE != 0 AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID ;
+end$$
+DELIMITER ; 
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS searchTempUser;
 DELIMITER $$
@@ -445,7 +458,7 @@ DELIMITER $$
 USE `KRONOS`$$
 create procedure searchDepartment(in _name varchar(100))
 begin
- select ID, NAME from T_DEPARTMENT where NAME=_name;
+ select ID, NAME from T_DEPARTMENT where NAME=_name and NAME != 'SUPERUSER';
 end $$
 DELIMITER ;
 
@@ -533,11 +546,23 @@ insert into T_STATE (ID, DESCRIPTION)values (2, 'Pendiente');
 insert into T_STATE (ID, DESCRIPTION)values (3, 'Recibido');
 insert into T_STATE (ID, DESCRIPTION)values (4, 'Desestimado');
 
+insert into T_TEMPUSER(NAME,EMAIL) values ('SUPERUSER','superuser@superuser.com');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Concejo Municipal','concejomunicipal@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Secretaria de Alcaldia','alcaldia@sanpablo.go.cr');
 insert into T_DEPARTMENT (NAME) values ('SUPERUSER');
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','$2a$10$iCDiliiLJjGNB93sNBc.be6suYV/B.2KeklGnEnuRsDzKC2l79bV2',1,1);
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','$2a$10$VJnqKpTeW7FLaSf6/eI6..4w6IAUOVUoVSicZbkGDgpHV2ajFaAny',1,1);
+insert into T_DEPARTMENT (NAME) values ('Concejo Municipal');
+insert into T_DEPARTMENT (NAME) values ('Alcaldia');
+insert into T_DEPARTMENT (NAME) values ('Direccion de Desarrollo Urbano');
+insert into T_DEPARTMENT (NAME) values ('Direccion de Hacienda Municipal');
+insert into T_DEPARTMENT (NAME) values ('Direccion de Servicios Públicos');
+insert into T_DEPARTMENT (NAME) values ('Prooveduría');
+insert into T_DEPARTMENT (NAME) values ('Recursos Humanos');
+
+
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('superuser@superuser.com','$2y$12$N6OQ0DsyRhYOq/m9AK7GzePyjLGsmiUM3ax0z3xIAFF40vjTgL73q',1,1);
+
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','$2a$10$iCDiliiLJjGNB93sNBc.be6suYV/B.2KeklGnEnuRsDzKC2l79bV2',2,1);
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','$2a$10$VJnqKpTeW7FLaSf6/eI6..4w6IAUOVUoVSicZbkGDgpHV2ajFaAny',3,1);
 insert into T_ROLE (NAME) values ('Concejo Municipal');
 insert into T_ROLE (NAME) values ('Secretaria de Alcaldia');
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('concejomunicipal@sanpablo.go.cr',1);

@@ -46,6 +46,7 @@ import com.kronos.pushNotification.FcmClient;
 import com.kronos.service.AccordService;
 import com.kronos.service.AccordTempUserService;
 import com.kronos.service.ActService;
+import com.kronos.service.DeparmentService;
 import com.kronos.service.StateService;
 import com.kronos.service.TempUserService;
 import com.kronos.service.TypeService;
@@ -77,6 +78,8 @@ public class AccordsController {
 	@Autowired
 	private AccordTempUserService tUserAccRepo;
 
+	@Autowired
+	private DeparmentService deptService;
 	@Autowired
 	private FcmClient pushService;
 	
@@ -302,6 +305,7 @@ public class AccordsController {
 	
 		model.addAttribute("states", this.statesRepo.findAll());
 		model.addAttribute("types", this.typesRepo.findAll());
+		model.addAttribute("departments", this.deptService.findAll());
 	}
 	
 
