@@ -44,13 +44,13 @@ public class FcmClient {
     }
   }
 
-  public void send(Map<String, String> data, String topic)
+  public void send( String topic, String title, String body)
       throws InterruptedException, ExecutionException {
 
-    Message message = Message.builder().putAllData(data).setTopic(topic)
+    Message message = Message.builder().setTopic(topic)
         .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "300")
-            .setNotification(new WebpushNotification("Background Title (server)",
-                "Background Body (server)", "icon.jpg"))
+            .setNotification(new WebpushNotification(title,
+            		body,"icon.jpg"))
             .build())
         .build();
 

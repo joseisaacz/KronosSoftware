@@ -13,7 +13,7 @@ $(document).ready(()=>{
 
 function listPdf(accNumber){
 	
-	url='/api/accords/get/'+accNumber
+	let url='/api/accords/get/'+accNumber
 	fetch(url).then(response=>response.json())
 	.then(accord => {
 		globalAccord=accord;
@@ -48,7 +48,7 @@ function list(parent,url,finalResponse){
 	"<td>"+finalName+"</td>"+
 	"<td><button type=\"button\" class=\"btn btn-success\" onclick=\"javascript:openPdf('" + url + "')\">Abrir</button></td>"+	
 	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + url + "','"+finalName+"')\" "+isInRole()+">Eliminar</button></td>"+
-	"<td><input type=\"checkbox\" id=\""+finalName+"checkBox\" style=\"text-aling: center; vertical-align:middle \"></td>"
+	"<td><input type=\"radio\" name=\"finalResponse\" id=\""+finalName+"checkBox\" value=\""+finalName+"\""+isInRole()+" style=\"text-aling: center; vertical-align:middle \"></td>"
 	);
 	tr.attr('id',finalName);
 	parent.append(tr);
@@ -62,12 +62,20 @@ function openPdf(pdf){
 	let url='/api/accords/getPdf?path='+pdf;
 	fetch(url)
 	.then(response=>response.blob())
-	.then(data=>window.open(URL.createObjectURL(data)));
+	.then(data=>{
+		console.log(data)
+		window.open(URL.createObjectURL(data))
+		});
 	
 }
 
 function deletePdf(pdf,finalName){
-	bootbox.confirm("¿Esta seguro que desea eliminar este archivo ?", (result) => {
+	let table=document.getElementById('pdfTable');
+	if(table.rows.length-1 === 1){
+		bootbox.alert("Por favor agregue otro documento antes de eliminar");
+	}
+	else
+	bootbox.confirm("¿Esta seguro que desea eliminar este archivo ?", result => {
 		
 		if(result){
 			
@@ -105,7 +113,6 @@ function uploadPdf(){
 	let form=document.getElementById('accordForm');
 	
 	let count= $("input:file")[0].files.length;
-	if(count > 0){
 		
 		let _data=new FormData(form);		
 		
@@ -117,7 +124,14 @@ function uploadPdf(){
 	        processData: false,
 	        contentType: false,
 	        data: _data,
-	        success : updateTable,
+	        success : accord=>{
+
+	        		if(accord.state.id === 0){
+	        			document.getElementById('state').value=0;
+	        		}
+	        		updateTable();
+
+	        },
             
 	        error: function (response) {
 	            console.log(response);
@@ -125,7 +139,7 @@ function uploadPdf(){
 	        }
 	    })
 		
-	}
+
 }
 
 function updateTable(){
@@ -154,11 +168,13 @@ function initTable() {
         "lengthChange": false,
         "destroy": true,
         "searching":false,
-        "info": false
+        "info": false,
+        "iDisplayLength": 3
     });
 }
 
 function deleteAccord(){
+
 	bootbox.confirm("¿Está seguro que desea eliminar el acuerdo?",result=>{
 		
 		if(result){
@@ -170,5 +186,19 @@ function deleteAccord(){
 		
 	})
 
+}
+
+function cleanPdfForm(){
+	if(globalAccord != null){
+		let finalResponseArray = globalAccord.url.filter(item=>item.finalResponse==true);
+		if(!finalResponseArray.length){
+			let radioButtons=document.getElementsByName("finalResponse");
+			for(let radio of radioButtons){
+				radio.checked=false;
+			}
+		}
+		
+	}
+	document.getElementById('accord').value='';
 }
 
