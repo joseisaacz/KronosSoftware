@@ -27,10 +27,14 @@ public class TempUserService {
 			statement.setString(1, email);
 
 			ResultSet rs = statement.executeQuery();
-			TempUser us=new TempUser(rs.getString("NAME"), rs.getString("EMAIL"));
+			TempUser us= null;
+			while(rs.next()) {
+				
+			 us=new TempUser(rs.getString("NAME"), rs.getString("EMAIL"));
+			}
 			statement.close();
 			connection.close();
-			return Optional.of(us);
+			return (us!=null)? Optional.of(us) :Optional.empty();
 
 		}
 

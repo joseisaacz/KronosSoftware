@@ -17,7 +17,7 @@ DELIMITER ;
 
 USE `KRONOS`;
 DROP procedure IF EXISTS insertAccPdf;
-DELIMiTER $$
+DELIMITER $$
 USE `KRONOS`$$
 create procedure insertAccPdf(
 in accord varchar(45), in url varchar(100),in final tinyint)
@@ -30,7 +30,7 @@ DELIMITER ;
 
 USE `KRONOS`;
 DROP procedure IF EXISTS insertAccNotification;
-DELIMiTER $$
+DELIMITER $$
 USE `KRONOS`$$
 create procedure insertAccNotification(
 in accord varchar(45))
@@ -165,6 +165,19 @@ select ACCNUMBER, INCORDATE,
 DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL , T_ACCPDF.FINALRESPONSE AS FINALRESPONSE from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID;
 end$$
 DELIMITER ; 
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllAccords_NotCompleted;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllAccords_NotCompleted()
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL , T_ACCPDF.FINALRESPONSE AS FINALRESPONSE from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND  T_ACCORD.STATE != 0 AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID ;
+end$$
+DELIMITER ; 
+
 
 USE `KRONOS`;
 DROP procedure IF EXISTS searchTempUser;
@@ -384,7 +397,7 @@ DELIMITER ;
 
 USE `KRONOS`;
 DROP procedure IF EXISTS emailInfo;
-DELIMiTER $$
+DELIMITER $$
 USE `KRONOS`$$
 create procedure emailInfo(
 in today date, in limt date)
@@ -395,6 +408,25 @@ end$$
 DELIMITER ;
 
 USE `KRONOS`;
+DROP procedure IF EXISTS searchAllDepartments;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllDepartments()
+begin
+ select ID, NAME from T_DEPARTMENT;
+end $$
+DELIMITER ;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllRoles;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllRoles()
+begin
+ select ID, NAME from T_ROLE;
+end $$
+DELIMITER ;
+                                          
 DROP procedure IF EXISTS updatePdf;
 DELIMITER $$
 USE `KRONOS`$$
@@ -407,6 +439,79 @@ DELIMITER ;
 
 
 
+USE `KRONOS`;
+DROP procedure IF EXISTS insertUser;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertUser(in  _department int, in  _password varchar(100), in  _tempUser varchar(45), in _status tinyint) 
+begin
+	insert into T_USER (DEPARTMENT, PASSWORD, TEMPUSER, STATUS) values (_department, _password, _tempUser, _status);
+commit;
+end $$
+DELIMITER ;
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchDepartment;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchDepartment(in _name varchar(100))
+begin
+ select ID, NAME from T_DEPARTMENT where NAME=_name and NAME != 'SUPERUSER';
+end $$
+DELIMITER ;
+
+
+
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS insertDepartment;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertDepartment(in _name varchar(100))
+begin 
+ insert into T_DEPARTMENT (NAME) values (_name);
+ commit;
+end $$
+DELIMITER ;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS insertRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertRole(in _name varchar(45))
+begin 
+ insert into T_ROLE (NAME) values (_name);
+ commit;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchRole(in _name varchar(45))
+begin
+ select ID, NAME from T_ROLE where NAME=_name;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS insertUserRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertUserRole(in _id_user varchar(100), in _id_role int)
+begin
+ insert into T_USER_ROLE (USER_ID, ROLE_ID) values (_id_user, _id_role);
+ commit;
+end$$
+DELIMITER ;
+
 
 USE `KRONOS`;
 DROP procedure IF EXISTS haveFinalResponse;
@@ -417,6 +522,7 @@ begin
 SELECT ACCORD,URL,FINALRESPONSE FROM T_ACCPDF WHERE ACCORD=_accord AND FINALRESPONSE=true;
 end$$
 DELIMITER ;
+
 
 
 
@@ -440,14 +546,32 @@ insert into T_STATE (ID, DESCRIPTION)values (2, 'Pendiente');
 insert into T_STATE (ID, DESCRIPTION)values (3, 'Recibido');
 insert into T_STATE (ID, DESCRIPTION)values (4, 'Desestimado');
 
+insert into T_TEMPUSER(NAME,EMAIL) values ('SUPERUSER','superuser@superuser.com');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Concejo Municipal','concejomunicipal@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Secretaria de Alcaldia','alcaldia@sanpablo.go.cr');
-insert T_DEPARTMENT (ID,NAME) values (1,'SUPERUSER');
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','{noop}concejo',1,1);
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','{noop}alcaldia',1,1);
-insert into T_ROLE values (1,'Concejo Municipal');
-insert into T_ROLE values (2,'Secretaria de Alcaldia');
+insert into T_DEPARTMENT (NAME) values ('SUPERUSER');
+insert into T_DEPARTMENT (NAME) values ('Concejo Municipal');
+insert into T_DEPARTMENT (NAME) values ('Alcaldia');
+insert into T_DEPARTMENT (NAME) values ('Direccion de Desarrollo Urbano');
+insert into T_DEPARTMENT (NAME) values ('Direccion de Hacienda Municipal');
+insert into T_DEPARTMENT (NAME) values ('Direccion de Servicios Públicos');
+insert into T_DEPARTMENT (NAME) values ('Prooveduría');
+insert into T_DEPARTMENT (NAME) values ('Recursos Humanos');
+
+
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('superuser@superuser.com','$2y$12$N6OQ0DsyRhYOq/m9AK7GzePyjLGsmiUM3ax0z3xIAFF40vjTgL73q',1,1);
+
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','$2a$10$iCDiliiLJjGNB93sNBc.be6suYV/B.2KeklGnEnuRsDzKC2l79bV2',2,1);
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','$2a$10$VJnqKpTeW7FLaSf6/eI6..4w6IAUOVUoVSicZbkGDgpHV2ajFaAny',3,1);
+insert into T_ROLE (NAME) values ('Concejo Municipal');
+insert into T_ROLE (NAME) values ('Secretaria de Alcaldia');
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('concejomunicipal@sanpablo.go.cr',1);
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('alcaldia@sanpablo.go.cr',2);
+
+
+
+
+
+
 
 

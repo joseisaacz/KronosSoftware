@@ -25,9 +25,10 @@ constraint UK_SESSIONDATE unique key (SESSIONDATE)
 );
 
 create table T_DEPARTMENT (
-ID int, 
+ID int auto_increment, 
 NAME varchar(100) NOT NULL,
-constraint PK_DEPARMENT primary key(ID)
+constraint PK_DEPARMENT primary key(ID),
+constraint UK_NAMED unique key(NAME)
 );
 
 create table T_TEMPUSER(
@@ -84,7 +85,8 @@ create table T_USERACC(
 TEMPUSER varchar(45),
 ACCORD varchar(45),
 constraint FK_TEMPUSER1 foreign key (TEMPUSER) references T_TEMPUSER(EMAIL),
-constraint FK_ACCORD1 foreign key (ACCORD) references T_ACCORD(ACCNUMBER)
+constraint FK_ACCORD1 foreign key (ACCORD) references T_ACCORD(ACCNUMBER),
+constraint UK_TEMPUSER UNIQUE(TEMPUSER)
 );
 
 create table T_NOTIFICATION(
@@ -103,9 +105,10 @@ constraint FK_ACCORD3 foreign key (ACCORD) references T_ACCORD(ACCNUMBER)
 );
 
 create table T_ROLE(
-ID int,
+ID int auto_increment,
 NAME varchar(45),
-constraint PK_ROLE primary key(ID)
+constraint PK_ROLE primary key(ID),
+constraint UK_NAME unique key(NAME)
 );
 
 create table T_USER_ROLE(
