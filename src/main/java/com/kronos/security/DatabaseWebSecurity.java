@@ -54,10 +54,13 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	    .maximumSessions(1)
 	     .expiredUrl("/logout");
 	}
-	
+  
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-	return new BCryptPasswordEncoder();
+		
+		return new BCryptPasswordEncoder();
 	}
+	
+
 
 }
