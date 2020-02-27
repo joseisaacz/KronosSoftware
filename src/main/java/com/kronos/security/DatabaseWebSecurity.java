@@ -46,13 +46,21 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 				.and().formLogin().loginPage("/login").failureUrl("/login-error")
 				.permitAll()
 				.and()
-				.exceptionHandling().accessDeniedPage("/forbidden");
+				.exceptionHandling().accessDeniedPage("/forbidden").and()
 				//.and()
 				//.csrf().disable();
 			
+		.sessionManagement()
+	    .maximumSessions(1)
+	     .expiredUrl("/logout");
+	}
+  
+	@Bean
+	public PasswordEncoder passwordEncoder() {
 		
+		return new BCryptPasswordEncoder();
 	}
 	
-	
+
 
 }

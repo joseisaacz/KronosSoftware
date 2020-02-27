@@ -58,31 +58,47 @@ function isValidDate(date) {
 
 
 function changeComboType() {
-    let combo = document.getElementById('comboTypes').value;
-    let labelName = document.getElementById('labelName');
-    let labelEmail = document.getElementById('labelEmail');
-    let textName = document.getElementById('username');
-    let textEmail = document.getElementById('email');
-    if (combo !== 'A') {
-
-        textName.value = '';
-        textEmail.value = '';
-        textName.type = 'text';
-        textEmail.type = 'text';
-        labelName.style.visibility = 'visible';
-        labelEmail.style.visibility = 'visible';
-    } else {
-        textName.value = '';
-        textEmail.value = '';
-        textName.type = 'hidden';
-        textEmail.type = 'hidden';
-        labelName.style.visibility = 'hidden';
-        labelEmail.style.visibility = 'hidden';
-    }
-
+	let combo = document.getElementById('comboTypes').value;
+	let labelName = document.getElementById('labelName');
+	let labelEmail = document.getElementById('labelEmail');
+	let textName = document.getElementById('username');
+	let textEmail = document.getElementById('email');
+	let buttonAdd = document.getElementById('btnAdd');
+	if (combo !== 'A') {
+		textName.value = '';
+		textEmail.value = '';
+		textName.type = 'text';
+		textEmail.type = 'text';
+		labelName.style.visibility = 'visible';
+		labelEmail.style.visibility = 'visible';
+		buttonAdd.style.visibility = 'visible';
+	} else {
+		textName.value = '';
+		textEmail.value = '';
+		textName.type = 'hidden';
+		textEmail.type = 'hidden';
+		labelName.style.visibility = 'hidden';
+		labelEmail.style.visibility = 'hidden';
+		buttonAdd.style.visibility = 'hidden';
+		const myNode = document.getElementById('responsable');
+		while (myNode.lastChild.nodeName!='#text') {
+			if(myNode.lastChild.nodeName!='#text'){
+				myNode.removeChild(myNode.lastChild);
+			}
+		}
+	}
 }
 
-
+//various responsables for each accord
+function accord_Responsables(){
+	var elmnt = document.getElementById('responsable');
+	var name = document.getElementById('nameR');
+	var mail = document.getElementById('emailR');
+	var cln = name.cloneNode(true);
+	var cln1 = mail.cloneNode(true);
+	elmnt.appendChild(cln);
+	elmnt.appendChild(cln1);
+}
 
 
 function getDeadline_NaturalDays(_date) {

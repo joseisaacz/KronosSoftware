@@ -1,14 +1,13 @@
 package com.kronos.model;
 
-public class Department {
-	
+public class Role {
 	private int id;
 	private String name;
 	
-	public Department() {
-		this.name="";
+	public Role() {
+
 	}
-	public Department(int id, String name) {
+	public Role(int id, String name) {
 		this.id=id;
 		this.name=name;
 	}
@@ -28,11 +27,6 @@ public class Department {
 	}
 	@Override
 	public String toString() {
-		return "Department [id=" + id + ", name=" + name + "]";
+		return "Role [id=" + id + ", name=" + name + "]";
 	}
-	
-	
-	
-	
-	
 }

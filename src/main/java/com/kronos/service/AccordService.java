@@ -71,8 +71,42 @@ try {
     
     public List<Accord> searchAllAccords() throws Exception{
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
-    	System.out.println(connection.getNetworkTimeout());
        CallableStatement statement = connection.prepareCall("{call searchAllAccords()}");
+       ResultSet rs = statement.executeQuery();
+       Map<String, Accord> map = new HashMap();
+
+       while (rs.next()) {
+      
+           String accNumber = rs.getString("ACCNUMBER");
+           if (map.isEmpty() || ! map.containsKey(accNumber)) { //if the map is empty or the result isn't
+               Accord a = new Accord();                                                 //in the map
+               a.setAccNumber(accNumber);
+               a.setIncorporatedDate(rs.getDate("INCORDATE"));
+               a.setDeadline(rs.getDate("DEADLINE"));
+               a.setSessionDate(rs.getDate("SESSIONDATE")); 
+               a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
+               a.setObservations(rs.getString("OBSERVATIONS"));
+               a.setNotified(rs.getBoolean("NOTIFIED"));
+               a.setPublished(rs.getBoolean("PUBLIC"));
+               a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
+               map.put(accNumber, a);
+           }
+           else {
+                   //if the result isn't  in the map or the map isn't empty, just add the URL into result
+                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
+               
+           }
+       }
+      
+       statement.close();
+       connection.close();
+      return new ArrayList<>(map.values());
+   }
+    
+    public List<Accord> searchAllNotCompletedAccords() throws Exception{
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+       CallableStatement statement = connection.prepareCall("{call searchAllAccords_NotCompleted()}");
        ResultSet rs = statement.executeQuery();
        Map<String, Accord> map = new HashMap();
 

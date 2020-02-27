@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -41,6 +42,9 @@ public class HomeController {
 	@Autowired
 	private UserService userRepo;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	@GetMapping("/")
 	public String mostrarHome( HttpSession session) {
 
@@ -77,7 +81,7 @@ public class HomeController {
 			if (opt.isPresent()) {
 				User user = opt.get();
 				user.setPassword(null);
-				if (session.getAttribute("usuario") == null)
+				if (session.getAttribute("user") == null)
 					session.setAttribute("user", user);
 
 				String role = "";
@@ -114,6 +118,8 @@ public class HomeController {
 	
 	@GetMapping("/login-error")
     public String login(HttpServletRequest request, Model model) {
+		
+		
         HttpSession session = request.getSession(false);
         String errorMessage = null;
         if (session != null) {
