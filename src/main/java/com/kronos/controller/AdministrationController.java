@@ -56,7 +56,7 @@ public class AdministrationController {
 	}
 
 	@PostMapping("/saveUser")
-	public String saveUser(User user, Department department, Role role,
+	public String saveUser(User user, Role role,
 			@RequestParam(value = "nameDeparment", required = false) String nameDepartment,
 			@RequestParam(value = "nameRole", required = false) String nameRole) {
 		user.setStatus(true);
@@ -77,14 +77,12 @@ public class AdministrationController {
 				rl.setId(role.getId());
 				rl.setName(role.getName());
 			}
-			if (department.getId() == -1) {
+			if (user.getDepartment().getId() == -1) {
 				departmentRepo.insertDepartment(nameDepartment);
 				dp.setId(departmentRepo.searchDepartment(nameDepartment).get().getId());
 				dp.setName(departmentRepo.searchDepartment(nameDepartment).get().getName());
 				user.setDepartment(dp);
-			} else {
-				user.setDepartment(department);
-			}
+			} 
 			userRepo.insertUser(user);
 			userRoleRepo.insertUserRole(user, rl);
 		} catch (Exception e) {

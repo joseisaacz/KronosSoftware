@@ -487,6 +487,13 @@ end$$
 DELIMITER;
 
 
+
+
+alter table T_DEPARTMENT auto_increment=1;
+alter table T_ROLE auto_increment=1;
+
+
+
 insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');
 insert into T_TYPE (ID, DESCRIPTION) values ('B', 'Auditoria Interna');
 insert into T_TYPE (ID, DESCRIPTION) values ('C', 'Lic');

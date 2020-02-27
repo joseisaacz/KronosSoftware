@@ -32,7 +32,7 @@
 			<div class="container" id="container"
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
 				<form th:action="@{/administration/saveUser}" method="POST"
-					th:object="${user}" enctype="multipart/form-data">
+					th:object="${user}" enctype="multipart/form-data" id="user_form">
 					<div class="border-bottom">
 						<div class="row">
 							<div class="col-8 ">
@@ -59,12 +59,12 @@
 									<div class="col-8">
 
 										<label for="form-control col-6" class="form-label">
-											Departamento: </label> <select th:field=*{department}
+											Departamento: </label> <select th:field=*{department.id}
 											class="form-control" id="comboDepartments" name="department"
 											onchange='javascript:putVisible()'>
 											<option th:each="department:${departments}"
 												th:value="${department.id}" th:text="${department.name}"></option>
-											<option value=-1 >No se encuentra</option>
+											<option th:value=-1 >No se encuentra</option>
 										</select>
 									</div>
 

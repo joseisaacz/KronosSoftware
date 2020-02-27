@@ -32,6 +32,13 @@ function visibleRoles(){
 }
 
 function cancelAction(){
-	
-	
+	let labelName0 = document.getElementById('labelRole');
+    let textName0 = document.getElementById('nameRole');
+    labelName0.style.visibility = 'hidden';
+    textName0.type = 'hidden';
+    let labelName = document.getElementById('labelName');
+    let textName = document.getElementById('nameDepartment');
+    textName.type = 'hidden';
+    labelName.style.visibility = 'hidden';
+	document.getElementById('user_form').reset();
 }
