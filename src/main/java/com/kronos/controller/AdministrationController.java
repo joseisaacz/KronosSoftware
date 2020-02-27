@@ -62,15 +62,15 @@ public class AdministrationController {
 		user.setStatus(true);
 		String plainPassword = user.getPassword();
 		String encryptPassword = passwordEncoder.encode(plainPassword);
-		System.out.println(encryptPassword);
 		user.setPassword(encryptPassword);
 		Department dp = new Department();
 		Role rl = new Role();
 		try {
 			this.tempUserRepo.insertTempUser(user.getTempUser());
-			if (role.getId() == -1) {
+			if (role.getId() == -2) {
 				roleRepo.insertRole(nameRole);
 				rl.setId(roleRepo.searchRole(nameRole).get().getId());
+				System.out.println(rl.getId());
 				rl.setName(roleRepo.searchRole(nameRole).get().getName());
 
 			}else {

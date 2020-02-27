@@ -90,7 +90,7 @@
 										onchange='javascript:visibleRoles()'>
 										<option th:each="role:${roles}" th:value="${role.id}"
 											th:text="${role.name}"></option>
-										<option value= -1 >No se encuentra</option>
+										<option th:value=-2 >No se encuentra</option>
 									</select>
 								</div>
 								<div class="row">

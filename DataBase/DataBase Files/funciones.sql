@@ -441,6 +441,9 @@ DELIMITER ;
 
 
 
+
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS insertDepartment;
 DELIMITER $$
@@ -448,9 +451,9 @@ USE `KRONOS`$$
 create procedure insertDepartment(in _name varchar(100))
 begin 
  insert into T_DEPARTMENT (NAME) values (_name);
+ commit;
 end $$
 DELIMITER;
-
 
 USE `KRONOS`;
 DROP procedure IF EXISTS insertRole;
@@ -459,9 +462,9 @@ USE `KRONOS`$$
 create procedure insertRole(in _name varchar(45))
 begin 
  insert into T_ROLE (NAME) values (_name);
+ commit;
 end$$
 DELIMITER;
-
 
 
 USE `KRONOS`;
@@ -475,7 +478,6 @@ end$$
 DELIMITER;
 
 
-
 USE `KRONOS`;
 DROP procedure IF EXISTS insertUserRole;
 DELIMITER $$
@@ -483,15 +485,9 @@ USE `KRONOS`$$
 create procedure insertUserRole(in _id_user varchar(100), in _id_role int)
 begin
  insert into T_USER_ROLE (USER_ID, ROLE_ID) values (_id_user, _id_role);
+ commit;
 end$$
 DELIMITER;
-
-
-
-
-alter table T_DEPARTMENT auto_increment=1;
-alter table T_ROLE auto_increment=1;
-
 
 
 insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');
@@ -515,11 +511,17 @@ insert into T_STATE (ID, DESCRIPTION)values (4, 'Desestimado');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Concejo Municipal','concejomunicipal@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Secretaria de Alcaldia','alcaldia@sanpablo.go.cr');
 insert into T_DEPARTMENT (NAME) values ('SUPERUSER');
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','{noop}concejo',1,1);
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','{noop}alcaldia',1,1);
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','$2a$10$iCDiliiLJjGNB93sNBc.be6suYV/B.2KeklGnEnuRsDzKC2l79bV2',1,1);
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','$2a$10$VJnqKpTeW7FLaSf6/eI6..4w6IAUOVUoVSicZbkGDgpHV2ajFaAny',1,1);
 insert into T_ROLE (NAME) values ('Concejo Municipal');
 insert into T_ROLE (NAME) values ('Secretaria de Alcaldia');
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('concejomunicipal@sanpablo.go.cr',1);
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('alcaldia@sanpablo.go.cr',2);
+
+
+
+
+
+
 
 
