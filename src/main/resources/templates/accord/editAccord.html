@@ -40,6 +40,7 @@
 			<div class="container" id="container"
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
 				<form th:action="@{/accords/saveEdit}" method="POST"
+					onSubmit="return confirm('Confirmar los datos guardados?')"
 					th:object="${accord}">
 					<div class="border-bottom">
 						<div class="row">
@@ -143,8 +144,8 @@
 										<label for="form-control col-6" class="form-label">Departamento
 											Responsable</label>
 										<select class="form-control" name="department">
-										<option th:each="department:${departments}" th:value="${department.name}"
-											th:text="${department.name}"></option>
+											<option th:each="department:${departments}"
+												th:value="${department.name}" th:text="${department.name}"></option>
 										</select>
 									</th:block>
 
@@ -152,7 +153,8 @@
 
 								</div>
 							</div>
-							<div class="col-8" th:if="${(#strings.toString(accord.type.id) != 'A')}">
+							<div class="col-8"
+								th:if="${(#strings.toString(accord.type.id) != 'A')}">
 								<div class="form-group ">
 									<label id="labelEmail" for="form-control col-6"
 										class="form-label"> Correo Electronico del Responsable
@@ -212,7 +214,8 @@
 									class="btn btn-outline-danger" id="cancelButton">Cancelar</button></a>
 						</div>
 
-						<div class="col-sm-3" th:if="${session.roleName == 'Concejo Municipal'}">
+						<div class="col-sm-3"
+							th:if="${session.roleName == 'Concejo Municipal'}">
 							<button th:disabled="${session.roleName != 'Concejo Municipal'}"
 								type="button" class="btn btn-outline-danger" id="deleteButton"
 								onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
@@ -236,8 +239,8 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel">PDF Adjuntos</h5>
-						<button type="button"  onclick='javascript:cleanPdfForm()' class="close" data-dismiss="modal"
-							aria-label="Close">
+						<button type="button" onclick='javascript:cleanPdfForm()'
+							class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>

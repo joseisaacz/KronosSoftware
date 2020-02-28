@@ -64,6 +64,8 @@ function changeComboType() {
 	let textName = document.getElementById('username');
 	let textEmail = document.getElementById('email');
 	let buttonAdd = document.getElementById('btnAdd');
+	let buttonSubs = document.getElementById('btnSubs');
+	let line = document.getElementById('line');
 	if (combo !== 'A') {
 		textName.value = '';
 		textEmail.value = '';
@@ -72,6 +74,8 @@ function changeComboType() {
 		labelName.style.visibility = 'visible';
 		labelEmail.style.visibility = 'visible';
 		buttonAdd.style.visibility = 'visible';
+		buttonSubs.style.visibility= 'visible';
+		line.style.visibility= 'visible';
 	} else {
 		textName.value = '';
 		textEmail.value = '';
@@ -80,6 +84,8 @@ function changeComboType() {
 		labelName.style.visibility = 'hidden';
 		labelEmail.style.visibility = 'hidden';
 		buttonAdd.style.visibility = 'hidden';
+		buttonSubs.style.visibility= 'hidden';
+		line.style.visibility= 'hidden';
 		const myNode = document.getElementById('responsable');
 		while (myNode.lastChild.nodeName!='#text') {
 			if(myNode.lastChild.nodeName!='#text'){
@@ -94,11 +100,25 @@ function accord_Responsables(){
 	var elmnt = document.getElementById('responsable');
 	var name = document.getElementById('nameR');
 	var mail = document.getElementById('emailR');
+	var line = document.getElementById('line');
 	var cln = name.cloneNode(true);
 	var cln1 = mail.cloneNode(true);
+	var cln2 = line.cloneNode(true);
 	elmnt.appendChild(cln);
 	elmnt.appendChild(cln1);
+	elmnt.appendChild(cln2);
 }
+
+//remove the last reponsable from the adds
+function accord_Delete_Last_Responsables(){
+	const myNode = document.getElementById('responsable');
+	if(myNode.lastChild.nodeName!='#text'){
+		for(var i=0; i<3; i++){
+			myNode.removeChild(myNode.lastChild);
+		}
+	}
+}
+
 
 
 function getDeadline_NaturalDays(_date) {
