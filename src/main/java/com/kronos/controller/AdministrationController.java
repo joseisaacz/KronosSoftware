@@ -49,9 +49,7 @@ public class AdministrationController {
 
 	@GetMapping("/addUser")
 	public String addUser(User user, Model model) {
-		Map<String, Object> mapa = new HashMap();
-		mapa.put("user", user);
-		model.addAllAttributes(mapa);
+		model.addAttribute("user",user);
 		return "administration/userForm";
 	}
 
@@ -59,6 +57,7 @@ public class AdministrationController {
 	public String addUserRole(User user, Role role, Model model) {
 		Map<String, Object> mapa = new HashMap();
 		mapa.put("user", user);
+		mapa.put("role", role);
 		model.addAllAttributes(mapa);
 		return "administration/useRole";
 	}
