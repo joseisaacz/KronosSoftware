@@ -23,6 +23,11 @@ public class User {
 		this.setStatus(true); 
 	}
 
+	public User(TempUser temp, Department dep, boolean status) {
+		this.department = dep;
+		this.tempUser = temp;
+		this.status=status;
+	}
 	public TempUser getTempUser() {
 		return tempUser;
 	}
