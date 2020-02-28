@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kronos.model.Department;
+import com.kronos.model.State;
 import com.kronos.model.TempUser;
 import com.kronos.model.User;
 
@@ -51,5 +54,38 @@ public class UserService {
         statement.setBoolean(4, user.getStatus());
         statement.executeUpdate();
         statement.close();
+	}
+	
+	public List<User> getUsersByDepartment(Department dep) throws Exception{
+		Connection connection=null;
+		CallableStatement statement=null;
+		try {
+			 connection = jdbcTemplate.getDataSource().getConnection();
+			 statement = connection.prepareCall("{call searchUserByDepartment(?) }");
+
+			statement.setInt(1, dep.getId());
+			ResultSet rs = statement.executeQuery();
+
+			List<User> result = new ArrayList<>();
+			while(rs.next()) {
+				TempUser tmp = new TempUser(rs.getString("NAME"),rs.getString("EMAIL"));
+				Department newDep= new Department(rs.getInt("DEP_ID"),rs.getString("DEP_NAME"));
+				User user= new User(tmp,newDep,rs.getBoolean("STATUS"));
+				result.add(user);				
+				
+			}
+
+			
+			return result;
+
+		} catch (Exception e) {
+			throw e;
+		}
+		finally {
+			statement.close();
+			connection.close();
+		}
+
+		
 	}
 }

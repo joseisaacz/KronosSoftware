@@ -4,14 +4,19 @@
 globalAccord=null;
 
 $(document).ready(()=>{
-	
+	initusersTable();
 	let name = $("#accNumber").val();
-	listPdf(name);
-	$("#comboTypes").on('change',comboBoxType)
-})
+	(async ()=>{
+		let b = await listPdf(name);
+		$("#comboTypes").on('change',comboBoxType)
+		
+		}
+
+)();
+})	
 
 
-function listPdf(accNumber){
+async function listPdf(accNumber){
 	
 	let url='/api/accords/get/'+accNumber
 	fetch(url).then(response=>response.json())
@@ -26,8 +31,9 @@ function listPdf(accNumber){
 		initTable()
 	})
 	
-	
 }
+
+
 
 function isInRole(){
 	let role = document.getElementById('role').value;
@@ -173,6 +179,33 @@ function initTable() {
     });
 }
 
+
+function initusersTable() {
+    $('#usersTable').DataTable({
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ Acuerdos",
+            "zeroRecords": "",
+            "info": "Mostrando Acuerdos del _START_ al _END_ de un total de _TOTAL_ registros",
+            "infoEmpty": "Mostrando Acuerdos del 0 al 0 de un total de 0 registros",
+            "infoFiltered": "(filtrado de un total de _MAX_ Acuerdos)",
+            "sSearch": "Filtrar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "sProcessing": "Procesando..."
+        },
+        "lengthChange": false,
+        "destroy": true,
+        "searching":false,
+        "info": false,
+        "iDisplayLength": 3
+    });
+}
+
+
 function deleteAccord(){
 
 	bootbox.confirm("¿Está seguro que desea eliminar el acuerdo?",result=>{
@@ -201,4 +234,107 @@ function cleanPdfForm(){
 	}
 	document.getElementById('accord').value='';
 }
+
+
+function changeSelectUsers(select){
+	
+	if(parseInt(select.value,10) !== -1){
+		 document.getElementById('users').options.length=0;
+		showUsers();
+		let selectUsers= document.getElementById('users');
+		let url='/api/users/getUsersByDepartment/'+select.value;
+		fetch(url)
+		.then(data=>{
+			if(!data.ok)
+				throw "Ha ocurrido un error. Por favor intente más tarde.";
+			
+			return data.json();
+			})
+		.then(users=>{
+			if(users.length === 0)
+				throw "Por favor contacte al administrador para " +
+						"agregar usuarios a este departamento"
+				
+			for(let user of users){
+				let option=document.createElement('option');
+				option.text=user.tempUser.name;
+				option.value=user.tempUser.email;
+				selectUsers.appendChild(option);
+				
+			}
+		}).catch((error)=>{
+			hideUsers();
+			select.value='-1';
+			bootbox.alert(error);
+			
+		})
+		
+		
+	}
+	else{
+		hideUsers();
+	}
+}
+
+function hideUsers(){
+	 document.getElementById('users').style.visibility='hidden';
+	 document.getElementById('userLabel').style.visibility='hidden';
+	 document.getElementById('addUserButton').style.visibility='hidden';
+}
+
+function showUsers(){
+	document.getElementById('addUserButton').style.visibility='';
+	document.getElementById('users').style.visibility='';
+	document.getElementById('userLabel').style.visibility='';
+}
+
+function addUser(){
+	let table=document.getElementById('usersBody');
+	
+	
+	let selectDeps=document.getElementById('selectDepartment');
+	let selectUsers=document.getElementById('users');
+	let depName=selectDeps.options[selectDeps.selectedIndex].innerHTML;
+	let userName=selectUsers.options[selectUsers.selectedIndex].value;
+
+	
+	$('#usersTable').DataTable().row.add([userName,depName]).draw();
+}
+
+
+
+
+function tableToJson() {	
+var myRows = [];
+var $headers = $("th");
+var $rows = $("#usersBody tr").each(function(index) {
+  $cells = $(this).find("td");
+  myRows[index] = {};
+  $cells.each(function(cellIndex) {
+    myRows[index][$($headers[cellIndex]).html()] = $(this).html();
+  });    
+});
+
+// Let's put this in the object like you want and convert to JSON (Note: jQuery will also do this for you on the Ajax request)
+
+
+return myRows;
+}
+
+async function JsontoString(){
+	let json=JSON.stringify(tableToJson());
+	console.log(json);
+	let hidden=document.getElementById('hiddenId');
+	hidden.value=json;
+	
+	return hidden;
+}
+
+async function submitForm(){
+	let a =await JsontoString();
+	$("#accordFormPrin").submit();
+}
+
+
+
 
