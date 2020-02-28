@@ -239,7 +239,6 @@ function searchBySessionType() {
 function searchByAccNumber() {
     let accnumber = document.getElementById('searchText').value;
     let _url = "/api/accords/accNumber/" + accnumber;
- 
 
     fetch(_url)
             .then(res =>

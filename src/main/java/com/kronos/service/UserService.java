@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kronos.model.Department;
+import com.kronos.model.State;
 import com.kronos.model.TempUser;
 import com.kronos.model.User;
 
@@ -54,7 +55,7 @@ public class UserService {
         statement.executeUpdate();
         statement.close();
 	}
-	
+
 	public List<User> searchAllUsersWithoutRole(){
 		try {
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
@@ -90,38 +91,37 @@ public class UserService {
 		return result;
 
 	}
-	/*public List<Department> findAll(){
-		try {
-			Connection connection = jdbcTemplate.getDataSource().getConnection();
-			CallableStatement statement = connection.prepareCall("{call searchAllDepartments() }");
 
-			// statement.registerOutParameter(1, new );
+	public List<User> getUsersByDepartment(Department dep) throws Exception{
+		Connection connection=null;
+		CallableStatement statement=null;
+		try {
+			 connection = jdbcTemplate.getDataSource().getConnection();
+			 statement = connection.prepareCall("{call searchUserByDepartment(?) }");
+
+			statement.setInt(1, dep.getId());
 			ResultSet rs = statement.executeQuery();
 
-			List<Department> result = this.mapRowList(rs);
+			List<User> result = new ArrayList<>();
+			while(rs.next()) {
+				TempUser tmp = new TempUser(rs.getString("NAME"),rs.getString("EMAIL"));
+				Department newDep= new Department(rs.getInt("DEP_ID"),rs.getString("DEP_NAME"));
+				User user= new User(tmp,newDep,rs.getBoolean("STATUS"));
+				result.add(user);				
+				
+			}
 
-			statement.close();
-			connection.close();
+			
 			return result;
 
 		} catch (Exception e) {
-			System.out.println("\n\n\n\n\n\n\n\nERROR\n\n\n\n\n" + e.getMessage());
+			throw e;
+		}
+		finally {
+			statement.close();
+			connection.close();
 		}
 
-		return null;
+		
 	}
-
-	private List<Department> mapRowList(ResultSet rs) throws SQLException {
-
-		List<Department> result = new ArrayList<>();
-		while (rs.next()) {
-			Department t = new Department();
-			t.setName(rs.getString("NAME"));
-			t.setId(Character.getNumericValue(rs.getString("ID").charAt(0)));
-			result.add(t);
-		}
-
-		return result;
-
-	}*/
 }

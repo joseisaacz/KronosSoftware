@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,9 +17,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,8 +40,14 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kronos.model.Accord;
 import com.kronos.model.AccordTempUser;
+import com.kronos.model.DepUserDTO;
+import com.kronos.model.Department;
 import com.kronos.model.Pdf;
 import com.kronos.model.State;
 import com.kronos.model.TempUser;
@@ -47,9 +57,11 @@ import com.kronos.service.AccordService;
 import com.kronos.service.AccordTempUserService;
 import com.kronos.service.ActService;
 import com.kronos.service.DeparmentService;
+import com.kronos.service.NotificationService;
 import com.kronos.service.StateService;
 import com.kronos.service.TempUserService;
 import com.kronos.service.TypeService;
+import com.kronos.service.UserService;
 
 @Controller
 @RequestMapping(value = "/accords")
@@ -80,6 +92,12 @@ public class AccordsController {
 
 	@Autowired
 	private DeparmentService deptService;
+	
+	@Autowired
+	private NotificationService notiService;
+	
+	@Autowired
+	private UserService userService; 
 	@Autowired
 	private FcmClient pushService;
 	
@@ -242,11 +260,44 @@ public class AccordsController {
 
 			@RequestParam(value = "email", required = false) String email, RedirectAttributes attributes,
 			 @SessionAttribute("user") User user, 
-			 @SessionAttribute("roleName") String roleName) {
+			 @SessionAttribute("roleName") String roleName,
+			 @RequestParam(value = "jsonObject", required = false) Optional<String> department
+			) {
 
 		try {
 			
-			
+			if(roleName.equals("Secretaria de Alcaldia")) {
+				
+				if(department.isPresent()) {
+				String json= department.get(); 
+				//  System.out.println(json);
+				//ObjectMapper mapper = new ObjectMapper();
+				//mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			//	DepUserDTO[] pp1 = mapper.readValue(json, DepUserDTO[].class);
+				
+				
+				JSONArray jsonArr = new JSONArray(json);
+			    List<DepUserDTO> dataList = new ArrayList<DepUserDTO>();
+			    for (int i = 0; i < jsonArr.length(); i++) {
+			        JSONObject jsonObj = jsonArr.getJSONObject(i);
+			        DepUserDTO data = new DepUserDTO();
+			        data.setNombre((jsonObj.getString("Usuario")));
+			        data.setDepartamento(jsonObj.getString("Departamento"));
+			        dataList.add(data);
+			    }
+			//	List<DepUserDTO> ppl2 = Arrays.asList(mapper.readValue(json, DepUserDTO[].class));
+			  // for(DepUserDTO dto : ppl2 ) {
+				   for(DepUserDTO dto : dataList) {
+					   Optional<User> opt= this.userService.getUserByEmail(dto.getNombre());
+					   if(opt.isPresent()) {
+						   this.notiService.insertNotification(acc, dto.getNombre());
+					   }
+				   }
+				   attributes.addFlashAttribute("msg", "Acuerdo Actualizado Correctamente");
+			   //}
+				}	
+			}
+			else {
 			Accord oldAccord= this.oldAccord;
 			
 			System.out.println("Viejo: "+ oldAccord);
@@ -287,6 +338,7 @@ public class AccordsController {
 				this.pushService.send("ConcejoMunicipal", "Acuerdo Actualizado", body);
 			}
 			attributes.addFlashAttribute("msg", "Acuerdo Editado Correctamente");
+			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			attributes.addFlashAttribute("msgError", "Ocurrio un error al editar");

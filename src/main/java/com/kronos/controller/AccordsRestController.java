@@ -202,6 +202,7 @@ public class AccordsRestController {
 				throw new Exception();
 			
 			Accord acc=optAcc.get();
+			System.out.println("final response" +finalResponse);
 			if (finalResponse != null && !finalResponse.isEmpty()) {
 				Pdf pdf = new Pdf(uploadFolder + finalResponse, true);
 
