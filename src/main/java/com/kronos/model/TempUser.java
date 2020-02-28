@@ -6,7 +6,7 @@ public class TempUser {
 	private String email;
 	
 	public TempUser() {
-		
+
 	}
 	public TempUser(String name, String email) {
 		this.name=name;

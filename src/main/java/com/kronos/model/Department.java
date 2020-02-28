@@ -6,7 +6,7 @@ public class Department {
 	private String name;
 	
 	public Department() {
-		
+		this.name="";
 	}
 	public Department(int id, String name) {
 		this.id=id;

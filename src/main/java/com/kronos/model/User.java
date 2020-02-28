@@ -16,6 +16,12 @@ public class User {
 		this.tempUser = temp;
 		this.setStatus(true); 
 	}
+	
+	public User(TempUser temp, Department dep) {
+		this.department = dep;
+		this.tempUser = temp;
+		this.setStatus(true); 
+	}
 
 	public TempUser getTempUser() {
 		return tempUser;
