@@ -545,6 +545,17 @@ begin
 end$$
 DELIMITER ;
 
+<<<<<<< HEAD
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllUsersWithoutRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllUsersWithoutRole()
+ begin
+ select T_USER.TEMPUSER from T_USER where T_USER.TEMPUSER NOT IN (select T_USER_ROLE.USER_ID from T_USER_ROLE);
+end$$
+DELIMITER ;
+
 
 USE `KRONOS`;
 DROP procedure IF EXISTS haveFinalResponse;
@@ -559,7 +570,8 @@ DELIMITER ;
 
 
 
-
+alter table T_ROLE auto_increment = 1;
+alter table T_DEPARTMENT auto_increment = 1;
 
 insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');
 insert into T_TYPE (ID, DESCRIPTION) values ('B', 'Auditoria Interna');

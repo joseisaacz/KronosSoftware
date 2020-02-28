@@ -17,11 +17,11 @@ import com.kronos.model.Role;
 
 @Repository
 public class RoleService {
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	public List<Role> findAll(){
+
+	public List<Role> findAll() {
 		try {
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
 			CallableStatement statement = connection.prepareCall("{call searchAllRoles() }");
@@ -55,30 +55,34 @@ public class RoleService {
 		return result;
 
 	}
-	
+
 	public void insertRole(String name) throws Exception {
 		Connection connection = jdbcTemplate.getDataSource().getConnection();
-        CallableStatement statement = connection.prepareCall("{call insertRole(?)}");
-        statement.setString(1, name);
-        statement.executeUpdate();
-        statement.close();
+		CallableStatement statement = connection.prepareCall("{call insertRole(?)}");
+		statement.setString(1, name);
+		statement.executeUpdate();
+		statement.close();
 	}
-	
-	public Optional<Role> searchRole(String name){
+
+	public Optional<Role> searchRole(String name) {
 		try {
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
-	        CallableStatement statement = connection.prepareCall("{call searchRole(?)}");
-	        statement.setString(1, name);
-	        
-	        ResultSet rs= statement.executeQuery();
-			Role r= new Role(rs.getInt("ID"), rs.getString("NAME"));
+			CallableStatement statement = connection.prepareCall("{call searchRole(?)}");
+			statement.setString(1, name);
+
+			ResultSet rs = statement.executeQuery();
+			Role rl = null;
+			while (rs.next()) {
+				rl = new Role(rs.getInt("ID"), rs.getString("NAME"));
+			}
 			statement.close();
 			connection.close();
-			return Optional.of(r);
-		}catch(Exception e) {
-			
+
+			return (rl != null) ? Optional.of(rl) : Optional.empty();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 		return Optional.empty();
 	}
-	
+
 }
