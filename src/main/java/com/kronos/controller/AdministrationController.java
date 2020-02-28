@@ -47,49 +47,78 @@ public class AdministrationController {
 	private UserRoleService userRoleRepo;
 
 	@GetMapping("/addUser")
-	public String addUser(User user, Role role, Model model) {
+	public String addUser(User user, Model model) {
 		Map<String, Object> mapa = new HashMap();
 		mapa.put("user", user);
-		mapa.put("role", role);
 		model.addAllAttributes(mapa);
 		return "administration/userForm";
 	}
 
-	@PostMapping("/saveUser")
-	public String saveUser(User user, Role role,
-			@RequestParam(value = "nameDeparment", required = false) String nameDepartment,
-			@RequestParam(value = "nameRole", required = false) String nameRole) {
-		user.setStatus(true);
-		String plainPassword = user.getPassword();
-		String encryptPassword = passwordEncoder.encode(plainPassword);
-		user.setPassword(encryptPassword);
-		Department dp = new Department();
-		Role rl = new Role();
-		try {
-			this.tempUserRepo.insertTempUser(user.getTempUser());
-			if (role.getId() == -2) {
-				roleRepo.insertRole(nameRole);
-				rl.setId(roleRepo.searchRole(nameRole).get().getId());
-				System.out.println(rl.getId());
-				rl.setName(roleRepo.searchRole(nameRole).get().getName());
+	@GetMapping("/addUserRole")
+	public String addUserRole(User user, Role role, Model model) {
+		Map<String, Object> mapa = new HashMap();
+		mapa.put("user", user);
+		model.addAllAttributes(mapa);
+		return "administration/useRole";
+	}
 
-			}else {
-				rl.setId(role.getId());
-				rl.setName(role.getName());
+	@PostMapping("/saveUserRole")
+	public String saveUserRole(User user, Role role,
+			@RequestParam(value = "nameRole", required = false) String nameRole) {
+		try {
+			if (role.getId() == -2) {
+				if(nameRole.isEmpty()) {throw new Exception();}
+				roleRepo.insertRole(nameRole);
+				Optional<Role> opt = this.roleRepo.searchRole(nameRole);
+				if (opt.isPresent()) {
+					role = opt.get();
+				}
+			}
+			userRoleRepo.insertUserRole(user, role);
+				
+		} catch (Exception e) {
+			return "/administration/error";
+		}
+		return "redirect:/accords/list";
+	}
+
+	@PostMapping("/saveUser")
+	public String saveUser(User user, @RequestParam(value = "nameDeparment", required = false) String nameDepartment) {
+
+		try {
+			user.setStatus(true);
+			if (user.getPassword().isEmpty()) {
+				throw new Exception();
+			} else {
+				String plainPassword = user.getPassword();
+				String encryptPassword = passwordEncoder.encode(plainPassword);
+				user.setPassword(encryptPassword);
+			}
+			if (user.getTempUser().getEmail().isEmpty() || user.getTempUser().getName().isEmpty()) {
+				throw new Exception();
+			} else {
+				this.tempUserRepo.insertTempUser(user.getTempUser());
 			}
 			if (user.getDepartment().getId() == -1) {
-				departmentRepo.insertDepartment(nameDepartment);
-				dp.setId(departmentRepo.searchDepartment(nameDepartment).get().getId());
-				dp.setName(departmentRepo.searchDepartment(nameDepartment).get().getName());
+				if (nameDepartment.isEmpty()) {
+					throw new Exception();
+				} else {
+					this.departmentRepo.insertDepartment(nameDepartment);
+				}
+			}
+			Optional<Department> opt = this.departmentRepo.searchDepartment(nameDepartment);
+			Department dp = null;
+			if (opt.isPresent()) {
+				dp = opt.get();
 				user.setDepartment(dp);
-			} 
+			}
 			userRepo.insertUser(user);
-			userRoleRepo.insertUserRole(user, rl);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+			return "/administration/error";
 		}
 
-		return "administration/userForm";
+		return "redirect:/administration/addUserRole";
 	}
 
 	@InitBinder
@@ -102,5 +131,6 @@ public class AdministrationController {
 	public void setGenericos(Model model) {
 		model.addAttribute("departments", this.departmentRepo.findAll());
 		model.addAttribute("roles", this.roleRepo.findAll());
+		model.addAttribute("users", this.userRepo.searchAllUsersWithoutRole());
 	}
 }

@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,4 +54,74 @@ public class UserService {
         statement.executeUpdate();
         statement.close();
 	}
+	
+	public List<User> searchAllUsersWithoutRole(){
+		try {
+			Connection connection = jdbcTemplate.getDataSource().getConnection();
+			CallableStatement statement = connection.prepareCall("{call searchAllUsersWithoutRole() }");
+
+			// statement.registerOutParameter(1, new );
+			ResultSet rs = statement.executeQuery();
+
+			List<User> result = this.mapRowList(rs);
+
+			statement.close();
+			connection.close();
+			return result;
+
+		} catch (Exception e) {
+			System.out.println("\n\n\n\n\n\n\n\nERROR\n\n\n\n\n" + e.getMessage());
+		}
+
+		return null;
+	}
+	
+	private List<User> mapRowList(ResultSet rs) throws SQLException {
+
+		List<User> result = new ArrayList<>();
+		while (rs.next()) {
+			TempUser u= new TempUser();
+			User t = new User();
+			u.setEmail(rs.getString("TEMPUSER"));
+			t.setTempUser(u);
+			result.add(t);
+		}
+
+		return result;
+
+	}
+	/*public List<Department> findAll(){
+		try {
+			Connection connection = jdbcTemplate.getDataSource().getConnection();
+			CallableStatement statement = connection.prepareCall("{call searchAllDepartments() }");
+
+			// statement.registerOutParameter(1, new );
+			ResultSet rs = statement.executeQuery();
+
+			List<Department> result = this.mapRowList(rs);
+
+			statement.close();
+			connection.close();
+			return result;
+
+		} catch (Exception e) {
+			System.out.println("\n\n\n\n\n\n\n\nERROR\n\n\n\n\n" + e.getMessage());
+		}
+
+		return null;
+	}
+
+	private List<Department> mapRowList(ResultSet rs) throws SQLException {
+
+		List<Department> result = new ArrayList<>();
+		while (rs.next()) {
+			Department t = new Department();
+			t.setName(rs.getString("NAME"));
+			t.setId(Character.getNumericValue(rs.getString("ID").charAt(0)));
+			result.add(t);
+		}
+
+		return result;
+
+	}*/
 }

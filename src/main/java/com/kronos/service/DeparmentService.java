@@ -64,7 +64,7 @@ public class DeparmentService {
         statement.close();
 	}
 	
-	public Optional<Department> searchDepartment(String name){
+	/*public Optional<Department> searchDepartment(String name){
 		try {
 		Connection connection = jdbcTemplate.getDataSource().getConnection();
         CallableStatement statement = connection.prepareCall("{call searchDepartment(?)}");
@@ -75,8 +75,30 @@ public class DeparmentService {
 		statement.close();
 		connection.close();
 		return Optional.of(dp);
+		
 		}catch(Exception e) {
 			
+		}
+		return Optional.empty();
+	}*/
+	
+	public Optional<Department> searchDepartment(String name){
+		try {
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call searchDepartment(?)}");
+		statement.setString(1, name);
+		
+		ResultSet rs= statement.executeQuery();
+		Department dp=null;
+		while(rs.next()) {
+			dp= new Department(rs.getInt("ID"), rs.getString("NAME"));
+		}
+		statement.close();
+		connection.close();
+		
+		return (dp != null) ? Optional.of(dp) : Optional.empty(); 
+		}catch(Exception e) {
+			System.out.println(e);
 		}
 		return Optional.empty();
 	}

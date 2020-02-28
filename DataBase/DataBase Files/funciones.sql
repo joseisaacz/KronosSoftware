@@ -453,7 +453,7 @@ begin
  insert into T_DEPARTMENT (NAME) values (_name);
  commit;
 end $$
-DELIMITER;
+DELIMITER ;
 
 USE `KRONOS`;
 DROP procedure IF EXISTS insertRole;
@@ -464,7 +464,7 @@ begin
  insert into T_ROLE (NAME) values (_name);
  commit;
 end$$
-DELIMITER;
+DELIMITER ;
 
 
 USE `KRONOS`;
@@ -475,7 +475,7 @@ create procedure searchRole(in _name varchar(45))
 begin
  select ID, NAME from T_ROLE where NAME=_name;
 end$$
-DELIMITER;
+DELIMITER ;
 
 
 USE `KRONOS`;
@@ -487,8 +487,20 @@ begin
  insert into T_USER_ROLE (USER_ID, ROLE_ID) values (_id_user, _id_role);
  commit;
 end$$
-DELIMITER;
+DELIMITER ;
 
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllUsersWithoutRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllUsersWithoutRole()
+ begin
+ select T_USER.TEMPUSER from T_USER where T_USER.TEMPUSER NOT IN (select T_USER_ROLE.USER_ID from T_USER_ROLE);
+end$$
+DELIMITER ;
+
+alter table T_ROLE auto_increment = 1;
+alter table T_DEPARTMENT auto_increment = 1;
 
 insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');
 insert into T_TYPE (ID, DESCRIPTION) values ('B', 'Auditoria Interna');
