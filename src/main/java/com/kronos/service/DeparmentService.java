@@ -42,16 +42,17 @@ public class DeparmentService {
 		return null;
 	}
 
-	private List<Department> mapRowList(ResultSet rs) throws SQLException {
+	private List<Department> mapRowList(ResultSet rs) throws Exception {
 
 		List<Department> result = new ArrayList<>();
 		while (rs.next()) {
 			Department t = new Department();
 			t.setName(rs.getString("NAME"));
-			t.setId(Character.getNumericValue(rs.getString("ID").charAt(0)));
+			t.setId(rs.getInt("ID"));
 			result.add(t);
 		}
 
+			
 		return result;
 
 	}
@@ -71,13 +72,17 @@ public class DeparmentService {
 		statement.setString(1, name);
 		
 		ResultSet rs= statement.executeQuery();
-		Department dp= new Department(rs.getInt("ID"), rs.getString("NAME"));
+		Department dp=null;
+		//while(rs.next()) {
+			dp= new Department(rs.getInt("ID"), rs.getString("NAME"));
+	//	}
 		statement.close();
 		connection.close();
+		
 		return Optional.of(dp);
 		
 		}catch(Exception e) {
-			
+			System.out.println(e);
 		}
 		return Optional.empty();
 	}*/

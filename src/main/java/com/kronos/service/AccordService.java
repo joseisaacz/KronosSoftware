@@ -27,10 +27,13 @@ public class AccordService {
     private JdbcTemplate jdbcTemplate;
 	
     public void insertAccord(Accord acc) throws Exception {
+    	
 
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
+    	
         CallableStatement statement = connection.prepareCall("{call insertAccord(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 ;
+try {
         statement.setString(1, acc.getAccNumber());
         statement.setDate(2, new java.sql.Date(acc.getIncorporatedDate().getTime()));
         statement.setTime(3, java.sql.Time.valueOf(acc.getIncorporatedTime()));
@@ -44,9 +47,9 @@ public class AccordService {
         statement.setString(11, acc.getUser().getTempUser().getEmail());
         statement.executeUpdate();
         statement.close();
-
+        CallableStatement statement2 = connection.prepareCall("{call insertAccPdf(?, ?, ?)}");
         for (Pdf item : acc.getURL()) {
-            CallableStatement statement2 = connection.prepareCall("{call insertAccPdf(?, ?, ?)}");
+           
             statement2.setString(1, acc.getAccNumber());
             statement2.setString(2, item.getURL());
             statement2.setBoolean(3, item.isFinalResponse());
@@ -54,6 +57,13 @@ public class AccordService {
 
             statement2.close();
         }
+    	}
+    	catch(Exception e) {
+    		throw e;
+    	}
+    	finally {
+    		connection.close();
+    	}
 
     }
     
@@ -79,12 +89,47 @@ public class AccordService {
                a.setNotified(rs.getBoolean("NOTIFIED"));
                a.setPublished(rs.getBoolean("PUBLIC"));
                a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
-               a.getURL().add(new Pdf(rs.getString("URL")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
                map.put(accNumber, a);
            }
            else {
                    //if the result isn't  in the map or the map isn't empty, just add the URL into result
-                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
+                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
+               
+           }
+       }
+      
+       statement.close();
+       connection.close();
+      return new ArrayList<>(map.values());
+   }
+    
+    public List<Accord> searchAllNotCompletedAccords() throws Exception{
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+       CallableStatement statement = connection.prepareCall("{call searchAllAccords_NotCompleted()}");
+       ResultSet rs = statement.executeQuery();
+       Map<String, Accord> map = new HashMap();
+
+       while (rs.next()) {
+      
+           String accNumber = rs.getString("ACCNUMBER");
+           if (map.isEmpty() || ! map.containsKey(accNumber)) { //if the map is empty or the result isn't
+               Accord a = new Accord();                                                 //in the map
+               a.setAccNumber(accNumber);
+               a.setIncorporatedDate(rs.getDate("INCORDATE"));
+               a.setDeadline(rs.getDate("DEADLINE"));
+               a.setSessionDate(rs.getDate("SESSIONDATE")); 
+               a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
+               a.setObservations(rs.getString("OBSERVATIONS"));
+               a.setNotified(rs.getBoolean("NOTIFIED"));
+               a.setPublished(rs.getBoolean("PUBLIC"));
+               a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
+               map.put(accNumber, a);
+           }
+           else {
+                   //if the result isn't  in the map or the map isn't empty, just add the URL into result
+                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
                
            }
        }
@@ -116,12 +161,12 @@ public class AccordService {
                a.setNotified(rs.getBoolean("NOTIFIED"));
                a.setPublished(rs.getBoolean("PUBLIC"));
                a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
-               a.getURL().add(new Pdf(rs.getString("URL")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
                map.put(accNumber, a);
            }
            else {
                    //if the result isn't  in the map or the map isn't empty, just add the URL into result
-                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
+               map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
                
            }
        }
@@ -155,12 +200,12 @@ public class AccordService {
                a.setNotified(rs.getBoolean("NOTIFIED"));
                a.setPublished(rs.getBoolean("PUBLIC"));
                a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
-               a.getURL().add(new Pdf(rs.getString("URL")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
                map.put(accNumber, a);
            }
            else {
                    //if the result isn't  in the map or the map isn't empty, just add the URL into result
-                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
+               map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
                
            }
        }
@@ -192,12 +237,12 @@ public class AccordService {
                a.setNotified(rs.getBoolean("NOTIFIED"));
                a.setPublished(rs.getBoolean("PUBLIC"));
                a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
-               a.getURL().add(new Pdf(rs.getString("URL")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
                map.put(accNumber, a);
            }
            else {
                    //if the result isn't  in the map or the map isn't empty, just add the URL into result
-                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
+               map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
                
            }
        }
@@ -228,12 +273,12 @@ public class AccordService {
                a.setNotified(rs.getBoolean("NOTIFIED"));
                a.setPublished(rs.getBoolean("PUBLIC"));
                a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
-               a.getURL().add(new Pdf(rs.getString("URL")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
                map.put(accNumber, a);
            }
            else {
                    //if the result isn't  in the map or the map isn't empty, just add the URL into result
-                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
+               map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
                
            }
        }
@@ -265,12 +310,12 @@ public class AccordService {
                 a.setNotified(rs.getBoolean("NOTIFIED"));
                 a.setPublished(rs.getBoolean("PUBLIC"));
                 a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
-                a.getURL().add(new Pdf(rs.getString("URL")));
+                a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
                 map.put(accNumber, a);
             }
             else {
                     //if the result isn't  in the map or the map isn't empty, just add the URL into result
-                    map.get(accNumber).getURL().add(new Pdf(rs.getString("URL")));
+                map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
                 
             }
         }
@@ -366,5 +411,71 @@ public class AccordService {
     	      return new ArrayList<>(map.values());
     }
     
+    public List<Accord> searchByLimitDate(Date today, Date limit) throws Exception {
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+       CallableStatement statement = connection.prepareCall("{call searchExpiredAccords(?,?)}");
+       statement.setDate(1,new java.sql.Date(today.getTime()));
+       statement.setDate(2,new java.sql.Date(limit.getTime()));
+       ResultSet rs = statement.executeQuery();
+       Map<String, Accord> map = new HashMap();
+
+       while (rs.next()) {
+       
+           String accNumber = rs.getString("ACCNUMBER");
+           if (map.isEmpty() || ! map.containsKey(accNumber)) { //if the map is empty or the result isn't
+               Accord a = new Accord();                                                 //in the map
+               a.setAccNumber(accNumber);
+               a.setIncorporatedDate(rs.getDate("INCORDATE"));
+               a.setDeadline(rs.getDate("DEADLINE"));
+               a.setSessionDate(rs.getDate("SESSIONDATE")); 
+               a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
+               a.setObservations(rs.getString("OBSERVATIONS"));
+               a.setNotified(rs.getBoolean("NOTIFIED"));
+               a.setPublished(rs.getBoolean("PUBLIC"));
+               a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
+               map.put(accNumber, a);
+           }
+           else {
+                   //if the result isn't  in the map or the map isn't empty, just add the URL into result
+               map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
+               
+           }
+       }
+      
+       statement.close();
+       connection.close();
+      return new ArrayList<>(map.values());
+   }
     
+    public void updatePDF(String accNumber, Pdf pdf) throws Exception {
+
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call updatePdf(?, ?, ?)}");
+        
+        System.out.println(accNumber);
+        System.out.println(pdf.getURL());
+        System.out.println(pdf.isFinalResponse());
+        statement.setString(1,accNumber);
+        statement.setString(2,pdf.getURL());
+        statement.setBoolean(3, pdf.isFinalResponse());
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    
+
+    }
+    
+    public Optional<Pdf> haveFinalResponse(String accNumber) throws Exception {
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call haveFinalResponse(?)}");
+        statement.setString(1, accNumber);
+        ResultSet rs = statement.executeQuery();
+        Pdf pdf=null;
+        while(rs.next()) {
+        	pdf=new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE"));
+        }
+        return (pdf!=null) ? Optional.of(pdf) : Optional.empty(); 
+        
+    }
 }

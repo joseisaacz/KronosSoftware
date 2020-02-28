@@ -21,7 +21,7 @@ public class Scheduler {
 	@Autowired
 	private AccordService acc;
 	
-	@Scheduled(cron="00 36 16 * * SAT")
+	@Scheduled(cron="00 38 10 * * THU")
 	public void weeklyNotification() throws Exception {
 		Calendar limit= Calendar.getInstance();
 	    limit.set(Calendar.DAY_OF_MONTH,limit.get(Calendar.DAY_OF_MONTH)-8);

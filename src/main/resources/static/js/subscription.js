@@ -2,6 +2,14 @@
  * 
  */
 
+document.addEventListener("DOMContentLoaded", async () => {
+	
+	await navigator.serviceWorker.register('/sw.js');
+	subsButton();
+	
+
+});
+
 async function init() {
 try{
   const registration = await navigator.serviceWorker.register('/sw.js');
@@ -22,11 +30,16 @@ console.log(messaging)
 		    console.log(currentToken)
 			
 			  url='/push/register/'+currentToken;
-			  fetch(url);
+			  fetch(url).then(()=>{
+				  let anc=  document.getElementById('subscribeAnchor');
+					anc.innerHTML='';
+				  	anc.onclick='';
+			  })
 		  } catch (e) {
 		    console.log('Unable to get permission', e);
-		    return;
+		    
 		  }
+	
 
 // navigator.serviceWorker.addEventListener('message', event => {
 // if (event.data === 'newData') {
@@ -34,12 +47,12 @@ console.log(messaging)
 // }
 // });
 		
-		  console.log(url)
-		  messaging.onTokenRefresh(async () => {
-	    console.log('token refreshed');
-	    const newToken = await messaging.getToken();
-	    fetch(url);
-	  });
+//		  console.log(url)
+//		  messaging.onTokenRefresh(async () => {
+//	    console.log('token refreshed');
+//	    const newToken = await messaging.getToken();
+//	    fetch(url);
+//	  });
 		  
 	  
   });
@@ -48,11 +61,39 @@ console.log(messaging)
 catch(e){
 	console.log(e);
 }
+
 }
 
 
+async function subsButton() {
+	
+	 navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
+		 serviceWorkerRegistration.pushManager.getSubscription().then(
+			    pushSubscription=> {
+			    	let anc=  document.getElementById('subscribeAnchor');
+			    	console.log(navigator);
+			    	console.log(Notification.permission);
+			    	console.log(pushSubscription)
+			    	  if(!pushSubscription){
+			        	anc.innerHTML='ACTIVAR NOTIFICACIONES';
+			        	anc.onclick=init;
+			    	  }
+			    	  else{
+			    		  if(Notification.permission === 'granted'){
+			    		  anc.innerHTML='';
+				        	anc.onclick='';
+			    		  }
+			    		  else{
+			    			  	anc.innerHTML='ACTIVAR NOTIFICACIONES';
+					        	anc.onclick=init
+			    		  }
+			    		  
+			    	  }
+			      })
+			      
+	 })
+	
+}
 
-document.getElementById('but').addEventListener('click',e=>{
-init();
-})
+
 
