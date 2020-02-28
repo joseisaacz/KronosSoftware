@@ -144,7 +144,7 @@
 						</div>
 						<div class="col">
 							<th:block
-								th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia')}">
+								th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
 								<div class="col-8">
 									<div class="form-group ">
 										<!-- 	<label id="labelName" for="form-control col-6"
@@ -221,7 +221,7 @@
 							</div>
 						</div>
 						<div class="col-1"></div>
-						<div class="col-sm-4" th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia')}">
+						<div class="col-sm-4"th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
 							<label id="labelEmail" for="form-control col-6"
 								class="form-label"> Usuarios Responsables </label>
 							<table id="usersTable"
