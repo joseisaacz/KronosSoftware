@@ -382,6 +382,28 @@ COMMIT;
 end$$
 DELIMITER ;
 
+USE `KRONOS`;
+DROP procedure IF EXISTS insertNotification;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertNotification(in _accord varchar(45), in _user varchar(45))
+begin
+INSERT INTO T_NOTIFICATION (ACCORD,USER) values (_accord,_user);
+COMMIT;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS isInNotification;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure isInNotification(in _accord varchar(45), in _user varchar(45))
+begin
+SELECT ACCORD,USER FROM T_NOTIFICATION WHERE ACCORD=_accord AND USER=_user;
+end$$
+DELIMITER ;
+
 
 USE `KRONOS`;
 DROP procedure IF EXISTS deletePdf;
@@ -413,7 +435,7 @@ DELIMITER $$
 USE `KRONOS`$$
 create procedure searchAllDepartments()
 begin
- select ID, NAME from T_DEPARTMENT;
+ select ID, NAME from T_DEPARTMENT where ID != 1;
 end $$
 DELIMITER ;
 
@@ -438,6 +460,16 @@ end$$
 DELIMITER ;
 
 
+USE `KRONOS`;
+DROP procedure IF EXISTS searchUserByDepartment;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchUserByDepartment(in _id int)
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS from T_TEMPUSER, T_DEPARTMENT, T_USER 
+WHERE T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=_id AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
+end $$
+DELIMITER ;
 
 USE `KRONOS`;
 DROP procedure IF EXISTS insertUser;
@@ -458,9 +490,10 @@ DELIMITER $$
 USE `KRONOS`$$
 create procedure searchDepartment(in _name varchar(100))
 begin
- select ID, NAME from T_DEPARTMENT where NAME=_name and NAME != 'SUPERUSER';
+ select ID, NAME from T_DEPARTMENT where NAME=_name and ID != 1;
 end $$
 DELIMITER ;
+
 
 
 
@@ -512,6 +545,17 @@ begin
 end$$
 DELIMITER ;
 
+<<<<<<< HEAD
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllUsersWithoutRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllUsersWithoutRole()
+ begin
+ select T_USER.TEMPUSER from T_USER where T_USER.TEMPUSER NOT IN (select T_USER_ROLE.USER_ID from T_USER_ROLE);
+end$$
+DELIMITER ;
+
 
 USE `KRONOS`;
 DROP procedure IF EXISTS haveFinalResponse;
@@ -526,7 +570,8 @@ DELIMITER ;
 
 
 
-
+alter table T_ROLE auto_increment = 1;
+alter table T_DEPARTMENT auto_increment = 1;
 
 insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');
 insert into T_TYPE (ID, DESCRIPTION) values ('B', 'Auditoria Interna');

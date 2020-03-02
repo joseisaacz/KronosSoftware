@@ -32,14 +32,14 @@
 			<div class="container" id="container"
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
 				<form th:action="@{/administration/saveUser}" method="POST"
-					th:object="${userRole}" enctype="multipart/form-data" id="user_form">
+					th:object="${user}" enctype="multipart/form-data" id="user_form">
 					<div class="border-bottom">
 						<div class="row">
 							<div class="col-8 ">
 								<div class="form-group">
 									<label for="email">Correo electrónico</label> 
 									<input type="email" class="form-control"
-										id="email"  th:field="*{user.tempUser.email}" name="email" aria-describedby="emailHelp"
+										id="email"  th:field="*{tempUser.email}" name="email" aria-describedby="emailHelp"
 										placeholder="Enter email" required>
 								</div>
 							</div>
@@ -48,7 +48,7 @@
 							<div class="col-8">
 								<div>
 									<label for="email">Nombre Completo</label> <input type="text"
-										class="form-control" th:field="*{user.tempUser.name}" name="name" id="name"
+										class="form-control" th:field="*{tempUser.name}" name="name" id="name"
 										required>
 								</div>
 							</div>
@@ -60,7 +60,7 @@
 									<div class="col-8">
 
 										<label for="form-control col-6" class="form-label">
-											Departamento: </label> <select th:field=*{user.department.id}
+											Departamento: </label> <select th:field=*{department.id}
 											class="form-control" id="comboDepartments" name="department"
 											onchange='javascript:putVisible()'>
 											<option th:each="department:${departments}"
@@ -83,28 +83,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-8" >
 
-									<label for="form-control col-6" class="form-label">
-										Roles: </label> <select  th:field="*{role.id}"  class="form-control"
-										id="comboRoles" name="role"
-										onchange='javascript:visibleRoles()'>
-										<option th:each="role:${roles}" th:value="${role.id}"
-											th:text="${role.name}"></option>
-										<option value='-2' >No se encuentra</option>
-									</select>
-								</div>
-								<div class="row">
-
-									<div class="col-4">
-										<div>
-											<label id="labelRole" for="form-control col-9"
-												class="form-label" style="visibility: hidden">Nombre
-												del Rol</label> <input type="hidden" class="form-control"
-												id="nameRole" name="nameRole" required>
-										</div>
-									</div>
-								</div>
 							</div>
 
 						</div>
@@ -125,7 +104,7 @@
 						<div class="row">
 							<div class="col-md-4">
 								<button type="submit" class="btn btn-outline-success"
-									id="okButton">Agregar</button>
+									id="okButton" onclick='javascript:submit()'>Agregar</button>
 							</div>
 							<div class="col-md-4">
 								<button type="button" class="btn btn-outline-danger"
