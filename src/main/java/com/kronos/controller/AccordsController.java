@@ -167,6 +167,8 @@ public class AccordsController {
 
 		catch (Exception e) {
 			System.out.println(e.getMessage());
+			attributes.addFlashAttribute("msg", "Ha Ocurrido un error");
+			return "redirect:/accords/list";
 		}
 
 		attributes.addFlashAttribute("msg", "Acuerdo Agregado con Exito");
@@ -196,10 +198,10 @@ public class AccordsController {
 
 	//list of all accords
 	@GetMapping("/list")
-	public String listAccord(Model model, HttpSession session) {
+	public String listAccord(Model model, HttpSession session,
+			@SessionAttribute("roleName") String roleName) {
 
 		try {
-			String roleName= (String)session.getAttribute("roleName");
 			if(roleName != null && roleName.equals("Concejo Municipal")) {
 				Date today= new Date();
 				Calendar cal= Calendar.getInstance();
@@ -215,6 +217,7 @@ public class AccordsController {
 
 			System.out.println(e.getMessage());
 		}
+
 		return "accord/listAccord";
 	}
 	
@@ -233,7 +236,8 @@ public class AccordsController {
 
 	@GetMapping("/edit/{accNumber}")
 
-	public String goToEdit(@PathVariable("accNumber") String accNumber, Model model, RedirectAttributes attributes) {
+	public String goToEdit(@PathVariable("accNumber") String accNumber, Model model,
+			RedirectAttributes attributes,@SessionAttribute("roleName") String roleName) {
 
 		try {
 			Optional<Accord> opt = this.accordRepo.getAccord(accNumber);
@@ -243,14 +247,16 @@ public class AccordsController {
 			Accord acc = opt.get();
 			model.addAttribute("accord", acc);
 			this.oldAccord=acc;
+			
+			
 		
 		}
 
 		catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-
-		return "accord/editAccord";
+		
+		return (roleName.equals("Concejo Municpal")) ? "accord/editAccord": "accord/secretary/AccordView";
 	}
 
 	
