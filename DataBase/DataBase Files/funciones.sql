@@ -545,6 +545,17 @@ begin
 end$$
 DELIMITER ;
 
+<<<<<<< HEAD
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllUsersWithoutRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllUsersWithoutRole()
+ begin
+ select T_USER.TEMPUSER from T_USER where T_USER.TEMPUSER NOT IN (select T_USER_ROLE.USER_ID from T_USER_ROLE);
+end$$
+DELIMITER ;
+
 
 USE `KRONOS`;
 DROP procedure IF EXISTS haveFinalResponse;
@@ -556,10 +567,39 @@ SELECT ACCORD,URL,FINALRESPONSE FROM T_ACCPDF WHERE ACCORD=_accord AND FINALRESP
 end$$
 DELIMITER ;
 
+USE `KRONOS`;
+DROP procedure IF EXISTS changeAccordState;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure changeAccordState(in _state int, in _today date)
+begin
+update T_ACCORD set STATE = _state where T_ACCORD.DEADLINE < _today and T_ACCORD.STATE != 0 and T_ACCORD.STATE != 4 and T_ACCORD.STATE != 1;
+end$$
+DELIMITER ; 
+
+USE `KRONOS`;
+DROP procedure IF EXISTS pendingAccordsDepartment;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure pendingAccordsDepartment(in _department int)
+begin
+end$$
+DELIMITER ; 
+
+USE `KRONOS`;
+DROP procedure IF EXISTS aMSearchAccords;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure aMSearchAccords()
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE  from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=1;
+end$$
+DELIMITER ;  
 
 
-
-
+alter table T_ROLE auto_increment = 1;
+alter table T_DEPARTMENT auto_increment = 1;
 
 insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');
 insert into T_TYPE (ID, DESCRIPTION) values ('B', 'Auditoria Interna');
@@ -578,6 +618,7 @@ insert into T_STATE (ID, DESCRIPTION)values (1, 'Incumplido');
 insert into T_STATE (ID, DESCRIPTION)values (2, 'Pendiente');
 insert into T_STATE (ID, DESCRIPTION)values (3, 'Recibido');
 insert into T_STATE (ID, DESCRIPTION)values (4, 'Desestimado');
+insert into T_STATE (ID, DESCRIPTION)values (5, 'Vencido');
 
 insert into T_TEMPUSER(NAME,EMAIL) values ('SUPERUSER','superuser@superuser.com');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Concejo Municipal','concejomunicipal@sanpablo.go.cr');
