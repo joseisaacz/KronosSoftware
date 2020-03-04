@@ -35,10 +35,10 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 				// Los recursos estáticos no requieren autenticación
 				.antMatchers("/push/**","/images/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
 				// Las vistas públicas no requieren autenticación
-				.antMatchers("/push/**","/images/**","/","/push/register","/api/accords/**","/accords/list","/accords/edit/**","/api/accords/uploadPdf/**","/icon.jpg").permitAll()
+				.antMatchers("/push/**","/images/**","/","/push/register","/api/accords/**","/accords/edit/**","/api/accords/uploadPdf/**","/icon.jpg").permitAll()
 				// Todas las demás URLs de la Aplicación requieren autenticación
 				
-				.antMatchers("/accords/addAccord/**","/accords/editAccord/**").hasAnyAuthority("Concejo Municipal")
+				.antMatchers("/accords/addAccord/**","/accords/editAccord/**","/accords/list/**").hasAnyAuthority("Concejo Municipal")
 				.antMatchers("/townHall/**").hasAuthority("Secretaria de Alcaldia")
 				.anyRequest().authenticated()
 				

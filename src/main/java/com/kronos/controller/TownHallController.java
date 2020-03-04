@@ -34,6 +34,12 @@ public class TownHallController {
 		return "townHallSecretariat/homeTownHall";
 	}
 	
+	@GetMapping("/list")
+	public String listTownHall() {
+		
+		return "townHallSecretariat/listSecretary";
+	}
+	
 	@ModelAttribute
 	public void setGenericos(Model model) {
 	
