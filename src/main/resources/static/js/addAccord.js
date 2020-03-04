@@ -56,6 +56,15 @@ function isValidDate(date) {
 }
 
 
+function validationDeadLine(){
+	let confirm = document.getElementById('deadline').value;
+	if(confirm===''){
+		 alert('Por Favor Confirmar Fecha de Vencimiento!!');
+	      return false;
+	}
+}
+
+
 
 function changeComboType() {
 	let combo = document.getElementById('comboTypes').value;
@@ -70,7 +79,7 @@ function changeComboType() {
 		textName.value = '';
 		textEmail.value = '';
 		textName.type = 'text';
-		textEmail.type = 'text';
+		textEmail.type = 'email';
 		labelName.style.visibility = 'visible';
 		labelEmail.style.visibility = 'visible';
 		buttonAdd.style.visibility = 'visible';
@@ -100,9 +109,13 @@ function accord_Responsables(){
 	var elmnt = document.getElementById('responsable');
 	var name = document.getElementById('nameR');
 	var mail = document.getElementById('emailR');
+	var nameI = name.children[1];
+	var mailI = document.getElementById('email');
 	var line = document.getElementById('line');
 	var cln = name.cloneNode(true);
+	cln.children[1].value='';
 	var cln1 = mail.cloneNode(true);
+	cln1.children[1].value='';
 	var cln2 = line.cloneNode(true);
 	elmnt.appendChild(cln);
 	elmnt.appendChild(cln1);
@@ -235,7 +248,7 @@ function setDeadline() {
     date = new Date();
     let output = document.getElementById('deadline');
     let select = document.getElementById('comboDays').value;
-    if (document.getElementById('days').value !== '') {
+    if (document.getElementById('days').value !== '' && document.getElementById('days').value != 0) {
     	let days = parseInt(document.getElementById("days").value, 10);
     	 if (days > 60)
     		 if (!confirm("Usted ha seleccionado un plazo de: " + days + " días.\n ¿Desea Continuar?"))
@@ -254,7 +267,7 @@ function setDeadline() {
     } 
     else {
     	
-    	bootbox.alert('Por favor ingrese un plazo');
+    	bootbox.alert('Por favor ingrese un plazo o que sea mayor a 0(cero)');
         
     }
 }
