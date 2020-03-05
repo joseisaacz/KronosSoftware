@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Editar Acuerdo</title>
+<title>Ver Acuerdo</title>
 <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 <link th:href="@{/css/default.css}" rel="stylesheet">
 <link th:href="@{/css/menu.css}" rel="stylesheet">
@@ -31,7 +31,7 @@
 					<div class="row "
 						style="background-color: white; width: 50%; border-radius: 50px 50px 1px 1px; background-color: #1f3140; border: solid #003366">
 						<div class="col-12">
-							<h3 align="center" style="color: #BBC9B4" id="pageTitle">Editar
+							<h3 align="center" style="color: #BBC9B4" id="pageTitle">Ver
 								Acuerdo</h3>
 						</div>
 					</div>
@@ -56,9 +56,9 @@
 								<div class="form-group">
 									<div class="col-sm-8">
 										<input
-											th:readonly="${session.roleName != 'Concejo Municipal'}"
+											
 											id="sessionDate" th:field="*{sessionDate}" name="sessionDate"
-											class="form-control" type="text" required>
+											class="form-control" type="text" required readonly>
 									</div>
 								</div>
 
@@ -76,9 +76,9 @@
 									<div class="col-sm-8">
 
 										<input
-											th:readonly="${session.roleName != 'Concejo Municipal'}"
+					
 											type="text" class="form-control" th:field="*{deadline}"
-											name="deadline" id="deadline">
+											name="deadline" id="deadline" readonly>
 									</div>
 								</div>
 
@@ -88,6 +88,7 @@
 					</div>
 					<div class="row">
 						<div class="col">
+							<span class="border-warning">
 								<div class="form-group">
 
 									<div class="col-sm-6">
@@ -97,14 +98,16 @@
 											readonly>
 									</div>
 								</div>
+							</span>
 						</div>
+
+
 						<div class="col">
 							<div class="col-8">
 								<label for="form-control col-6" class="form-label"> Tipo
 									de acuerdo: </label> <select
-									th:readonly="${session.roleName != 'Concejo Municipal'}"
 									th:field=*{type.id} class="form-control" id="comboTypes"
-									name="type">
+									name="type" disabled>
 									<option th:each="type:${types}" th:value="${type.id}"
 										th:text="${type.description}"></option>
 								</select>
@@ -119,9 +122,9 @@
 							<div class="col-6">
 								<label for="form-control col-6" class="form-label"
 									id="labelState">Estado:</label> <select
-									th:disabled="${session.roleName != 'Concejo Municipal'}"
+									
 									class="form-control" id="state" name="state"
-									th:field="*{state.id}">
+									th:field="*{state.id}" disabled>
 									<option th:each="state:${states}" th:value="${state.id}"
 										th:text="${state.description}"></option>
 								</select>
@@ -139,16 +142,15 @@
 
 						</div>
 						<div class="col">
-						<!-- 	
-						<th:block
-								th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
+							<th:block
+								th:if="${(#strings.toString(accord.type.id) == 'A') and accord.state.id != 0}">
 								<div class="col-8">
 									<div class="form-group ">
 										<!-- 	<label id="labelName" for="form-control col-6"
 										class="form-label"> Nombre del Responsable </label> <input
 										type="text" class="form-control" name="username" id="username"
 										disabled> -->
-										<!-- ${session.roleName == 'Secretaria de Alcaldia'}" 
+										<!-- ${session.roleName == 'Secretaria de Alcaldia'}" -->
 
 
 										<label for="form-control col-6" class="form-label">Departamento
@@ -190,7 +192,6 @@
 								</div>
 
 							</th:block>
-							 -->
 							<div class="col-8"
 								th:if="${(#strings.toString(accord.type.id) != 'A')}">
 								<div class="form-group ">
@@ -219,7 +220,7 @@
 							</div>
 						</div>
 						<div class="col-1"></div>
-						<div class="col-sm-4"th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
+						<div class="col-sm-4"th:if="${(#strings.toString(accord.type.id) == 'A') and accord.state.id != 0}">
 							<label id="labelEmail" for="form-control col-6"
 								class="form-label"> Usuarios Responsables </label>
 							<table id="usersTable"
