@@ -23,8 +23,9 @@
 				class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
 				href="#" id="navbardrop" data-toggle="dropdown"> ACUERDOS </a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" th:href="@{/accords/addAccord}">Agregar
-						Acuerdo</a> <a th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"class="dropdown-item" th:href="@{/accords/list}">Lista
+					<a th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}" class="dropdown-item" th:href="@{/accords/addAccord}">Agregar
+						Acuerdo</a> 
+						<a th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"class="dropdown-item" th:href="@{/accords/list}">Lista
 						de Acuerdo</a> 
 						
 						<a th:if="${session.roleName != null and session.roleName=='Secretaria de Alcaldia'}"class="dropdown-item" th:href="@{/townHall/list}">Lista
