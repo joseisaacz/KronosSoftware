@@ -113,10 +113,10 @@ constraint UK_NAME unique key(NAME)
 
 create table T_USER_ROLE(
 USER_ID varchar(45),
-ROLE_ID int,
+ROLE_NAME int,
 constraint PK_ROLE primary key(USER_ID,ROLE_ID),
 constraint FK_USER_ROLE foreign key(USER_ID) references T_USER(TEMPUSER),
-constraint FK_ROLE_UR foreign key(ROLE_ID) references T_ROLE(ID)
+constraint FK_ROLE_UR foreign key(ROLE_ID) references T_ROLE(NAME)
 );
 
 
