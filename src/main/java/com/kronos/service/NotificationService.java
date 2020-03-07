@@ -3,14 +3,19 @@ package com.kronos.service;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kronos.model.Accord;
+import com.kronos.model.Department;
 import com.kronos.model.User;
+import com.kronos.model.NotificationDTO;
 
 @Repository
 public class NotificationService {
@@ -49,6 +54,28 @@ public class NotificationService {
 		statement.close();
 		connection.close();
 		return rs.next();
+	}
+	
+	public List<NotificationDTO> resposableUsers(Accord acc) throws Exception{
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+		CallableStatement statement = connection.prepareCall("{call  resposableUsers(?) }");
+		statement.setString(1, acc.getAccNumber());
+		
+		
+		// statement.registerOutParameter(1, new );
+		List<NotificationDTO> result= new ArrayList<>();
+		ResultSet rs = statement.executeQuery();
+		
+		while(rs.next()) {
+			NotificationDTO not = new NotificationDTO(rs.getString("ACCORD"),
+			rs.getString("USER"),new Department(rs.getInt("DEP_ID"),rs.getString("DEP_NAME")));
+			result.add(not);
+		}
+		
+		rs.close();
+		statement.close();
+		connection.close();
+		return result;
 	}
 
 }

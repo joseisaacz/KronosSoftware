@@ -142,65 +142,7 @@
 
 						</div>
 						<div class="col">
-							<th:block
-								th:if="${(#strings.toString(accord.type.id) == 'A') and accord.state.id != 0}">
-								<div class="col-8">
-									<div class="form-group ">
-										<!-- 	<label id="labelName" for="form-control col-6"
-										class="form-label"> Nombre del Responsable </label> <input
-										type="text" class="form-control" name="username" id="username"
-										disabled> -->
-										<!-- ${session.roleName == 'Secretaria de Alcaldia'}" -->
-
-
-										<label for="form-control col-6" class="form-label">Departamento
-
-											Responsable</label> <select class="form-control" name="department"
-											onchange="javascript:changeSelectUsers(this)" id='selectDepartment'>
-											<option value='-1'>Seleccione un Departamento</option>
-											<option th:each="department:${departments}"
-												th:value="${department.id}" th:text="${department.name}"></option>
-										</select>
-
-
-
-
-									</div>
-								</div>
-
-								<div class="col-6">
-
-									<label for="form-control col-6" class="form-label"
-										id='userLabel' style='visibility: hidden'>Usuario
-										Responsable</label> <select class="form-control" name="users"
-										id="users" style='visibility: hidden'>
-
-									</select>
-
-
-
-
-
-
-
-								</div>
-								<div class="col-sm-3">
-								<br>
-									<button id='addUserButton'type="button" onclick='addUser()'class="btn btn-primary" style='visibility:hidden'>+</button>
-									<br>
-									<br>
-								</div>
-
-							</th:block>
-							<div class="col-8"
-								th:if="${(#strings.toString(accord.type.id) != 'A')}">
-								<div class="form-group ">
-									<label id="labelEmail" for="form-control col-6"
-										class="form-label"> Correo Electronico del Responsable
-									</label> <input type="text" class="form-control" name="email"
-										id="email" disabled>
-								</div>
-							</div>
+						
 						</div>
 
 					</div>
@@ -220,24 +162,6 @@
 							</div>
 						</div>
 						<div class="col-1"></div>
-						<div class="col-sm-4"th:if="${(#strings.toString(accord.type.id) == 'A') and accord.state.id != 0}">
-							<label id="labelEmail" for="form-control col-6"
-								class="form-label"> Usuarios Responsables </label>
-							<table id="usersTable"
-								class="table table-striped table-bordered border-info">
-								<thead>
-									<tr>
-										<th>Usuario</th>
-										<th>Departamento</th>
-
-									</tr>
-								</thead>
-								<tbody id="usersBody">
-
-								</tbody>
-							</table>
-
-						</div>
 					</div>
 					<th:block>
 						<div class="row">
@@ -247,22 +171,7 @@
 						<div class="row">
 
 
-
-							<div class="col-5">
-								<button
-									th:disabled="${session.roleName != 'Concejo Municipal' and session.roleName != 'Secretaria de Alcaldia'}"
-									type="button" class="btn btn-outline-success" onclick='javascript:submitForm()' id="okButton">Guardar
-									Cambios</button>
-									<input type='hidden' name="jsonObject"id='hiddenId'>
-							</div>
-
-
-						<div class="col-sm-3"
-							th:if="${session.roleName == 'Concejo Municipal'}">
-							<button th:disabled="${session.roleName != 'Concejo Municipal'}"
-								type="button" class="btn btn-outline-danger" id="deleteButton"
-								onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
-								</div>
+				
 								
 							<div class="col-2">
 								<a th:href="@{/townHall/list}"><button type="button"
