@@ -359,6 +359,18 @@ DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PU
 end$$
 DELIMITER ;
 
+
+USE `KRONOS`;
+DROP procedure IF EXISTS todayDeadlineAccords;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure todayDeadlineAccords(in actual date)
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE  from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND T_ACCORD.DEADLINE=actual;
+end$$
+DELIMITER ;
+
 USE `KRONOS`;
 DROP procedure IF EXISTS isActInDB;
 DELIMITER $$
@@ -369,6 +381,49 @@ SELECT SESSIONDATE from T_ACT where SESSIONDATE=mydate;
 end$$
 DELIMITER ;
 
+USE `KRONOS`;
+DROP procedure IF EXISTS notAssignedAccords;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure notAssignedAccords()
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE  
+from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE 
+where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID 
+AND ACCNUMBER not in(select ACCORD from T_NOTIFICATION)
+AND STATE=2
+AND TYPE_ID='A';
+end$$
+DELIMITER ;
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS alreadyAssignedAccords;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure alreadyAssignedAccords()
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE  
+from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE 
+where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID 
+AND ACCNUMBER  in(select ACCORD from T_NOTIFICATION)
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS resposableUsers;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure resposableUsers(in _accord varchar(45))
+begin
+select T_NOTIFICATION.ACCORD,T_NOTIFICATION.USER, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME FROM T_NOTIFICATION,T_DEPARTMENT,T_USER
+WHERE T_NOTIFICATION.ACCORD=_accord AND T_NOTIFICATION.USER=T_USER.TEMPUSER AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
+end$$
+DELIMITER ;
 
 
 USE `KRONOS`;
@@ -642,6 +697,63 @@ insert into T_ROLE (NAME) values ('Secretaria de Alcaldia');
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('concejomunicipal@sanpablo.go.cr',1);
 insert into T_USER_ROLE (USER_ID,ROLE_ID) values ('alcaldia@sanpablo.go.cr',2);
 
+
+--Direccion de desarrorllo urbano
+insert into T_TEMPUSER(NAME,EMAIL) values ('Santiago Baizán Hidalgo','desarrollourbano@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Allan Alfaro Arias','infraestructuraprivada@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Oscar Campos Garita','infraestructurapublica@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Miguel Cortés Sánchez','planot@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Jorge Duarte Ramírez','visados@sanpablo.go.cr');
+
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('desarrollourbano@sanpablo.go.cr','$2y$12$GXf2OJ06OcHRFoujC7DscewFa8AYqrhlnSd6xWsyb0Z/m5YoNKKDu',4,1); --pass:desarrollourbano
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('infraestructuraprivada@sanpablo.go.cr','$2y$12$RYOpOCvwQrJV65JXK5qrD.X/ZYVsm8sVO5nNzBx7dB7QDwlMyhhPe',4,1); --pass:infraestructuraprivada
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('infraestructurapublica@sanpablo.go.cr','$2y$12$T3Vb33ERjSk6bdczS7M0i.72Mve0z544LAs1Lo3Hj4da8pAIgKdqO',4,1); --pass:infraestructurapublica
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('planot@sanpablo.go.cr','$2y$12$toG1PoV6sDm8PSvXBA6fk.FgFNNbZb19OvSP2nLRWeRBGgjSmTFC.',4,1); --pass:planot
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('visados@sanpablo.go.cr','$2y$12$0DALv6Kh4s5teatCpOPgmeAA3EbEbm3RYbdtPfn4dHvkmoypMRewK',4,1); --pass:visados
+
+--Roles
+
+----------------------
+
+--Dirección de Hacienda Municipal
+
+insert into T_TEMPUSER(NAME,EMAIL) values ('Marjorie Montoya Gamboa','haciendamunicipal@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Gilberth Chávez','contabilidad@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Alonso Valerio','auxiliarcontabilidad@go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Carolina González Valerio','gestiondecobros@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Johnny Cabalceta Ramírez','asistente.licencias@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Yael Solano Méndez','tesoreria@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Juan Carlos Zúñiga Jimenez','valoracionbienesinmuebles@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Marcial Alpízar Gutiérrez','perito.a@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Carlo Arias Villalobos','perito.b@sanpablo.go.cr');
+
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('haciendamunicipal@sanpablo.go.cr','$2y$12$xKiBSkIQYGrIcwZbWKquPesSlc88TQFMdv8f.x2.L5psgGW7T7Hr6',5,1); --pass:haciendamunicipal
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('contabilidad@sanpablo.go.cr','$2y$12$cV2PKROtqybto5TUqJizbOXOF7I5UX04g8n6ByCPRrRbBBZQYQajW',5,1); --pass:contabilidad
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('auxiliarcontabilidad@go.cr','$2y$12$BX.plgUXeQwNWHYPTOp6lexiUOkAMFvhmdRJtPxDS8ftKTZ5kDCdO',5,1); --pass:auxiliarcontabilidad
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('gestiondecobros@sanpablo.go.cr','$2y$12$uKQG2afsHC0YzG31cQ6WWuDCsbrwBCKINOeeAaN6QYiBiHJFEz2cS',5,1); --pass:gestiondecobros
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('asistente.licencias@sanpablo.go.crr','$2y$12$3Xo2qB3jzTnOIEzISWy6fedQviOzz06Fvw39HV0hr1OfnW5WidQ3K',5,1); --pass:asistentelicencias
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values 
+('tesoreria@sanpablo.go.cr','$2y$12$ouEFyuz/OSgnXwGJvUJefOVWD0vMZZUNlKDhXodUvi.Lp/X2cD0eG',5,1); --pass:tesoreria
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values 
+('valoracionbienesinmuebles@sanpablo.go.cr','$2y$12$ppPziOR/CmJMYR2lPRPwGOlTLK.mqNLX/Quzmp0dVz40QcDOhXl5u',5,1); --pass:valoracionbienesinmuebles
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values
+ ('perito.a@sanpablo.go.cr','$2y$12$YADFgLFA.Vv6yqunsaondeCqUKx7wtb9hmcA5MKl//92464/6VTRu',5,1); --pass:peritoa
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values
+ ('perito.b@sanpablo.go.cr','$2y$12$Kb5P5AMYk/ojENbjI9BXX.z1IzEbwaMcUSF0HIghxy6QIdRY4hQIa',5,1); --pass:peritob
+
+--Roles
+insert into T_ROLES('Infraestructura Privada');
+insert into T_ROLES('Infraestructura Pública');
+insert into T_ROLES('Inspector');
+insert into T_ROLES('Planificación y Ordenamiento territorial');
+insert into T_ROLES('Contabilidad');
+insert into T_ROLES('Auxiliar de Contabilidad');
+insert into T_ROLES('Gestión de Cobro');
+insert into T_ROLES('Tesorería');
+insert into T_ROLES('Cajas');
+insert into T_ROLES('Valoración de Bienes Inmuebles');
+insert into T_ROLES('PeritoA');
+insert into T_ROLES('PeritoB');
 
 
 

@@ -1,10 +1,10 @@
 /**
  * 
  */
+
 globalAccord=null;
 
 $(document).ready(()=>{
-	initusersTable();
 	let name = $("#accNumber").val();
 	(async ()=>{
 		let b = await listPdf(name);
@@ -17,9 +17,25 @@ $(document).ready(()=>{
 	
 	fetch('/api/notifications/getResponsables/'+name).
 	then(response=>{
+		console.log(response);
 		if(response.status !== 200)
 			throw 'Error al cargar los responsables';
-	}).catch(ex=>console.log(ex))
+		return response.json();
+	})
+	.then(resp=>{
+		if(resp.length>0){
+			document.getElementById('selectDepartment').disabled=true;
+			document.getElementById('okButton').style.visibility='hidden';
+		}
+		 var parent = $("#usersBody");
+         parent.html("");
+         resp.forEach(item => {
+             listUser(parent, item);
+         });
+		
+	})
+	.then(()=>initusersTable())
+	.catch(ex=>console.log(ex))
 })	
 
 
@@ -322,7 +338,6 @@ var $rows = $("#usersBody tr").each(function(index) {
   });    
 });
 
-// Let's put this in the object like you want and convert to JSON (Note: jQuery will also do this for you on the Ajax request)
 
 
 return myRows;
@@ -343,5 +358,16 @@ async function submitForm(){
 }
 
 
+function listUser(parent, item) {
 
+
+    var tr = $("<tr/>");
+    tr.html(
+            "<td>" +item.user + "</td>" +
+            "<td>" +item.dep.name + "</td>"
+
+            );
+    parent.append(tr);
+  
+}
 
