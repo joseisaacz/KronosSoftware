@@ -16,24 +16,38 @@ import com.kronos.service.AccordService;
 @EnableAsync
 public class Scheduler {
 
-	@Autowired 
+	@Autowired
 	private EmailServiceImpl email;
 	@Autowired
 	private AccordService acc;
-	
-	@Scheduled(cron="00 38 10 * * THU")
-	public void weeklyNotification() throws Exception {
-		Calendar limit= Calendar.getInstance();
-	    limit.set(Calendar.DAY_OF_MONTH,limit.get(Calendar.DAY_OF_MONTH)-8);
-	    Date lmt=limit.getTime();
-	    Date today = Calendar.getInstance().getTime();
-	    List<Accord> list = acc.emailInfo(today,lmt);
-	    String message=" ";
-	    for(Accord a : list){
-	     message= message +"\n"+ a.toString();
-	    }
-	    String message1= "Los acuerdos notificados esta semana son los siguientes \n"+message;
-		email.sendSimpleMail("jjestradav@gmail.com", "Acuerdos de la semana", message1);
-		System.out.println(message1);
+
+	@Scheduled(cron = "00 38 10 * * THU")
+	public void weeklyNotification() {
+		Calendar limit = Calendar.getInstance();
+		limit.set(Calendar.DAY_OF_MONTH, limit.get(Calendar.DAY_OF_MONTH) - 8);
+		Date lmt = limit.getTime();
+		Date today = Calendar.getInstance().getTime();
+		try {
+			List<Accord> list = acc.emailInfo(today, lmt);
+			String message = " ";
+			for (Accord a : list) {
+				message = message + "\n" + a.toString();
+			}
+			String message1 = "Los acuerdos notificados esta semana son los siguientes \n" + message;
+			email.sendSimpleMail("jjestradav@gmail.com", "Acuerdos de la semana", message1);
+			System.out.println(message1);
+		} catch (Exception e) {
+
+		}
+	}
+
+	@Scheduled(cron = "00 00 00 * * *")
+	public void changeState() throws Exception {
+		Date today = Calendar.getInstance().getTime();
+		int state = 5;
+		try {
+			acc.changeState(state, today);
+		} catch (Exception e) {
+		}
 	}
 }

@@ -478,4 +478,14 @@ try {
         return (pdf!=null) ? Optional.of(pdf) : Optional.empty(); 
         
     }
+    public void changeState(int state, Date today) throws Exception{
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call changeAccordState(?, ?)}");
+        statement.setInt(1, state);
+        statement.setDate(2, new java.sql.Date(today.getTime()));
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    }
+    
 }
