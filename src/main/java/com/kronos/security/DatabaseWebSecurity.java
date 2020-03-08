@@ -23,8 +23,8 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.jdbcAuthentication().dataSource(dataSource)
 				.usersByUsernameQuery("select TEMPUSER, PASSWORD, STATUS from T_USER where TEMPUSER=?")
-				.authoritiesByUsernameQuery("SELECT USER_ID, T_ROLE.NAME AS ROLE FROM  T_USER_ROLE, T_ROLE WHERE "
-						+ "T_USER_ROLE.ROLE_ID=T_ROLE.ID AND T_USER_ROLE.USER_ID= ?");
+				.authoritiesByUsernameQuery("SELECT USER_ID, ROLE_NAME AS ROLE FROM  T_USER_ROLE, T_ROLE WHERE "
+						+"USER_ID= ?");
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 				// Todas las demás URLs de la Aplicación requieren autenticación
 				
 				.antMatchers("/accords/addAccord/**","/accords/editAccord/**","/accords/list/**").hasAnyAuthority("Concejo Municipal")
-				.antMatchers("/townHall/**").hasAuthority("Secretaria de Alcaldia")
+				.antMatchers("/townHall/**","/accords/list/**").hasAuthority("Secretaria de Alcaldia")
 				.anyRequest().authenticated()
 				
 				// El formulario de Login no requiere autenticacion

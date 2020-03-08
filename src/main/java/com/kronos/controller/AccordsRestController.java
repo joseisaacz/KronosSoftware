@@ -246,7 +246,7 @@ public class AccordsRestController {
 			if (roleName != null && roleName.equals("Secretaria de Alcaldia")) {
 				String body = "Se ha agregado una nueva respuesta al acuerdo  " + accNumber + "\n";
 
-				this.pushService.send("ConcejoMunicipal", "Respuesta Recibida", body);
+				this.pushService.send("concejomunicipal@sanpablo.go.cr", "Respuesta Recibida", body);
 			}
 		
 	 

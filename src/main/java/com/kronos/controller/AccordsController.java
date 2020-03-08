@@ -161,13 +161,13 @@ public class AccordsController {
 			  "Agregado por: "+roleName+"\n"+
 			  "En la fecha:" + LocalDateTime.now().format(formatter)+  "\n";
 			  
-			pushService.send("SecretariadeAlcaldia", "Acuerdo Agregado", body);
+			pushService.send("alcaldia@sanpablo.go.cr", "Acuerdo Agregado", body);
 
 		}
 
 		catch (Exception e) {
 			System.out.println(e.getMessage());
-			attributes.addFlashAttribute("msg", "Ha Ocurrido un error");
+			attributes.addFlashAttribute("msgError", "Ha Ocurrido un error");
 			return "redirect:/accords/list";
 		}
 
@@ -338,7 +338,7 @@ public class AccordsController {
 			if(roleName != null && roleName.equals("Secretaria de Alcaldia")) {
 				String body="El acuerdo "+acc.getAccNumber()+" ha sido editado\n";
 				
-				this.pushService.send("ConcejoMunicipal", "Acuerdo Actualizado", body);
+				this.pushService.send("concejomunicipal@sanpablo.go.cr", "Acuerdo Actualizado", body);
 			}
 			attributes.addFlashAttribute("msg", "Acuerdo Editado Correctamente");
 			}

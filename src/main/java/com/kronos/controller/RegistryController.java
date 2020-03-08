@@ -36,11 +36,11 @@ public class RegistryController {
   @GetMapping("/register/{token}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public Mono<Void> register(@PathVariable("token")String token,
-		  @SessionAttribute("roleName") String role) {
-	  System.out.println(role);
+		  @SessionAttribute("username") String username) {
+	  System.out.println(username);
 	  Mono<String> mono= Mono.just(token);
 	  System.out.println(mono);
-    return mono.doOnNext(t -> this.fcmClient.subscribe(role, t)).then();
+    return mono.doOnNext(t -> this.fcmClient.subscribe(username, t)).then();
   }
   
   @GetMapping("/sendPush")
