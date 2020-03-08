@@ -30,16 +30,17 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http 
+
 		.authorizeRequests()
 		 
 				// Los recursos estáticos no requieren autenticación
-				.antMatchers("/push/**","/images/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
+				.antMatchers("/push/**","/images/**","/.well-known/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
 				// Las vistas públicas no requieren autenticación
-				.antMatchers("/push/**","/images/**","/","/push/register","/api/accords/**","/api/notifications/**","/accords/edit/**","/api/accords/uploadPdf/**","/icon.jpg").permitAll()
+				.antMatchers("/push/**","/accords/list/**","/images/**","/","/push/register","/api/accords/**","/api/notifications/**","/accords/edit/**","/api/accords/uploadPdf/**","/icon.jpg").permitAll()
 				// Todas las demás URLs de la Aplicación requieren autenticación
 				
-				.antMatchers("/accords/addAccord/**","/accords/editAccord/**","/accords/list/**").hasAnyAuthority("Concejo Municipal")
-				.antMatchers("/townHall/**","/accords/list/**").hasAuthority("Secretaria de Alcaldia")
+				.antMatchers("/accords/addAccord/**","/accords/editAccord/**").hasAnyAuthority("Concejo Municipal")
+				.antMatchers("/townHall/**").hasAuthority("Secretaria de Alcaldia")
 				.anyRequest().authenticated()
 				
 				// El formulario de Login no requiere autenticacion
@@ -53,8 +54,8 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 		.sessionManagement()
 	    .maximumSessions(1)
 	     .expiredUrl("/logout");
+
 	}
-  
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		

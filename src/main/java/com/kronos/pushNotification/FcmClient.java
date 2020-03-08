@@ -46,7 +46,7 @@ public class FcmClient {
 
   public void send( String topic, String title, String body)
       throws InterruptedException, ExecutionException {
-
+	topic=topic.replace('@', '_');
     Message message = Message.builder().setTopic(topic)
         .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "300")
             .setNotification(new WebpushNotification(title,
@@ -60,7 +60,8 @@ public class FcmClient {
 
   public void subscribe(String topic, String clientToken) {
     try {
-    	topic=topic.replaceAll("\\s+","");
+    	//topic=topic.replaceAll("\\s+","_");
+    	topic=topic.replace('@', '_');
     	System.out.println(topic);
 //    	 FirebaseMessaging.getInstance().
 //    	 unsubscribeFromTopic(Collections.singletonList(clientToken), "fire");

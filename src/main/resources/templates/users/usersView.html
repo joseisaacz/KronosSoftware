@@ -68,10 +68,10 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col">
+						<div class="col-7">
 							
 
-									<div class="col-sm-6">
+									<div class="col-6">
 										<label for="form-control" class="form-label">Numero de
 											Acuerdo:</label> <input type="text" class="form-control"
 											th:field="*{accNumber}" id="accNumber" name="accNumber"
@@ -80,7 +80,7 @@
 							
 							
 						</div>
-							<div class="col-4">
+							<div class="col-3">
 								<label for="form-control col-6" class="form-label"
 									id="labelState">Estado:</label> <select
 									
@@ -107,13 +107,9 @@
 							</div>
 
 						</div>
-						<div class="col">
 						
-						</div>
-
-					</div>
-					<div class="row">
 						<div class="col-5">
+						<br><br>
 							<div class="form-group ">
 
 								<label for="" class="form-label"> Observaciones</label>
@@ -127,6 +123,10 @@
 
 							</div>
 						</div>
+
+					</div>
+					<div class="row">
+						
 						<div class="col-1"></div>
 					</div>
 					<th:block>
@@ -136,11 +136,17 @@
 						</div>
 						<div class="row">
 
-
+										<div class="col-3">	
+										</div>
+							<div class="col-4">
+								<a th:href="@{/users/home}"><button type="button"
+										class="btn btn-outline-success" id="okButton">Guardar Cambios</button></a>
+						
+							</div>
 				
 								
-							<div class="col-2">
-								<a th:href="@{/townHall/list}"><button type="button"
+							<div class="col-3">
+								<a th:href="@{/users/home}"><button type="button"
 										class="btn btn-outline-danger" id="cancelButton">Cancelar</button></a>
 						
 							</div>

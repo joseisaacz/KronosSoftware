@@ -280,6 +280,8 @@ public class AccordsController {
 				
 				
 				JSONArray jsonArr = new JSONArray(json);
+				String body="Se le notifica que ha sido nombrado como resposable del"+
+						" acuerdo "+acc.getAccNumber()+". Por favor darle seguimiento al acuerdo";
 			    List<DepUserDTO> dataList = new ArrayList<DepUserDTO>();
 			    for (int i = 0; i < jsonArr.length(); i++) {
 			        JSONObject jsonObj = jsonArr.getJSONObject(i);
@@ -293,6 +295,7 @@ public class AccordsController {
 				   for(DepUserDTO dto : dataList) {
 					   Optional<User> opt= this.userService.getUserByEmail(dto.getNombre());
 					   if(opt.isPresent()) {
+						   this.pushService.send(dto.getNombre(), "Acuerdo Recibido", body);
 						   this.notiService.insertNotification(acc, dto.getNombre());
 					   }
 				   }
