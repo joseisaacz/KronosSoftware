@@ -33,7 +33,8 @@
 		</div>
 		<div class="container" id="container"
 			style="border-radius: 1px 50px 50px 50px; border: solid #003366">
-			<form>
+			<form th:action="@{/act/saveAct}" method="POST" th:object="${act}"
+				enctype="multipart/form-data" id="act_form">
 				<div class="border-bottom">
 					<div class="row">
 						<div class="col-3">
@@ -45,9 +46,10 @@
 						<div class="col-4">
 							<div class="form-group">
 								<div class="col-sm-8">
-									<select class="form-control" id="comboSessionDate"
-										name="SessionDate">
-										<option>fechas</option>
+									<select th:field="*{act.sessionDate}" class="form-control"
+										id="comboSessionDate" name="SessionDate">
+										<option th:each="act:${sessions}"
+											th:value="${act.sessionDate}" th:text="${act.sessionDate}"></option>
 									</select>
 								</div>
 							</div>
@@ -65,11 +67,12 @@
 						</div>
 
 						<div class="col-4">
+							holamundo
 							<div class="form-group">
 								<div class="col-sm-8">
 									<select>
-										<option value="oridinary">Ordinaria</option>
-										<option value="extraoridinary">Extraordinaria</option>
+										<option th:field="*{act.sessionType}" th:value="ordinaria" th:text="ordinaria"></option>
+										<option th:field="*{act.sessionType}" th:value="extraordinaria" th:text="extraordinaria"></option>
 									</select>
 								</div>
 							</div>

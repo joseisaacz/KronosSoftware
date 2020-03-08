@@ -662,8 +662,15 @@ select SESSIONDATE from T_ACT where SESSIONTYPE IS NULL;
 end$$
 DELIMITER ;
 
-
-
+USE `KRONOS`;
+DROP procedure IF EXISTS addAct;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure addAct(in _sessionType varchar(45), in _sessionDate date, in _url varchar(100), in _public tinyint, in _active tinyint)
+begin
+update T_ACT set T_ACT.SESSIONTYPE = _sessionType, T_ACT.URL = _url, T_ACT.PUBLIC = _public, T_ACT.ACTIVE = _active where SESSIONDATE = _sessionDate;
+end$$
+DELIMITER ;
 
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;

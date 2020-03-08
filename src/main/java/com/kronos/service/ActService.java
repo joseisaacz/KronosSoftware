@@ -4,8 +4,12 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,49 +53,47 @@ public class ActService {
 
 	}
 
-	/*public List<Act> findSessionDates() {
+	public List<Act> findSessionDates() {
 		try {
 			Connection connection= jdbcTemplate.getDataSource().getConnection();
 			CallableStatement statement= connection.prepareCall("{call sessionDates() }");
 			ResultSet rs=statement.executeQuery();
-			
+			List<Act> result=this.mapRowList(rs);
+			statement.close();
+			connection.close();
+			return result;
 		} catch (Exception e) {
+			System.out.println("\n\n\n\n\n\n\n\nERROR\n\n\n\n\n"+e.getMessage()); 
 		}
 		return null;
 	}
-
-	/*
-	 * public List<Type> findAll() {
-	 * 
-	 * try { Connection connection = jdbcTemplate.getDataSource().getConnection();
-	 * CallableStatement statement =
-	 * connection.prepareCall("{call searchAllTypes() }");
-	 * 
-	 * // statement.registerOutParameter(1, new ); ResultSet
-	 * rs=statement.executeQuery();
-	 * 
-	 * List<Type> result= this.mapRowList(rs);
-	 * 
-	 * statement.close(); connection.close(); return result;
-	 * 
-	 * 
-	 * } catch(Exception e){
-	 * System.out.println("\n\n\n\n\n\n\n\nERROR\n\n\n\n\n"+e.getMessage()); }
-	 * 
-	 * 
-	 * 
-	 * return null; }
-	 * 
-	 * 
-	 * private List<Type> mapRowList(ResultSet rs) throws SQLException{
-	 * 
-	 * List<Type> result= new ArrayList<>(); while(rs.next()) { Type t=new Type();
-	 * t.setDescription(rs.getString("DESCRIPTION"));
-	 * t.setId(rs.getString("ID").charAt(0)); result.add(t); }
-	 * 
-	 * return result;
-	 * 
-	 * }
-	 */
+	
+	private List<Act> mapRowList(ResultSet rs) throws SQLException, ParseException{ 
+		  List<Act> result= new ArrayList<>(); 
+		  while(rs.next()) { 
+		 Act t=new Act();
+		 DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		 DateFormat aux= new SimpleDateFormat("yyyy/MM/dd");
+		 String dateAux = aux.format(rs.getDate("SESSIONDATE"));
+		 Date sessionDate = format.parse(dateAux);
+		 t.setSessionDate(sessionDate);
+		  result.add(t); 
+		  }
+ 
+	 return result; 
+	 }
+	
+	public void addAct(Act acta)throws Exception{
+		Connection connection= jdbcTemplate.getDataSource().getConnection();
+		CallableStatement statement= connection.prepareCall("{call addAct(?,?,?,?,?)}");
+		statement.setString(1, acta.getSessionType());
+		statement.setDate(2, new java.sql.Date(acta.getSessionDate().getTime()));
+		statement.setString(3, acta.getUrl());
+		statement.setBoolean(4, acta.getPublc());
+		statement.setBoolean(5, acta.getActive());
+		statement.executeUpdate();
+		statement.close();
+		connection.close();
+	}
 
 }
