@@ -258,4 +258,39 @@ public class AccordsRestController {
 		}
 
 	}
+	
+	@GetMapping("/secretary/searchAllAccords")
+	public List<Accord> searchAllAccordsSecretary(){
+		try {
+			return this.accordRepo.getAccordsSecretary();
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+		}
+	}
+	
+	@GetMapping("/secretary/notAssignedAccords")
+	public List<Accord> searchNotAssignedAccords(){
+		try {
+			return this.accordRepo.NotAssignedAccords();
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+		}
+	}
+	
+	
+	
+	@GetMapping("/secretary/alreadyAssignedAccords")
+	public List<Accord> searchAlreadyAssignedAccords(){
+		try {
+			return this.accordRepo.alreadyAssignedAccords();
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+		}
+	}
 }

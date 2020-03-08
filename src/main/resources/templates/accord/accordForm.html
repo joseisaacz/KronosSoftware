@@ -32,7 +32,8 @@
 			<div class="container-fluid" id='container'
 				style="border-radius: 1px 50px 50px 50px; border: solid #003366">
 				<form th:action="@{/accords/saveAccord}" method="POST"
-					th:object="${accord}" enctype="multipart/form-data">
+					th:object="${accord}" enctype="multipart/form-data" id="form1"
+					onSubmit='return validationDeadLine()'>
 					<div class="border-bottom">
 						<div class="row">
 							<div class="col-3 ">
@@ -61,28 +62,24 @@
 					</div>
 					<div class="row">
 						<div class="col">
-							<span class="border-warning">
-								<div class="form-group">
-									<div class="col-sm-10">
-										<label for="form-control col-4" class="form-label">Oficio*:</label>
-										<input type="text" class="form-control" name="desc"
-											value="MSPH-CM-ACUER-" disabled>
-									</div>
-									<div class="col-sm-6">
-										<input type="text" class="form-control"
-											th:field="*{accNumber}" id="accNumber" name="accNumber"
-											required>
-									</div>
+							<div class="form-group">
+								<div class="col-sm-10">
+									<label for="form-control col-4" class="form-label">Oficio*:</label>
+									<input type="text" class="form-control" name="desc"
+										value="MSPH-CM-ACUER-" disabled>
 								</div>
-							</span>
+								<div class="col-sm-6">
+									<input type="text" class="form-control" th:field="*{accNumber}"
+										id="accNumber" name="accNumber" required>
+								</div>
+							</div>
 						</div>
-
 						<div id="divDeadline" class="col">
 							<div class="form-group">
 								<div class="col-sm-11">
 									<label for="form-control" class="form-label">Plazo(Dias)*:</label>
 									<input type="number" class="form-control" name="days" id="days"
-										onkeypress="return event.charCode >= 48" min="0" required>
+										onkeypress="return event.charCode >= 48" min="1" required>
 									<select class="form-control" id="comboDays" name="comboDays">
 										<option value="1">Laborales</option>
 										<option value="2">Naturales</option>
@@ -147,7 +144,7 @@
 							</div>
 						</div>
 						<div class="col-mid-4">
-						<div class="row-mid-4" style="visibility: hidden">Acciones</div>
+							<div class="row-mid-4" style="visibility: hidden">Acciones</div>
 							<div class="row-mid-4">
 								<div class="form-group">
 									<input type="button" class="btn btn-primary" id="btnAdd"
@@ -230,6 +227,8 @@
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 	<script th:src="@{/js/addAccord.js}"></script>
+
+
 
 
 	<script>
