@@ -19,7 +19,7 @@ public class UserRoleService {
 		Connection connection = jdbcTemplate.getDataSource().getConnection();
         CallableStatement statement = connection.prepareCall("{call insertUserRole(?, ?)}");
         statement.setString(1, user.getTempUser().getEmail());
-        statement.setInt(2, role.getId());
+        statement.setString(2, role.getName());
         statement.executeUpdate();
         statement.close();
 	}

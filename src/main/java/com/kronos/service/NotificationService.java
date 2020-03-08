@@ -77,5 +77,26 @@ public class NotificationService {
 		connection.close();
 		return result;
 	}
+	
+	
+	public List<String> getResponsablesUserName(String accNumber) throws Exception{
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+		CallableStatement statement = connection.prepareCall("{call  getResponsablesUserName(?) }");
+		statement.setString(1, accNumber);
+		
+		
+		// statement.registerOutParameter(1, new );
+		List<String> result= new ArrayList<>();
+		ResultSet rs = statement.executeQuery();
+		
+		while(rs.next()) {
+			result.add(rs.getString("USER"));
+		}
+		
+		rs.close();
+		statement.close();
+		connection.close();
+		return result;
+	}
 
 }

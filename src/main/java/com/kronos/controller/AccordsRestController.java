@@ -34,6 +34,7 @@ import com.kronos.model.Pdf;
 import com.kronos.model.User;
 import com.kronos.pushNotification.FcmClient;
 import com.kronos.service.AccordService;
+import com.kronos.service.NotificationService;
 
 @RestController
 @RequestMapping("/api/accords")
@@ -47,6 +48,10 @@ public class AccordsRestController {
 
 	@Autowired
 	private FcmClient pushService;
+	
+	@Autowired
+	private NotificationService notiRepo;
+	
 
 	@GetMapping("/allAccords")
 	public List<Accord> searchAll() {
@@ -194,7 +199,7 @@ public class AccordsRestController {
 			@SessionAttribute("user") User user) {
 
 		try {
-			
+			List<String> responsables=this.notiRepo.getResponsablesUserName(accNumber);
 			//System.out.println(accNumber);
 			Optional<Accord> optAcc=this.accordRepo.getAccord(accNumber);
 			System.out.println(optAcc.get());
@@ -227,10 +232,16 @@ public class AccordsRestController {
 				acc.getState().setId(0);
 				acc.getState().setDescription("Cumplido");
 				this.accordRepo.updateAccord(acc);
+				String body="Se le notifica que el Concejo Municipal ha dado por cumplido "
+						+ "el acuerdo "+ accNumber;
+				for(String userName : responsables) {
+				 this.pushService.send(userName, "Acuerdo "+accNumber+ " Finalizado", body);
 				}
 				
-				// this.pushService.send("", "Acuerdo Finalizado", body); Secretaria
-				// this.pushService.send("", "Acuerdo Finalizado", body); Responsables
+				this.pushService.send("alcaldia@sanpablo.go.cr",  "Acuerdo "+accNumber+ " Finalizado", body); 
+				}
+				
+
 
 			}
 			for (MultipartFile uploadFile : uploadingFiles) {
@@ -243,12 +254,18 @@ public class AccordsRestController {
 				}
 
 			}
-			if (roleName != null && roleName.equals("Secretaria de Alcaldia")) {
-				String body = "Se ha agregado una nueva respuesta al acuerdo  " + accNumber + "\n";
+			String body = "Se ha agregado una nueva respuesta al acuerdo  " + accNumber + "\n";
+			if (roleName != null && !roleName.equals("Concejo Municipal")) {
+				
 
-				this.pushService.send("ConcejoMunicipal", "Respuesta Recibida", body);
+				this.pushService.send("concejomunicipal@sanpablo.go.cr", "Respuesta Recibida", body);
 			}
 		
+			if (roleName != null && !roleName.equals("Concejo Municipal")) {
+				for(String userName : responsables) {
+					 this.pushService.send(userName, "Acuerdo "+accNumber+ " Respuesta Recibida", body);
+					}
+			}
 	 
 			
 			return ResponseEntity.ok(acc);
