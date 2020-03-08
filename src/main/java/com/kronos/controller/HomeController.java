@@ -89,13 +89,14 @@ public class HomeController {
 					role = rol.getAuthority();
 				}
 				session.setAttribute("roleName", role);
+				session.setAttribute("username", user.getTempUser().getEmail());
 				switch(role) {
 				case "Concejo Municipal":
 					return "redirect:/accords/list";
 				case "Secretaria de Alcaldia":
 					return "redirect:/townHall/homeTownHall";
 				default: 
-					return "index";
+					return "redirect:/users/home";
 				
 				}
 				

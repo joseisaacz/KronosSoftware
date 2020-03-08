@@ -161,13 +161,13 @@ public class AccordsController {
 			  "Agregado por: "+roleName+"\n"+
 			  "En la fecha:" + LocalDateTime.now().format(formatter)+  "\n";
 			  
-			pushService.send("SecretariadeAlcaldia", "Acuerdo Agregado", body);
+			pushService.send("alcaldia@sanpablo.go.cr", "Acuerdo Agregado", body);
 
 		}
 
 		catch (Exception e) {
 			System.out.println(e.getMessage());
-			attributes.addFlashAttribute("msg", "Ha Ocurrido un error");
+			attributes.addFlashAttribute("msgError", "Ha Ocurrido un error");
 			return "redirect:/accords/list";
 		}
 
@@ -280,6 +280,8 @@ public class AccordsController {
 				
 				
 				JSONArray jsonArr = new JSONArray(json);
+				String body="Se le notifica que ha sido nombrado como resposable del"+
+						" acuerdo "+acc.getAccNumber()+". Por favor darle seguimiento al acuerdo";
 			    List<DepUserDTO> dataList = new ArrayList<DepUserDTO>();
 			    for (int i = 0; i < jsonArr.length(); i++) {
 			        JSONObject jsonObj = jsonArr.getJSONObject(i);
@@ -293,6 +295,7 @@ public class AccordsController {
 				   for(DepUserDTO dto : dataList) {
 					   Optional<User> opt= this.userService.getUserByEmail(dto.getNombre());
 					   if(opt.isPresent()) {
+						   this.pushService.send(dto.getNombre(), "Acuerdo Recibido", body);
 						   this.notiService.insertNotification(acc, dto.getNombre());
 					   }
 				   }
@@ -338,7 +341,7 @@ public class AccordsController {
 			if(roleName != null && roleName.equals("Secretaria de Alcaldia")) {
 				String body="El acuerdo "+acc.getAccNumber()+" ha sido editado\n";
 				
-				this.pushService.send("ConcejoMunicipal", "Acuerdo Actualizado", body);
+				this.pushService.send("concejomunicipal@sanpablo.go.cr", "Acuerdo Actualizado", body);
 			}
 			attributes.addFlashAttribute("msg", "Acuerdo Editado Correctamente");
 			}

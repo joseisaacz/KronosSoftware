@@ -23,22 +23,23 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.jdbcAuthentication().dataSource(dataSource)
 				.usersByUsernameQuery("select TEMPUSER, PASSWORD, STATUS from T_USER where TEMPUSER=?")
-				.authoritiesByUsernameQuery("SELECT USER_ID, T_ROLE.NAME AS ROLE FROM  T_USER_ROLE, T_ROLE WHERE "
-						+ "T_USER_ROLE.ROLE_ID=T_ROLE.ID AND T_USER_ROLE.USER_ID= ?");
+				.authoritiesByUsernameQuery("SELECT USER_ID, ROLE_NAME AS ROLE FROM  T_USER_ROLE, T_ROLE WHERE "
+						+"USER_ID= ?");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http 
+
 		.authorizeRequests()
 		 
 				// Los recursos estáticos no requieren autenticación
-				.antMatchers("/push/**","/images/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
+				.antMatchers("/push/**","/images/**","/.well-known/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
 				// Las vistas públicas no requieren autenticación
-				.antMatchers("/push/**","/images/**","/","/push/register","/api/accords/**","/api/notifications/**","/accords/edit/**","/api/accords/uploadPdf/**","/icon.jpg").permitAll()
+				.antMatchers("/push/**","/accords/list/**","/images/**","/","/push/register","/api/accords/**","/api/notifications/**","/accords/edit/**","/api/accords/uploadPdf/**","/icon.jpg").permitAll()
 				// Todas las demás URLs de la Aplicación requieren autenticación
 				
-				.antMatchers("/accords/addAccord/**","/accords/editAccord/**","/accords/list/**").hasAnyAuthority("Concejo Municipal")
+				.antMatchers("/accords/addAccord/**","/accords/editAccord/**").hasAnyAuthority("Concejo Municipal")
 				.antMatchers("/townHall/**").hasAuthority("Secretaria de Alcaldia")
 				.anyRequest().authenticated()
 				
@@ -53,8 +54,8 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 		.sessionManagement()
 	    .maximumSessions(1)
 	     .expiredUrl("/logout");
+
 	}
-  
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		
