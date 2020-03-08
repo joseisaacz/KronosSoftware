@@ -17,44 +17,72 @@
 	<div class="mt-2 col-md-1">
 		<br> <br> <br>
 	</div>
-	<div class="container mx-auto">
+	<main role="main">
 		<div class="container mx-auto">
-			<div class="border-bottom" style="width: 97%">
-				<div class="row "
-					style="background-color: white; width: 50%; border-radius: 50px 50px 1px 1px; background-color: #1f3140; border: solid #003366">
-					<div class="col-12">
-						<h3 align="center" style="color: #BBC9B4" id="pageTitle">Agregar
-							Acta</h3>
+			<div class="container mx-auto">
+				<div class="border-bottom" style="width: 97%">
+					<div class="row "
+						style="background-color: white; width: 50%; border-radius: 50px 50px 1px 1px; background-color: #1f3140; border: solid #003366">
+						<div class="col-12">
+							<h3 align="center" style="color: #BBC9B4" id="pageTitle">Agregar
+								Acta</h3>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="container-fluid" id='container'
-		style="border-radius: 1px 50px 50px 50px; border: solid #003366">
-		<form >
-			<div class="border-bottom">
-				<div class="row">
-					<div class="col-3 ">
-						<div class="form-group">
-							<div class="col-mid-8">
-								<label for="form-control col-4" class="form-label">Fecha
-									de Sesion*:</label>
+		<div class="container" id="container"
+			style="border-radius: 1px 50px 50px 50px; border: solid #003366">
+			<form>
+				<div class="border-bottom">
+					<div class="row">
+						<div class="col-3">
+							<div class="form-group">
+								<label for="form-control col-12" class="form-label">
+									Fecha de Sesión </label>
+							</div>
+						</div>
+						<div class="col-4">
+							<div class="form-group">
+								<div class="col-sm-8">
+									<select class="form-control" id="comboSessionDate"
+										name="SessionDate">
+										<option>fechas</option>
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-4">
-						<div class="form-group">
-							<div class="col-sm-8">
-								<input id="sessionDate" th:field="*{sessionDate}"
-									name="sessionDate" class="form-control" type="text" required>
+					<div class="row">
+						<div class="col-3">
+							<div class="form-group">
+								<div class="col-sm-8">
+									<label for="form-control col-4" class="form-label">Tipo
+										de Sesión*:</label>
+
+								</div>
 							</div>
+						</div>
+
+						<div class="col-4">
+							<div class="form-group">
+								<div class="col-sm-8">
+									<select>
+										<option value="oridinary">Ordinaria</option>
+										<option value="extraoridinary">Extraordinaria</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="form-group files" id="files">
+							<label for="form-control" class="form-label"> Inserte
+								aquí el pdf* </label> <input type="file" class="form-control" name="act"
+								id="act" placeholder="Inserte aquí el PDF">
 						</div>
 					</div>
 				</div>
-			</div>
-		</form>
-	</div>
-
+			</form>
+		</div>
+	</main>
 </body>
 </html>
