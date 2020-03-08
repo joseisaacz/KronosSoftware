@@ -597,6 +597,17 @@ DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PU
 end$$
 DELIMITER ;  
 
+USE `KRONOS`;
+DROP procedure IF EXISTS sessionDates;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure sessionDates()
+begin
+select SESSIONDATE from T_ACT where SESSIONTYPE IS NULL;
+end$$
+DELIMITER ;
+
+
 
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;
