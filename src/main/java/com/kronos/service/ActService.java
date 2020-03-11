@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -68,15 +67,11 @@ public class ActService {
 		return null;
 	}
 	
-	private List<Act> mapRowList(ResultSet rs) throws SQLException, ParseException{ 
+	private List<Act> mapRowList(ResultSet rs) throws SQLException{ 
 		  List<Act> result= new ArrayList<>(); 
 		  while(rs.next()) { 
 		 Act t=new Act();
-		 DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		 DateFormat aux= new SimpleDateFormat("yyyy/MM/dd");
-		 String dateAux = aux.format(rs.getDate("SESSIONDATE"));
-		 Date sessionDate = format.parse(dateAux);
-		 t.setSessionDate(sessionDate);
+		 t.setSessionDate(rs.getDate("SESSIONDATE"));
 		  result.add(t); 
 		  }
  

@@ -46,10 +46,10 @@
 						<div class="col-4">
 							<div class="form-group">
 								<div class="col-sm-8">
-									<select th:field="*{act.sessionDate}" class="form-control"
+									<select th:field="*{sessionDate}" class="form-control"
 										id="comboSessionDate" name="SessionDate">
 										<option th:each="act:${sessions}"
-											th:value="${act.sessionDate}" th:text="${act.sessionDate}"></option>
+											th:value="${#dates.format(act.sessionDate ,'dd-MM-yyyy')}" th:text="${#dates.format(act.sessionDate ,'dd-MM-yyyy')}" class="form-control"></option>
 									</select>
 								</div>
 							</div>
@@ -67,25 +67,41 @@
 						</div>
 
 						<div class="col-4">
-							holamundo
 							<div class="form-group">
 								<div class="col-sm-8">
-									<select>
-										<option th:field="*{act.sessionType}" th:value="ordinaria" th:text="ordinaria"></option>
-										<option th:field="*{act.sessionType}" th:value="extraordinaria" th:text="extraordinaria"></option>
+									<select th:field="*{sessionType}">
+										<option  th:value="ordinaria" th:text="ordinaria"></option>
+										<option  th:value="extraordinaria" th:text="extraordinaria"></option>
 									</select>
 								</div>
 							</div>
 						</div>
 						<div class="form-group files" id="files">
 							<label for="form-control" class="form-label"> Inserte
-								aquí el pdf* </label> <input type="file" class="form-control" name="act"
-								id="act" placeholder="Inserte aquí el PDF">
+								aquí el pdf* </label> <input type="file" class="form-control" name="pdf"
+								id="pdf" placeholder="Inserte aquí el PDF">
 						</div>
 					</div>
 				</div>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-md-4">
+								<button type="submit" class="btn btn-outline-success"
+									id="okButton" onclick='javascript:submit()'>Agregar</button>
+							</div>
+							<div class="col-md-4">
+								<button type="button" class="btn btn-outline-danger"
+									id="cancelButton" onclick='javascript:cancelAction()'>Cancelar</button>
+							</div>
+						</div>
+					</div>
 			</form>
 		</div>
 	</main>
+	<script th:src="@{/bootstrap/js/jquery.js}"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 </body>
 </html>
