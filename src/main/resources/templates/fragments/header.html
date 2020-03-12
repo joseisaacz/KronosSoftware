@@ -19,6 +19,7 @@
 			<li th:if="${session.roleName != null and (session.roleName=='Concejo Municipal' or session.roleName=='superuser')}"class="nav-item"><a
 				class="nav-link text-light font-weight-bold px-3" th:href="@{/}">Gestor
 					de Acuerdos</a></li>
+<<<<<<< HEAD
 			<li class="nav-item dropdown"><a
 				class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
 				href="#" id="navbardrop" data-toggle="dropdown"> ACUERDOS </a>
@@ -39,6 +40,38 @@
 				th:href="@{/accords/addAccord}">ACTAS</a></li>
 				
 				<li th:if="${session.roleName != null and session.roleName=='superuser'}" class="nav-item dropdown"><a
+=======
+				<li class="nav-item dropdown"><a
+					class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
+					href="#" id="navbardrop" data-toggle="dropdown"> ACUERDOS </a>
+					<div class="dropdown-menu">
+						<a
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
+							class="dropdown-item" th:href="@{/accords/addAccord}">Agregar
+							Acuerdo</a> <a
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
+							class="dropdown-item" th:href="@{/accords/list}">Lista de
+							Acuerdo</a> <a
+							th:if="${session.roleName != null and session.roleName=='Secretaria de Alcaldia'}"
+							class="dropdown-item" th:href="@{/townHall/list}">Lista de
+							Acuerdo</a> <a class="dropdown-item" th:href="@{/accords/listDepart}">Lista
+							de Acuerdo por Departamentos</a>
+					</div></li>
+
+				<li class="nav-item dropdown"><a
+					class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
+					href="#" id="navbardrop" data-toggle="dropdown"> ACTAS</a>
+					<div class="dropdown-menu">
+						<a
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
+							class="dropdown-item" th:href="@{/act/addAct}">Agregar Acta</a> <a
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
+							class="dropdown-item" href="#">Lista de Actas</a>
+
+					</div></li>
+
+				<li class="nav-item dropdown"><a
+>>>>>>> c5d59e02051d3a96f11deb51d973f4a999c13241
 				class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
 				href="#" id="navbardrop" data-toggle="dropdown"> ADMINISTRACIÓN </a>
 				<div class="dropdown-menu">

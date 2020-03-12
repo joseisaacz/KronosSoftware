@@ -2,10 +2,10 @@ package com.kronos.schedule;
 
 import org.springframework.stereotype.Component;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import java.awt.Color;
 import java.io.File;
 
 import javax.mail.MessagingException;
@@ -21,29 +21,26 @@ public class EmailServiceImpl implements EmailService {
 	@Autowired 
 	private JavaMailSender emailSender;
 	
-	@Value("concejomunicipal@sanpablo.go.cr")
+	@Value("${spring.mail.username}")
     private String from;
 	
 
 	public void sendSimpleMail(String to, String subject, String message ) {
+		MimeMessage _message = emailSender.createMimeMessage();
+		String msg= addColor(message, Color.RED);
 		try {
-            SimpleMailMessage _message = new SimpleMailMessage();
+           MimeMessageHelper helper= new MimeMessageHelper(_message,true);
             
-            _message.setFrom(from);
+            helper.setFrom(from);
             
-            _message.setTo(to);
-            _message.setSubject(subject);
-            _message.setText(message);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(msg,true);
 
             emailSender.send(_message);
-        } catch (MailException exception) {
+        } catch (MessagingException exception) {
             exception.printStackTrace();
         }
-	}
-	@Override 
-	public void sendMailUsingTemplate(String to, String subject, SimpleMailMessage template, String templateArgs) {
-		String text = String.format(template.getText(), templateArgs);  
-        sendSimpleMail(to, subject, text);
 	}
 	
 	@Override 
@@ -66,4 +63,10 @@ public class EmailServiceImpl implements EmailService {
 	    	  e.printStackTrace();
 	      }
 	}
+	
+	public static String addColor(String message, Color color) {
+		String hexColor = String.format("#%06X",  (0xFFFFFF & color.getRGB()));
+	    String colorMsg = "<FONT COLOR=\"#" + hexColor + "\">" + message + "</FONT>";
+	    return colorMsg;
+	} 
 }

@@ -101,10 +101,12 @@ public class Accord {
 
 	@Override
 	public String toString() {
+		
 		return "Accord [accNumber=" + accNumber + ", incorporatedDate=" + incorporatedDate + ", incorporatedTime="
 				+ incorporatedTime + ", deadline=" + deadline + ", sessionDate=" + sessionDate + ", type=" + type
 				+ ", observations=" + observations + ", published=" + published + ", notified=" + notified + ", state="
 				+ state + ", user=" + user + ", URL=" + URL + "]";
+
 	}
 
 
