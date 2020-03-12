@@ -97,9 +97,10 @@ public class Accord {
 	}
 
 	@Override
+	@SuppressWarnings(value = { "deprecation" })
 	public String toString() {
-		return "Acuerdo [Número de Acuerdo=" + accNumber + ", Fecha de Incorporación=" + incorporatedDate +"\n"
-				+ ", Fecha de vencimiento=" + deadline + "]";
+		return "Acuerdo [Número de Oficio= " + accNumber + ", Fecha de Incorporación= " + incorporatedDate.getDate() +"/"+(incorporatedDate.getMonth()+1)+"/"+(incorporatedDate.getYear()+1900)+"\n"
+				+ ", Fecha de vencimiento= " + deadline.getDate() +"/"+(deadline.getMonth()+1)+"/"+(deadline.getYear()+1900)+  "]";
 	}
 
 

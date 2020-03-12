@@ -21,7 +21,7 @@ public class Scheduler {
 	@Autowired
 	private AccordService acc;
 
-	@Scheduled(cron = "00 38 10 * * THU")
+	@Scheduled(cron = "00 00 19 * * SAT")
 	public void weeklyNotification() {
 		Calendar limit = Calendar.getInstance();
 		limit.set(Calendar.DAY_OF_MONTH, limit.get(Calendar.DAY_OF_MONTH) - 8);
@@ -31,10 +31,10 @@ public class Scheduler {
 			List<Accord> list = acc.emailInfo(today, lmt);
 			String message = " ";
 			for (Accord a : list) {
-				message = message + "\n" + a.toString();
+				message = message + "<br>" + a.toString();
 			}
-			String message1 = "Los acuerdos notificados esta semana son los siguientes \n" + message;
-			email.sendSimpleMail("jjestradav@gmail.com", "Acuerdos de la semana", message1);
+			String message1 = "<h2> Los acuerdos notificados esta semana son los siguientes \n" + message+"</h2>" ;
+			email.sendSimpleMail("jjestradav@gmail.com", "Concejo Municipal: Acuerdos de la semana", message1);
 			System.out.println(message1);
 		} catch (Exception e) {
 
