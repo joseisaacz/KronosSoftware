@@ -113,7 +113,7 @@ begin
 select T_ACCORD.ACCNUMBER, T_ACCORD.INCORDATE, 
 T_ACCORD.DEADLINE, T_ACCORD.SESSIONDATE, T_ACCORD.TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, T_ACCORD.OBSERVATIONS, T_ACCORD.PUBLIC, T_ACCORD.NOTIFIED,  T_ACCORD.STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE, T_NOTIFICATION
 where T_NOTIFICATION.USER=_user AND T_NOTIFICATION.ACCORD=T_ACCORD.ACCNUMBER AND T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND
-T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID ;
+T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND T_ACCORD.STATE=3;
 end$$
 DELIMITER ; 
 
@@ -472,6 +472,18 @@ DELIMITER ;
 
 
 USE `KRONOS`;
+DROP procedure IF EXISTS deleteNotification;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure deleteNotification(in _accord varchar(45), in _user varchar(45))
+begin
+DELETE FROM T_NOTIFICATION WHERE ACCORD=_accord and USER=_user;
+COMMIT;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
 DROP procedure IF EXISTS isInNotification;
 DELIMITER $$
 USE `KRONOS`$$
@@ -651,6 +663,7 @@ USE `KRONOS`$$
 create procedure changeAccordState(in _state int, in _today date)
 begin
 update T_ACCORD set STATE = _state where T_ACCORD.DEADLINE < _today and T_ACCORD.STATE != 0 and T_ACCORD.STATE != 4 and T_ACCORD.STATE != 1;
+commit;
 end$$
 DELIMITER ; 
 
@@ -674,6 +687,19 @@ DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PU
 end$$
 DELIMITER ;  
 
+
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateAccordState;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure changeAccordState(in _accord varchar(45) ,in _state int)
+begin
+update T_ACCORD set STATE = _state where ACCNUMBER=_accord;
+end$$
+DELIMITER ; 
 
 
 alter table T_ROLE auto_increment = 1;
@@ -715,6 +741,7 @@ insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('superuser@supe
 
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','$2a$10$iCDiliiLJjGNB93sNBc.be6suYV/B.2KeklGnEnuRsDzKC2l79bV2',2,1);
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','$2a$10$VJnqKpTeW7FLaSf6/eI6..4w6IAUOVUoVSicZbkGDgpHV2ajFaAny',3,1);
+insert into T_ROLE (NAME) values ('superuser');
 insert into T_ROLE (NAME) values ('Concejo Municipal');
 insert into T_ROLE (NAME) values ('Secretaria de Alcaldia');
 insert into T_ROLE (NAME) values('Infraestructura Privada');
@@ -759,7 +786,7 @@ insert into T_ROLE (NAME) values('Recursos Humanos');
 
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values ('concejomunicipal@sanpablo.go.cr','Concejo Municipal');
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values ('alcaldia@sanpablo.go.cr','Secretaria de Alcaldia');
-
+insert into T_USER_ROLE (USER_ID,ROLE_NAME) values ('superuser@superuser.com','superuser');
 
 #Direccion de desarrorllo urbano
 insert into T_TEMPUSER(NAME,EMAIL) values ('Santiago Baizán Hidalgo','desarrollourbano@sanpablo.go.cr');

@@ -270,7 +270,7 @@ try {
     
     public List<Accord> searchByUser(String user) throws Exception {
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
-       CallableStatement statement = connection.prepareCall("{call getAccordsByUser(?)}");
+       CallableStatement statement = connection.prepareCall("{call getAccordByUser(?)}");
        statement.setString(1,user);
        ResultSet rs = statement.executeQuery();
        Map<String, Accord> map = new HashMap();
@@ -304,7 +304,10 @@ try {
        
        statement.close();
        connection.close();
-      return new ArrayList<>(map.values());
+       ArrayList<Accord> result=new ArrayList<>(map.values());
+       System.out.println(result);  
+       return result;
+       
    }
     
     public List<Accord> searchByAccNumber(String accordNumber) throws Exception {
@@ -416,6 +419,18 @@ try {
         CallableStatement statement = connection.prepareCall("{call deleteAccord(?,?)}");
         statement.setString(1, accNumber);
         statement.setString(2, user);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    }
+    
+    
+    
+    public void updateAccordState(String accNumber, int state) throws Exception {
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call updateAccordState(?,?)}");
+        statement.setString(1, accNumber);
+        statement.setInt(2,state);
         statement.executeUpdate();
         statement.close();
         connection.close();

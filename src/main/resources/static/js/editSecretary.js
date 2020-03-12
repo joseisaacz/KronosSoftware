@@ -24,8 +24,10 @@ $(document).ready(()=>{
 	})
 	.then(resp=>{
 		if(resp.length>0){
-			document.getElementById('selectDepartment').disabled=true;
-			document.getElementById('okButton').style.visibility='hidden';
+			//document.getElementById('selectDepartment').disabled=true;
+			//document.getElementById('okButton').style.visibility='hidden';
+			document.getElementById('okButton').style.visibility='show';
+			document.getElementById('accordFormPrin').action='/townHall/edit/newResponsables';
 		}
 		 var parent = $("#usersBody");
          parent.html("");
@@ -226,6 +228,22 @@ function initusersTable() {
         "info": false,
         "iDisplayLength": 3
     });
+    
+    let table=$('#usersTable').DataTable();
+    
+    $('#usersBody').on('dblclick', 'tr', function () {
+    	
+    	bootbox.confirm('Está seguro que desea eliminar este usuario',result => {
+    		console.log(result)
+    		if(result){
+    		    table
+    	        .row(this)
+    	        .remove()
+    	        .draw();
+    		}
+    	});
+
+    	} );
 }
 
 
@@ -370,4 +388,10 @@ function listUser(parent, item) {
     parent.append(tr);
   
 }
+
+async function submitFormEdit(){
+	let a =await JsontoString();
+	$("#accordFormPrin").submit();
+}
+
 

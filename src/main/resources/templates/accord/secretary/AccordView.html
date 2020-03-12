@@ -250,19 +250,19 @@
 
 							<div class="col-5">
 								<button
-									th:disabled="${session.roleName != 'Concejo Municipal' and session.roleName != 'Secretaria de Alcaldia'}"
+									
 									type="button" class="btn btn-outline-success" onclick='javascript:submitForm()' id="okButton">Guardar
 									Cambios</button>
+									
+										
+									<a href="/townHall/edit/newResponsables"><button type="button" class="btn btn-outline-success" onclick='javascript:submitForm()' id="okButton" style='visibility:hidden'>Guardar
+									Cambios</button></a>
+										<input type="hidden" th:value="@{/townHall/edit/newResponsables}" id='newURL'>
 									<input type='hidden' name="jsonObject"id='hiddenId'>
 							</div>
 
 
-						<div class="col-sm-3"
-							th:if="${session.roleName == 'Concejo Municipal'}">
-							<button th:disabled="${session.roleName != 'Concejo Municipal'}"
-								type="button" class="btn btn-outline-danger" id="deleteButton"
-								onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
-								</div>
+
 								
 							<div class="col-2">
 								<a th:href="@{/townHall/list}"><button type="button"

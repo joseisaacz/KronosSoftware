@@ -299,6 +299,9 @@ public class AccordsController {
 						   this.notiService.insertNotification(acc, dto.getNombre());
 					   }
 				   }
+				   State state= new State(3,"Recibido");
+				   acc.setState(state);
+				   this.accordRepo.updateAccordState(acc.getAccNumber(), state.getId());
 				   attributes.addFlashAttribute("msg", "Acuerdo Actualizado Correctamente");
 			   //}
 				}	
