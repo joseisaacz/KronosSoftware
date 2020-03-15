@@ -654,14 +654,14 @@ update T_ACCORD set STATE = _state where T_ACCORD.DEADLINE < _today and T_ACCORD
 end$$
 DELIMITER ; 
 
-USE `KRONOS`;
-DROP procedure IF EXISTS pendingAccordsDepartment;
-DELIMITER $$
-USE `KRONOS`$$
-create procedure pendingAccordsDepartment(in _department int)
-begin
-end$$
-DELIMITER ; 
+-- USE `KRONOS`;
+-- DROP procedure IF EXISTS pendingAccordsDepartment;
+-- DELIMITER $$
+-- USE `KRONOS`$$
+-- create procedure pendingAccordsDepartment(in _department int)
+-- begin
+-- end$$
+-- DELIMITER ; 
 
 USE `KRONOS`;
 DROP procedure IF EXISTS aMSearchAccords;

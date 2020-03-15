@@ -223,7 +223,7 @@ public class AccordsController {
 	public String listAccordDepart(Model model) {
 		try {
 			System.out.println("Entramos");
-			model.addAttribute("listAccordsDepart", this.accordRepo.searchAllAccords());
+			model.addAttribute("listAccordsDepart", this.accordRepo.searchByPendingAccordsDepartment("C"));
 		} catch (Exception e) {
 
 			System.out.println(e.getMessage());
