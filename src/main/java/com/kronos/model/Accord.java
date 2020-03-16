@@ -113,7 +113,12 @@ public class Accord {
 
 
 	public static final char ADMIN_TYPE = 'A';
+	public static final int DONE_STATE=1;
 	public static final int PENDING_STATE=2;
+	public static final int RECEIVED_STATE=3;
+	public static final int INCUMPLIDO_STATE=4;
+	public static final int DESESTIMADO_STATE=5;
+	public static final int VENCIDO_STATE=6;
 	
 	
 	

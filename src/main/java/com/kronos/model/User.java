@@ -6,6 +6,7 @@ public class User {
 	private String password;
 	private Department department;
 	private Boolean status;
+	private Boolean isBoss;
 
 	public User() {
 		
@@ -62,5 +63,13 @@ public class User {
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
+	public Boolean getIsBoss() {
+		return isBoss;
+	}
+	public void setIsBoss(Boolean isBoss) {
+		this.isBoss = isBoss;
+	}
+	
+	
 
 }

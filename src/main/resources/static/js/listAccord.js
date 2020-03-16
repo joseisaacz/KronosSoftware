@@ -135,7 +135,7 @@ function SearchBySessionDate() {
                 res.json()
             )
             .then(accords => {
-            	console.log(accords);
+            	//console.log(accords);
                 $('#tableAcc').DataTable().clear().destroy();
                 var parent = $("#accordList");
                 parent.html("");
@@ -155,8 +155,10 @@ function SearchBySessionDate() {
 var accCounter=0;
 function list(parent, accord) {
     let now = new Date();
-    console.log(now);
-    let date = new Date(accord.deadline);
+  //  console.log(now);
+   // console.log('DATE FOR ' + accord.accNumber+ stringToDate(accord.deadline))
+    let date = stringToDate(accord.deadline)
+    console.log(accord.accNumber+' '+compareDates(now,date));
 
     var tr = $("<tr/>");
     tr.html(
@@ -172,7 +174,10 @@ function list(parent, accord) {
     parent.append(tr);
   
     let state = 'stateTD' + accCounter;
+    //console.log('Now' + now)
+    //console.log('Date'+date)
     if (now > date)
+    	if(compareDates(now,date))
         tr.css('backgroundColor', 'rgb(242, 110, 110)');
     else
     if (parseInt(accord.state.id, 10) === 0)
@@ -317,4 +322,18 @@ function formatDate(date) {
 function stringToDate(str){
 	return new Date(str.split('-').join('/'));
 	
+}
+
+function compareDates(date1,date2){
+	console.log(date1.getDate())
+	console.log(date2.getDate())
+	if(date1.getFullYear()!== date2.getFullYear())
+		return false;
+	
+	if(date1.getMonth()+1 === date2.getMonth()+1){
+		if(date1.getDate()>date2.getDate())
+			return true;
+	}
+		return false;
+		
 }

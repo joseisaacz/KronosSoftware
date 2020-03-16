@@ -15,9 +15,11 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.kronos.service.DeparmentService;
 import com.kronos.service.RoleService;
@@ -60,6 +62,57 @@ public class AdministrationController {
 		mapa.put("role", role);
 		model.addAllAttributes(mapa);
 		return "administration/useRole";
+	}
+	
+	
+	@GetMapping("/listUser")
+	public String addUserRole(Model model) {
+
+		try {
+		model.addAttribute("listUsersModel", this.userRepo.getAllUsers());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return "administration/listUser";
+	}
+	
+	@GetMapping("/editUser/{id}")
+	public String addUserRole(Model model,@PathVariable("id") String email) {
+
+		try {
+			Optional<User> optUser=this.userRepo.getUserByEmail(email);
+			
+			if(!optUser.isPresent())
+				throw new Exception();
+
+			
+		model.addAttribute("userModel", optUser.get());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return "administration/viewUser";
+	}
+	
+	
+	@GetMapping("/goToProfile")
+	public String goToProfile( @SessionAttribute("username") String email, Model model) {
+
+		try {
+			Optional<User> optUser=this.userRepo.getUserByEmail(email);
+			
+			if(!optUser.isPresent())
+				throw new Exception();
+
+			
+		model.addAttribute("userModel", optUser.get());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "administration/viewUser";
 	}
 
 	@PostMapping("/saveUserRole")

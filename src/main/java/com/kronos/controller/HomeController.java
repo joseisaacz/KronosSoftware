@@ -90,6 +90,12 @@ public class HomeController {
 				}
 				session.setAttribute("roleName", role);
 				session.setAttribute("username", user.getTempUser().getEmail());
+				session.setAttribute("userDepartment", user.getDepartment().getId());
+				
+				if(user.getIsBoss())
+					return "redirect:/boss/home";
+				
+				
 				switch(role) {
 				case "Concejo Municipal":
 					return "redirect:/accords/list";
