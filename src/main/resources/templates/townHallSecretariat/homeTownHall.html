@@ -31,7 +31,7 @@
 	</div>
 	<main>
 		<div class="container">
-		
+
 			<div class="container">
 				<div class="row">
 					<div class="row">
@@ -65,6 +65,8 @@
 												<td th:case="1" th:text="${acc.state.description}"
 													style="background-color: red"></td>
 												<td th:case="2" th:text="${acc.state.description}"
+													style="background-color: #FFE57A"></td>
+												<td th:case="*" th:text="${acc.state.description}"
 													style="background-color: #FFE57A"></td>
 											</th:block>
 											<td><a

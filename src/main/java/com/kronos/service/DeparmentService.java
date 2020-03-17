@@ -108,5 +108,27 @@ public class DeparmentService {
 		return Optional.empty();
 	}
 	
+	public Optional<Department> getDepartmentByEmail(String email){
+		try {
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call getDepartmentByEmail(?)}");
+		statement.setString(1, email);
+		
+		ResultSet rs= statement.executeQuery();
+		Department dp=null;
+		while(rs.next()) {
+			dp= new Department(rs.getInt("ID"), rs.getString("NAME"));
+		}
+		statement.close();
+		connection.close();
+		
+		return (dp != null) ? Optional.of(dp) : Optional.empty(); 
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+		return Optional.empty();
+	}
+	
+	
 	
 }

@@ -113,7 +113,7 @@ begin
 select T_ACCORD.ACCNUMBER, T_ACCORD.INCORDATE, 
 T_ACCORD.DEADLINE, T_ACCORD.SESSIONDATE, T_ACCORD.TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, T_ACCORD.OBSERVATIONS, T_ACCORD.PUBLIC, T_ACCORD.NOTIFIED,  T_ACCORD.STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE, T_NOTIFICATION
 where T_NOTIFICATION.USER=_user AND T_NOTIFICATION.ACCORD=T_ACCORD.ACCNUMBER AND T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND
-T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID ;
+T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND T_ACCORD.STATE=3;
 end$$
 DELIMITER ; 
 
@@ -341,7 +341,8 @@ DELIMITER $$
 USE `KRONOS`$$
 create procedure getUserByEmail( in _user varchar(45))
 begin
-SELECT TEMPUSER,T_TEMPUSER.NAME AS NAME,PASSWORD, DEPARTMENT, T_DEPARTMENT.NAME AS DEPARTMENT_NAME  FROM T_USER,T_TEMPUSER, T_DEPARTMENT WHERE T_USER.DEPARTMENT=T_DEPARTMENT.ID AND T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND TEMPUSER=_user; 
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS, ISBOSS from T_TEMPUSER, T_DEPARTMENT, T_USER 
+WHERE T_USER.TEMPUSER=_user AND T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
 end$$
 DELIMITER ;
 
@@ -472,6 +473,43 @@ DELIMITER ;
 
 
 USE `KRONOS`;
+DROP procedure IF EXISTS updateAccordState;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateAccordState( in accord varchar(45), in newstate int)
+begin
+update T_ACCORD set STATE = newstate where ACCNUMBER = accord;
+end$$
+DELIMITER ;  
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS insertACCDPRMTNT;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertACCDPRMTNT(in _accord varchar(45), in _department int)
+begin
+INSERT INTO T_ACCDPRMNT (ACCORD,DEPARTMENT) values (_accord,_department);
+COMMIT;
+end$$
+DELIMITER ;
+
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS deleteNotification;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure deleteNotification(in _accord varchar(45), in _user varchar(45))
+begin
+DELETE FROM T_NOTIFICATION WHERE ACCORD=_accord and USER=_user;
+COMMIT;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
 DROP procedure IF EXISTS isInNotification;
 DELIMITER $$
 USE `KRONOS`$$
@@ -537,6 +575,21 @@ end$$
 DELIMITER ;
 
 
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchUserByEmail;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchUserByEmail(in _email varchar(45))
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS, ISBOSS from T_TEMPUSER, T_DEPARTMENT, T_USER 
+WHERE T_USER.TEMPUSER=_email AND T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
+end $$
+DELIMITER ;
+
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS searchUserByDepartment;
 DELIMITER $$
@@ -547,6 +600,99 @@ begin
 WHERE T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=_id AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
 end $$
 DELIMITER ;
+
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchUsersBoss;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchUsersBoss(in _email varchar(45), in _id int)
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS from T_TEMPUSER, T_DEPARTMENT, T_USER 
+WHERE T_USER.TEMPUSER!=_email AND T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=_id AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
+end $$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchUserRoleByDepartment;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchUserRoleByDepartment(in _id int)
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS ,T_USER_ROLE.ROLE_NAME AS ROLE_NAME from T_TEMPUSER, T_DEPARTMENT, T_USER, T_USER_ROLE
+WHERE T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=_id AND T_USER.DEPARTMENT=T_DEPARTMENT.ID AND T_USER.TEMPUSER=T_USER_ROLE.USER_ID AND T_USER.DEPARTMENT!=1;
+end $$
+DELIMITER ;
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchBossUserRoleByDepartment;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchBossUserRoleByDepartment(in _email varchar(45),in _id int)
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS ,T_USER_ROLE.ROLE_NAME AS ROLE_NAME from T_TEMPUSER, T_DEPARTMENT, T_USER, T_USER_ROLE
+WHERE T_USER.TEMPUSER!=_email AND T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=_id AND T_USER.DEPARTMENT=T_DEPARTMENT.ID AND T_USER.TEMPUSER=T_USER_ROLE.USER_ID AND T_USER.DEPARTMENT!=1;
+end $$
+DELIMITER ;
+
+
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchUserRoleByDepartment;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchUserRoleByDepartment(in _id int)
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS ,T_USER_ROLE.ROLE_NAME AS ROLE_NAME from T_TEMPUSER, T_DEPARTMENT, T_USER, T_USER_ROLE
+WHERE T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=_id AND T_USER.DEPARTMENT=T_DEPARTMENT.ID AND T_USER.TEMPUSER=T_USER_ROLE.USER_ID AND T_USER.DEPARTMENT!=1;
+end $$
+DELIMITER ;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchUserByStatus;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchUserByStatus(in _status tinyint)
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS from T_TEMPUSER, T_DEPARTMENT, T_USER 
+WHERE T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND STATUS=_status AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
+end $$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllUsers;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllUsers()
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS from T_TEMPUSER, T_DEPARTMENT, T_USER 
+WHERE T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
+end $$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllUserRole;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllUserRole()
+begin
+ select T_TEMPUSER.NAME AS NAME, T_TEMPUSER.EMAIL AS EMAIL, T_DEPARTMENT.ID AS DEP_ID, T_DEPARTMENT.NAME AS DEP_NAME, STATUS ,T_USER_ROLE.ROLE_NAME AS ROLE_NAME from T_TEMPUSER, T_DEPARTMENT, T_USER, T_USER_ROLE
+WHERE T_USER.TEMPUSER=T_TEMPUSER.EMAIL AND T_USER.DEPARTMENT=T_DEPARTMENT.ID AND T_USER.TEMPUSER=T_USER_ROLE.USER_ID AND T_USER.DEPARTMENT!=1;
+end $$
+DELIMITER ;
+
+
+
+
+
 
 USE `KRONOS`;
 DROP procedure IF EXISTS insertUser;
@@ -651,6 +797,7 @@ USE `KRONOS`$$
 create procedure changeAccordState(in _state int, in _today date)
 begin
 update T_ACCORD set STATE = _state where T_ACCORD.DEADLINE < _today and T_ACCORD.STATE != 0 and T_ACCORD.STATE != 4 and T_ACCORD.STATE != 1;
+commit;
 end$$
 DELIMITER ; 
 
@@ -694,6 +841,34 @@ update T_ACT set T_ACT.SESSIONTYPE = _sessionType, T_ACT.URL = _url, T_ACT.PUBLI
 end$$
 DELIMITER ;
 
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateAccordState;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateAccordState(in _accord varchar(45) ,in _state int)
+begin
+update T_ACCORD set STATE = _state where ACCNUMBER=_accord;
+end$$
+DELIMITER ; 
+
+USE `KRONOS`;
+DROP procedure IF EXISTS getBossAccords;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure getBossAccords(in _user varchar(45))
+begin
+select T_ACCORD.ACCNUMBER, T_ACCORD.INCORDATE, 
+T_ACCORD.DEADLINE, T_ACCORD.SESSIONDATE, T_ACCORD.TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, T_ACCORD.OBSERVATIONS, T_ACCORD.PUBLIC, T_ACCORD.NOTIFIED,  T_ACCORD.STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE, T_ACCDPRMNT,T_USER
+where T_USER.TEMPUSER=_user AND T_USER.DEPARTMENT=T_ACCDPRMNT.DEPARTMENT AND T_ACCDPRMNT.ACCORD=T_ACCORD.ACCNUMBER AND T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND
+T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND T_ACCORD.STATE=3;
+end$$
+DELIMITER ; 
+
+
+
+
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;
 
@@ -733,6 +908,7 @@ insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('superuser@supe
 
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('concejomunicipal@sanpablo.go.cr','$2a$10$iCDiliiLJjGNB93sNBc.be6suYV/B.2KeklGnEnuRsDzKC2l79bV2',2,1);
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('alcaldia@sanpablo.go.cr','$2a$10$VJnqKpTeW7FLaSf6/eI6..4w6IAUOVUoVSicZbkGDgpHV2ajFaAny',3,1);
+insert into T_ROLE (NAME) values ('superuser');
 insert into T_ROLE (NAME) values ('Concejo Municipal');
 insert into T_ROLE (NAME) values ('Secretaria de Alcaldia');
 insert into T_ROLE (NAME) values('Infraestructura Privada');
@@ -777,7 +953,7 @@ insert into T_ROLE (NAME) values('Recursos Humanos');
 
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values ('concejomunicipal@sanpablo.go.cr','Concejo Municipal');
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values ('alcaldia@sanpablo.go.cr','Secretaria de Alcaldia');
-
+insert into T_USER_ROLE (USER_ID,ROLE_NAME) values ('superuser@superuser.com','superuser');
 
 #Direccion de desarrorllo urbano
 insert into T_TEMPUSER(NAME,EMAIL) values ('Santiago Baizán Hidalgo','desarrollourbano@sanpablo.go.cr');
@@ -786,7 +962,7 @@ insert into T_TEMPUSER(NAME,EMAIL) values ('Oscar Campos Garita','infraestructur
 insert into T_TEMPUSER(NAME,EMAIL) values ('Miguel Cortés Sánchez','planot@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Jorge Duarte Ramírez','visados@sanpablo.go.cr');
 
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('desarrollourbano@sanpablo.go.cr','$2y$12$GXf2OJ06OcHRFoujC7DscewFa8AYqrhlnSd6xWsyb0Z/m5YoNKKDu',4,1); # pass:desarrollourbano
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS,ISBOSS) values ('desarrollourbano@sanpablo.go.cr','$2y$12$GXf2OJ06OcHRFoujC7DscewFa8AYqrhlnSd6xWsyb0Z/m5YoNKKDu',4,1,1); # pass:desarrollourbano
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values('desarrollourbano@sanpablo.go.cr','Dirección de Desarrollo humano');
 
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('infraestructuraprivada@sanpablo.go.cr','$2y$12$RYOpOCvwQrJV65JXK5qrD.X/ZYVsm8sVO5nNzBx7dB7QDwlMyhhPe',4,1); # pass:infraestructuraprivada
@@ -814,7 +990,7 @@ insert into T_TEMPUSER(NAME,EMAIL) values ('Juan Carlos Zúñiga Jimenez','valor
 insert into T_TEMPUSER(NAME,EMAIL) values ('Marcial Alpízar Gutiérrez','perito.a@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Carlo Arias Villalobos','perito.b@sanpablo.go.cr');
 
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('haciendamunicipal@sanpablo.go.cr','$2y$12$xKiBSkIQYGrIcwZbWKquPesSlc88TQFMdv8f.x2.L5psgGW7T7Hr6',5,1); # pass:haciendamunicipal
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS,ISBOSS) values ('haciendamunicipal@sanpablo.go.cr','$2y$12$xKiBSkIQYGrIcwZbWKquPesSlc88TQFMdv8f.x2.L5psgGW7T7Hr6',5,1,1); # pass:haciendamunicipal
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values('haciendamunicipal@sanpablo.go.cr','Dirección de hacienda Muninicipal');
 
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values ('contabilidad@sanpablo.go.cr','$2y$12$cV2PKROtqybto5TUqJizbOXOF7I5UX04g8n6ByCPRrRbBBZQYQajW',5,1); # pass:contabilidad
@@ -866,8 +1042,8 @@ insert into T_TEMPUSER(NAME,EMAIL) values('Luis Moncada Espinoza','policiamunici
 
 
 
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values
- ('serviciospublicos@sanpablo.go.cr','$2y$12$sv9mXszFFms8Vsp2gtJ21eJcJKq/dd7aTdB35Q6QHmqtynRdAsruW',6,1); # pass:serviciospublicos
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS,ISBOSS) values
+ ('serviciospublicos@sanpablo.go.cr','$2y$12$sv9mXszFFms8Vsp2gtJ21eJcJKq/dd7aTdB35Q6QHmqtynRdAsruW',6,1,1); # pass:serviciospublicos
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values('serviciospublicos@sanpablo.go.cr','Dirección de Servicios Públicos');
 
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values
@@ -935,8 +1111,8 @@ insert into T_USER_ROLE (USER_ID,ROLE_NAME) values('policiamunicipal@sanpablo.go
 insert into T_TEMPUSER(NAME,EMAIL) values('Oscar Hidalgo Mena','proveeduria1@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values('Adriana Benavides Vargas','proveeduria2@sanpablo.go.cr');
 
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values
- ('proveeduria1@sanpablo.go.cr','$2y$12$glSbeA/7oQ4ppjMjQH7I1.LmnqL7GJMMhJWXpBPAr90LaWvjQW3Hy',7,1); #pass:proveeduria1
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS,ISBOSS) values
+ ('proveeduria1@sanpablo.go.cr','$2y$12$glSbeA/7oQ4ppjMjQH7I1.LmnqL7GJMMhJWXpBPAr90LaWvjQW3Hy',7,1,1); #pass:proveeduria1
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values('proveeduria1@sanpablo.go.cr','Proveeduría');
 
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values
@@ -952,8 +1128,8 @@ insert into T_TEMPUSER(NAME,EMAIL) values('Diana Arias','recursoshumanos@sanpabl
 insert into T_TEMPUSER(NAME,EMAIL) values('Planillas','nomina@sanpablo.go.cr');
 insert into T_TEMPUSER(NAME,EMAIL) values('Jorge Slon Jaikel','saludocupacional@sanpablo.go.cr');
 
-insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values
- ('recursoshumanos@sanpablo.go.cr','$2y$12$erDRhHdAorRpNTfzRddr6uX1D.BBhBbbhyyY6g0C.lQMCWwYRy8G6',8,1); #pass:recursoshumanos
+insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS,ISBOSS) values
+ ('recursoshumanos@sanpablo.go.cr','$2y$12$erDRhHdAorRpNTfzRddr6uX1D.BBhBbbhyyY6g0C.lQMCWwYRy8G6',8,1,1); #pass:recursoshumanos
 insert into T_USER_ROLE (USER_ID,ROLE_NAME) values('recursoshumanos@sanpablo.go.cr','Recursos Humanos');
 
 insert into T_USER (TEMPUSER,PASSWORD,DEPARTMENT,STATUS) values

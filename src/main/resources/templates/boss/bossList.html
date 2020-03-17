@@ -39,6 +39,8 @@
 							onchange="changeSelect(this.value)">
 
 							<option value="allAccords">Todos los Acuerdos</option>
+							<option value="inTransit">Acuerdos En Tránsito</option>
+							<option value="finished">Acuerdos Finalizados</option>
 
 
 						</select>
@@ -103,7 +105,7 @@
 
 										
 										<td><a
-											th:href="@{/users/edit/{id} (id=${acc.accNumber})}"><button
+											th:href="@{/boss/edit/{id} (id=${acc.accNumber})}"><button
 													type='button' class='btn btn-primary'
 													style='text-align: center'>Ver Detalles</button></a></td>
 									</tr>

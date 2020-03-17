@@ -53,6 +53,7 @@ import com.kronos.model.State;
 import com.kronos.model.TempUser;
 import com.kronos.model.User;
 import com.kronos.pushNotification.FcmClient;
+import com.kronos.service.AccordDepartmentService;
 import com.kronos.service.AccordService;
 import com.kronos.service.AccordTempUserService;
 import com.kronos.service.ActService;
@@ -95,6 +96,9 @@ public class AccordsController {
 	
 	@Autowired
 	private NotificationService notiService;
+	
+	@Autowired
+	private AccordDepartmentService AccDprmntRepo;
 	
 	@Autowired
 	private UserService userService; 
@@ -242,6 +246,7 @@ public class AccordsController {
 				throw new Exception("No se encontro el acuerdo");
 
 			Accord acc = opt.get();
+			System.out.println(acc.getDeadline());
 			model.addAttribute("accord", acc);
 			this.oldAccord=acc;
 			
@@ -273,42 +278,38 @@ public class AccordsController {
 				
 				if(department.isPresent()) {
 				String json= department.get(); 
-				//  System.out.println(json);
-				//ObjectMapper mapper = new ObjectMapper();
-				//mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-			//	DepUserDTO[] pp1 = mapper.readValue(json, DepUserDTO[].class);
-				
 				
 				JSONArray jsonArr = new JSONArray(json);
-				String body="Se le notifica que ha sido nombrado como resposable del"+
-						" acuerdo "+acc.getAccNumber()+". Por favor darle seguimiento al acuerdo";
-			    List<DepUserDTO> dataList = new ArrayList<DepUserDTO>();
+				String body="Se le notifica que su departamento ha recibido el"+
+						" acuerdo "+acc.getAccNumber()+". Por favor asignarle un responsable";
+			    List<Department> dataList = new ArrayList<>();
 			    for (int i = 0; i < jsonArr.length(); i++) {
 			        JSONObject jsonObj = jsonArr.getJSONObject(i);
-			        DepUserDTO data = new DepUserDTO();
-			        data.setNombre((jsonObj.getString("Usuario")));
-			        data.setDepartamento(jsonObj.getString("Departamento"));
+			        Department data = new Department();
+			        data.setId(jsonObj.getInt("ID"));
+			        data.setName(jsonObj.getString("Nombre"));
 			        dataList.add(data);
 			    }
-			//	List<DepUserDTO> ppl2 = Arrays.asList(mapper.readValue(json, DepUserDTO[].class));
-			  // for(DepUserDTO dto : ppl2 ) {
-				   for(DepUserDTO dto : dataList) {
-					   Optional<User> opt= this.userService.getUserByEmail(dto.getNombre());
-					   if(opt.isPresent()) {
-						   this.pushService.send(dto.getNombre(), "Acuerdo Recibido", body);
-						   this.notiService.insertNotification(acc, dto.getNombre());
-					   }
+				   for(Department dto : dataList) {
+					   Optional<User> opt= this.userService.getBossByDepartment(dto);
+					   if(opt.isPresent()) 
+						   this.pushService.send(opt.get().getTempUser().getEmail(), "Acuerdo Recibido", body);
+						  
+					 this.AccDprmntRepo.insertAccordDepartment(acc, dto);  
 				   }
+				   State state= new State(Accord.RECEIVED_STATE,"Recibido");
+				   acc.setState(state);
+				   this.accordRepo.updateAccordState(acc.getAccNumber(), state.getId());
 				   attributes.addFlashAttribute("msg", "Acuerdo Actualizado Correctamente");
-			   //}
-				}	
+				}
+				
+				return "redirect:/townHall/homeTownHall";
 			}
 			else {
 			Accord oldAccord= this.oldAccord;
 			
 			System.out.println("Viejo: "+ oldAccord);
-			//User user=(User) session.getAttribute("user");
-			//System.out.println(hola);
+
 			if (acc.getType().getId() != Accord.ADMIN_TYPE && oldAccord.getType().getId() == Accord.ADMIN_TYPE) {
 
 				if (!email.isEmpty() && !username.isEmpty()) {
