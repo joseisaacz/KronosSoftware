@@ -125,6 +125,21 @@ public class AccordsRestController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
+	
+	
+	@GetMapping("/pendingDepart/{type}")
+	public List<Accord> searchByPendingDepart(/*@PathVariable("type") char type*/) {
+		try {
+
+			return this.accordRepo.searchByPendingAccordsDepartment('A');
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+		}
+	}
+
 
 	@GetMapping("/accNumber/{number}")
 	public List<Accord> searchByAccNumber(@PathVariable("number") String accNumber) {

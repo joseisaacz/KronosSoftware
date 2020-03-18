@@ -299,8 +299,38 @@ function searchAllAccords() {
 }
 
 
+function searchByPendingDeparment(){
+	let type = document.getElementById('type').value;  
+	let _url ="/api/accords/pendingDepart/"+type;
+    fetch(_url)
+    .then(res =>
+        res.json()
+    )
+    .then(accords => {
+        console.log(accords);
+        $('#tableAcc').DataTable().clear().destroy();
+        var parent = $("#accordList");
+        parent.html("");
+        accords.forEach(item => {
+            list(parent, item);
+        });
 
+    }).then(() => {
+initTable();
+})
+    .catch(error => {
+        console.log(error);
+    });
+}
+		
+		
+		
+	
 
+function comboType(){
+	
+	
+}
 
 
 
@@ -337,3 +367,9 @@ function compareDates(date1,date2){
 		return false;
 		
 }
+
+
+
+
+
+

@@ -222,19 +222,28 @@ public class AccordsController {
 		return "accord/listAccord";
 	}
 	
+	
+	
+	
+	
 	//Department list
 	@GetMapping("/listDepart")
 	public String listAccordDepart(Model model) {
 		try {
 			System.out.println("Entramos");
-			model.addAttribute("listAccordsDepart", this.accordRepo.searchByPendingAccordsDepartment("C"));
+			model.addAttribute("listAccordsDepart", this.accordRepo.searchAllAccords());
 		} catch (Exception e) {
 
 			System.out.println(e.getMessage());
 		}
 		return "accord/listAccordDepartment";
 	}
+	
+	
 
+	
+	
+	
 	@GetMapping("/edit/{accNumber}")
 
 	public String goToEdit(@PathVariable("accNumber") String accNumber, Model model,
