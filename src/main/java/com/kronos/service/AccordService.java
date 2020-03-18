@@ -777,12 +777,11 @@ try {
       return new ArrayList<>(map.values());
    }
   
-}
 
-public List<Accord> searchByPendingAccordsDepartment(String department) throws Exception {
+public List<Accord> searchByPendingAccordsDepartment(char department) throws Exception {
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
        CallableStatement statement = connection.prepareCall("{call pendingAccordsDepartment(?)}");
-       statement.setString(1,department);
+       statement.setString(1,String.valueOf(department));
        ResultSet rs = statement.executeQuery();
        Map<String, Accord> map = new HashMap();
 
@@ -817,3 +816,4 @@ public List<Accord> searchByPendingAccordsDepartment(String department) throws E
        connection.close();
       return new ArrayList<>(map.values());
    }
+}
