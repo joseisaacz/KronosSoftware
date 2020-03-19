@@ -250,20 +250,30 @@ public class AccordsController {
 
 		return "accord/listAccord";
 	}
+
+	
 	
 	//Department list
 	@GetMapping("/listDepart")
-	public String listAccordDepart(Model model) {
+	public String listAccordDepart(Model model, Accord accord) {
 		try {
-			System.out.println("Entramos");
-			model.addAttribute("listAccordsDepart", this.accordRepo.searchAllAccords());
+			
+			model.addAttribute("accord", accord );
+			model.addAttribute("types", this.typesRepo.findAll());
+			//model.addAttribute("listAccordsDepart", this.accordRepo.searchByPendingAccordsDepartment('A'));
+			
 		} catch (Exception e) {
 
 			System.out.println(e.getMessage());
 		}
 		return "accord/listAccordDepartment";
 	}
+	
+	
 
+	
+	
+	
 	@GetMapping("/edit/{accNumber}")
 
 	public String goToEdit(@PathVariable("accNumber") String accNumber, Model model,
