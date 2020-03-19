@@ -694,6 +694,69 @@ update T_ACT set T_ACT.SESSIONTYPE = _sessionType, T_ACT.URL = _url, T_ACT.PUBLI
 end$$
 DELIMITER ;
 
+USE `KRONOS`;
+DROP procedure IF EXISTS getActByDate;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure getActByDate(in _sessiondate date)
+begin
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT where SESSIONDATE=_sessiondate;
+end$$
+DELIMITER ;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS getActsByDate;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure getActsByDate(in _sessiondate date)
+begin
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT where SESSIONDATE=_sessiondate and ACTIVE=1;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllActs;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllActs()
+begin 
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT;
+end$$
+DELIMITER ;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS getActByType;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure getActByType(in _type varchar(45))
+begin
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT where SESSIONTYPE= _type and ACTIVE=1;
+end$$
+DELIMITER ;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updatePdfAct;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updatePdfAct(in _date date, in _url varchar(100))
+begin 
+update T_ACT set T_ACT.URL = _url where SESSIONDATE= _date;
+end$$
+DELIMITER ;
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateAct;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateAct(in _type varchar(45), in _sessiondate date, in _public tinyint, in _active tinyint)
+begin
+update T_ACT set T_ACT.SESSIONTYPE = _type, T_ACT.ACTIVE = _active, T_ACT.PUBLIC=_public where SESSIONDATE=_sessiondate;
+end$$
+DELIMITER ;
+
+ 
+
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;
 

@@ -44,7 +44,7 @@
 							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
 							class="dropdown-item" th:href="@{/act/addAct}">Agregar Acta</a> <a
 							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
-							class="dropdown-item" href="#">Lista de Actas</a>
+							class="dropdown-item" th:href="@{/act/listAct}">Lista de Actas</a>
 
 					</div></li>
 
