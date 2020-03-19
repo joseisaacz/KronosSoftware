@@ -39,10 +39,13 @@
 				href="#" id="navbardrop" data-toggle="dropdown"> ACTAS </a>
 				<div class="dropdown-menu">
 						<a
-							
+
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
 							class="dropdown-item" th:href="@{/act/addAct}">Agregar Acta</a> 
-							<a
-							class="dropdown-item" href="#">Lista de Actas</a>
+          <a
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
+							class="dropdown-item" th:href="@{/act/listAct}">Lista de Actas</a>
+
 
 					</div>
 				
