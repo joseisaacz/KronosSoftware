@@ -14,12 +14,34 @@ $(document).ready(()=>{
 	
 
 )();
-	
-	fetch('/api/notifications/getResponsables/'+name).
-	then(response=>{
-		if(response.status !== 200)
-			throw 'Error al cargar los responsables';
-	}).catch(ex=>console.log(ex))
+	let type = $("#comboTypes").val();
+	if(type !=='A'){
+		fetch('/api/accords/getResponsablesByAccord/'+name)
+		.then(response=>{
+			console.log(response)
+			if(!response.ok)
+				throw new Exception();
+			
+			return response.json()
+		})
+		.then(users=>{
+			console.log(users);
+			document.getElementById('divTempUsers').style.visibility=''
+			document.getElementById('username').value=users[0].name
+			document.getElementById('email').value=users[0].email
+				
+			for(let i=1; i<users.length; i++)
+				accord_Responsables(users[i].name,users[i].email)
+			
+			
+		})
+		.catch(err=>console.log(err))
+	}
+//	fetch('/api/notifications/getResponsables/'+name).
+//	then(response=>{
+//		if(response.status !== 200)
+//			throw 'Error al cargar los responsables';
+//	}).catch(ex=>console.log(ex))
 })	
 
 
@@ -342,6 +364,21 @@ async function submitForm(){
 	$("#accordFormPrin").submit();
 }
 
-
+function accord_Responsables(username,email){
+	var elmnt = document.getElementById('responsable');
+	var name = document.getElementById('nameR');
+	var mail = document.getElementById('emailR');
+	var nameI = name.children[1];
+	var mailI = document.getElementById('email');
+	var line = document.getElementById('line');
+	var cln = name.cloneNode(true);
+	cln.children[1].value=username;
+	var cln1 = mail.cloneNode(true);
+	cln1.children[1].value=email;
+	var cln2 = line.cloneNode(true);
+	elmnt.appendChild(cln);
+	elmnt.appendChild(cln1);
+	elmnt.appendChild(cln2);
+}
 
 

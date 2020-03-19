@@ -297,4 +297,33 @@ function changeSwitch(input) {
     }
 }
 
+async function submitForm(){
+	let json = await toJson();
+	document.getElementById('responsables').value=json;
+	$("#form1").submit();
+}
 
+
+async function toJson(){
+	let usernames=document.getElementsByName('usernameResponsable');
+	let emails=document.getElementsByName('emailResponsable');
+	
+	if(usernames.length != emails.length)
+		return '';
+	
+	let arrObj=[];
+	
+	for(let i=0; i<usernames.length; i++ ){
+		
+		if(usernames[i].value ===''|| emails[i].value==='')
+			continue;
+		
+		let obj={};
+		obj.username=usernames[i].value;
+		obj.email=emails[i].value;
+		
+		arrObj.push(obj);
+	}
+	
+	return JSON.stringify(arrObj);
+}

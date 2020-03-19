@@ -53,6 +53,7 @@ import com.kronos.model.State;
 import com.kronos.model.TempUser;
 import com.kronos.model.User;
 import com.kronos.pushNotification.FcmClient;
+import com.kronos.schedule.EmailServiceImpl;
 import com.kronos.service.AccordDepartmentService;
 import com.kronos.service.AccordService;
 import com.kronos.service.AccordTempUserService;
@@ -101,18 +102,21 @@ public class AccordsController {
 	private AccordDepartmentService AccDprmntRepo;
 	
 	@Autowired
-	private UserService userService; 
+	private UserService userService;
+	
 	@Autowired
 	private FcmClient pushService;
 	
+	@Autowired
+	private EmailServiceImpl email;
+	
 	
 	@PostMapping("/saveAccord")
-	public String saveAccord(Accord accord, @RequestParam(value = "username", required = false) String username,
-
-			@RequestParam(value = "email", required = false) String email,
+	public String saveAccord(Accord accord, 
 
 			@RequestParam("accord") MultipartFile[] uploadingFiles, RedirectAttributes attributes,
-			 @SessionAttribute("roleName") String roleName) {
+			 @SessionAttribute("roleName") String roleName, 
+			 @RequestParam("responsables") Optional<String> optResponsables) {
 
 		try {
 			String fullAccName = "MSPH-CM-ACUER-" + accord.getAccNumber();
@@ -120,7 +124,7 @@ public class AccordsController {
 			accord.setIncorporatedDate(new Date());
 			accord.setIncorporatedTime(LocalTime.now());
 			accord.setState(new State(Accord.PENDING_STATE));
-
+			List<TempUser> tmpUsers=new ArrayList<>();
 			// System.out.println(accord);
 
 			if (!this.actRepo.isActInDB(accord.getSessionDate()))
@@ -128,27 +132,46 @@ public class AccordsController {
 
 			TempUser tmp = null;
 
-			if (accord.getType().getId() != Accord.ADMIN_TYPE) {
-
-				if (email.isEmpty() || username.isEmpty())
-					throw new Exception();
-
-				Optional<TempUser> opt = this.tempUserRepo.findByEmail(email);
-				if (opt.isPresent())
-					tmp = opt.get();
-
-				else {
-					tmp = new TempUser(username, email);
-					this.tempUserRepo.insertTempUser(tmp);
-				}
-
-			}
-
+		
+			List<String> urlPaths= new ArrayList<>();
 			for (MultipartFile uploadFile : uploadingFiles) {
 				String url = uploadFolder + uploadFile.getOriginalFilename();
 				File file = new File(url);
 				uploadFile.transferTo(file);
+				urlPaths.add(url);
 				accord.getURL().add(new Pdf(url));
+
+			}
+			
+			
+			if (accord.getType().getId() != Accord.ADMIN_TYPE) {
+
+				if(optResponsables.isPresent()) {
+					String json=optResponsables.get();
+					JSONArray jsonArr = new JSONArray(json);
+					
+					for(int i=0 ; i<jsonArr.length();i++) {
+					     JSONObject jsonObj = jsonArr.getJSONObject(i);
+					        TempUser data = new TempUser();
+					        data.setEmail(jsonObj.getString("email"));
+					        data.setName(jsonObj.getString("username"));
+					        tmpUsers.add(data);
+					}
+					DateFormat format= new SimpleDateFormat("dd-MM-yyyy");
+					for(TempUser tpUser: tmpUsers) {
+						Optional<TempUser> opt=this.tempUserRepo.findByEmail(tpUser.getEmail());
+						if(!opt.isPresent())
+							this.tempUserRepo.insertTempUser(tpUser);
+						
+						for(String url: urlPaths) {
+							this.email.sendMailWithAttachment(tpUser.getEmail(),
+									"Acuerdo Municipal", "Se le informa que ha sido notificado del siguiente acuerdo: "+
+							accord.getAccNumber()+ " con fecha límite de "+ format.format(accord.getDeadline())+".\n"
+									+ "Se adjunta el pdf del oficio", url);
+						}
+					}
+					
+				}
 
 			}
 			User user = new User();
@@ -157,8 +180,13 @@ public class AccordsController {
 			System.out.println(accord);
 			this.accordRepo.insertAccord(accord);
 
-			if (accord.getType().getId() != Accord.ADMIN_TYPE)
-				this.tUserAccRepo.insertAccord_TempUser(accord, tmp);
+			if (accord.getType().getId() != Accord.ADMIN_TYPE) {
+				for(TempUser tpUser: tmpUsers) {
+					this.tUserAccRepo.insertAccord_TempUser(accord, tpUser);
+				}
+				
+			}
+				
 			
 			  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 			  String body="Se ha agregado un nuevo Acuerdo\n"+
@@ -170,6 +198,7 @@ public class AccordsController {
 		}
 
 		catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			attributes.addFlashAttribute("msgError", "Ha Ocurrido un error");
 			return "redirect:/accords/list";

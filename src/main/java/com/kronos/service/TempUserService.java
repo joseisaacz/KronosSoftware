@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,63 @@ public class TempUserService {
 			connection.close();
 
 	
+	}
+	
+	
+	public List<TempUser> getTempUsersByAccord(String accNumber) throws Exception {
+		Connection connection=null;
+		CallableStatement statement=null;
+		ResultSet rs=null;
+		
+		try {
+			 connection = jdbcTemplate.getDataSource().getConnection();
+			 statement = connection.prepareCall("{call searchTempUsersByAccord(?)}");
+			statement.setString(1, accNumber);
+
+			rs=statement.executeQuery();
+			List<TempUser> result= new ArrayList<>();
+			
+			while(rs.next()) {
+				TempUser tmp=new TempUser();
+				tmp.setEmail(rs.getString("EMAIL"));
+				tmp.setName(rs.getString("NAME"));
+				result.add(tmp);
+			}
+			return result;
+
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(statement != null) {
+				try {
+					statement.close();
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if(connection != null) {
+				try {
+					connection.close();
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 
 }
