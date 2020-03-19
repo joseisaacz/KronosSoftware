@@ -301,7 +301,7 @@ function searchAllAccords() {
 
 function searchByPendingDeparment(){
 	let type = document.getElementById('type').value;  
-	let _url ="/api/accords/pendingDepart/"+type;
+	let _url ="/api/accords/get/pendingDepart/"+type;
     fetch(_url)
     .then(res =>
         res.json()

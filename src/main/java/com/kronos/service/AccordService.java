@@ -740,8 +740,11 @@ try {
     
     
     public List<Accord> getBossAccords(String user) throws Exception{
+    	
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
-       CallableStatement statement = connection.prepareCall("{call getBossAccords(?)}");
+       
+    	
+    	CallableStatement statement = connection.prepareCall("{call getBossAccords(?)}");
        statement.setString(1, user);
        ResultSet rs = statement.executeQuery();
        Map<String, Accord> map = new HashMap<>();
@@ -779,8 +782,11 @@ try {
   
 
 public List<Accord> searchByPendingAccordsDepartment(char department) throws Exception {
-    	Connection connection = jdbcTemplate.getDataSource().getConnection();
-       CallableStatement statement = connection.prepareCall("{call pendingAccordsDepartment(?)}");
+    	
+	
+	Connection connection = jdbcTemplate.getDataSource().getConnection();
+    
+	CallableStatement statement = connection.prepareCall("{call pendingAccordsDepartment(?)}");
        statement.setString(1,String.valueOf(department));
        ResultSet rs = statement.executeQuery();
        Map<String, Accord> map = new HashMap();

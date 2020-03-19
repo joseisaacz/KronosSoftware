@@ -34,15 +34,19 @@
 		<div class="container">
 			<div class="container">
 				<div class="row">
-				<div class="col">
-				<h5> Acuerdos Pendientes por Pepartamento</h5>
-				
-				</div>
 					<div class="col">
-					<select  class="form-control" id="comboTypes"
-							name="type">
-							<option  ></option>
-						</select>
+						<h5>Acuerdos Pendientes por Pepartamento</h5>
+
+					</div>
+					<div class="col">
+						<form th:action="@{/accords/listDepart}" th:object="${accord}"
+							enctype="multipart/form-data" id="form1">
+							<select th:field=*{type.id} class="form-control" id="comboTypes"
+								name="type">
+								<option id="type"  th:each="type:${types}" th:value="${type.id}"
+									th:text="${type.description}"></option>
+							</select>
+						</form>
 					</div>
 					<!-- <div class="col-sm-4" id="searchDiv">
 						<input type="hidden" class="form-control" id="searchText">
@@ -53,10 +57,9 @@
 						</select>
 					</div> -->
 					<div class="col-sm-4" id="searchDiv">
-						<button type="button"
-							class="btn btn-success" id="seacrhButton"
-							onclick="searchByPendingDeparment()"> Buscar</button>
-					</div> 
+						<button type="button" class="btn btn-success" id="seacrhButton"
+							onclick="searchByPendingDeparment()">Buscar</button>
+					</div>
 				</div>
 			</div>
 			<div class="row">

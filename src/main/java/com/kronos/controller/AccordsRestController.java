@@ -127,11 +127,11 @@ public class AccordsRestController {
 	}
 	
 	
-	@GetMapping("/pendingDepart/{type}")
-	public List<Accord> searchByPendingDepart(/*@PathVariable("type") char type*/) {
+	@GetMapping("/get/pendingDepart/{type}")
+	public List<Accord> searchByPendingDepart(@PathVariable("type") char type) {
 		try {
 
-			return this.accordRepo.searchByPendingAccordsDepartment('A');
+			return this.accordRepo.searchByPendingAccordsDepartment(type);
 
 		}
 
