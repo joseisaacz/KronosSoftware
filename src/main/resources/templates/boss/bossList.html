@@ -34,23 +34,15 @@
 		<div class="container">
 			<div class="container">
 				<div class="row">
-					<div class="col">
-						<select class="form-control" id="serchType"
-							onchange="changeSelect(this.value)">
+					<div class="col-4">
+						<select class="form-control" id="searchType"
+							>
 
 							<option value="allAccords">Todos los Acuerdos</option>
 							<option value="inTransit">Acuerdos En Tránsito</option>
 							<option value="finished">Acuerdos Finalizados</option>
 
 
-						</select>
-					</div>
-					<div class="col-sm-4" id="searchDiv">
-						<input type="hidden" class="form-control" id="searchText">
-						<select class="form-control" id="selectType"
-							style="visibility: hidden">
-							<option th:each="type:${types}" th:value="${type.id}"
-								th:text="${type.description}"></option>
 						</select>
 					</div>
 					<div class="col-sm-4" id="searchDiv">
@@ -126,6 +118,8 @@
 	<script th:src="@{/bootstrap/js/jquery.js}"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 	<!-- 	<script th:src="@{/js/dataTables.bootstrap4.min.js}"></script> -->
 	<!-- <script th:src="@{/js/jquery.dataTables.min.js}"></script> -->
 	<script

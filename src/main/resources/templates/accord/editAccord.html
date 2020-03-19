@@ -88,15 +88,15 @@
 					</div>
 					<div class="row">
 						<div class="col">
-								<div class="form-group">
+							<div class="form-group">
 
-									<div class="col-sm-6">
-										<label for="form-control" class="form-label">Numero de
-											Acuerdo:</label> <input type="text" class="form-control"
-											th:field="*{accNumber}" id="accNumber" name="accNumber"
-											readonly>
-									</div>
+								<div class="col-sm-6">
+									<label for="form-control" class="form-label">Numero de
+										Acuerdo:</label> <input type="text" class="form-control"
+										th:field="*{accNumber}" id="accNumber" name="accNumber"
+										readonly>
 								</div>
+							</div>
 						</div>
 						<div class="col">
 							<div class="col-8">
@@ -133,13 +133,12 @@
 									data-toggle="modal" data-target="#exampleModal">Ver
 									Archivos Adjuntos</button>
 
-								<br>
-								<br>
+								<br> <br>
 							</div>
 
 						</div>
 						<div class="col">
-						<!-- 	
+							<!-- 	
 						<th:block
 								th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
 								<div class="col-8">
@@ -148,7 +147,7 @@
 										class="form-label"> Nombre del Responsable </label> <input
 										type="text" class="form-control" name="username" id="username"
 										disabled> -->
-										<!-- ${session.roleName == 'Secretaria de Alcaldia'}" 
+							<!-- ${session.roleName == 'Secretaria de Alcaldia'}" 
 
 
 										<label for="form-control col-6" class="form-label">Departamento
@@ -191,13 +190,27 @@
 
 							</th:block>
 							 -->
-							<div class="col-8"
-								th:if="${(#strings.toString(accord.type.id) != 'A')}">
-								<div class="form-group ">
-									<label id="labelEmail" for="form-control col-6"
-										class="form-label"> Correo Electronico del Responsable
-									</label> <input type="text" class="form-control" name="email"
-										id="email" disabled>
+							<div class="col" id="divTempUsers" style="visibility: hidden">
+								<div class="border-bottom">
+									<div class="overflow-auto" id="responsable"
+										style="height: 200px;">
+										<div class="form-group" id="nameR">
+											<label id="labelName" for="form-control col-9"
+												class="form-label">
+												Nombre del Responsable </label> <input type="text"
+												class="form-control" name="usernameResponsable"
+												id="username">
+										</div>
+
+										<div class="form-group" id="emailR">
+											<label id="labelEmail" for="form-control col-9"
+												class="form-label" >
+												Correo Electronico del Responsable </label> <input type="text"
+												class="form-control" name="emailResponsable" id="email">
+										</div>
+										<div class="border-bottom border-primary" id="line"
+											></div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -219,7 +232,8 @@
 							</div>
 						</div>
 						<div class="col-1"></div>
-						<div class="col-sm-4"th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
+						<div class="col-sm-4"
+							th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
 							<label id="labelEmail" for="form-control col-6"
 								class="form-label"> Usuarios Responsables </label>
 							<table id="usersTable"
@@ -240,8 +254,7 @@
 					</div>
 					<th:block>
 						<div class="row">
-							<br>
-							<br>
+							<br> <br>
 						</div>
 						<div class="row">
 
@@ -250,26 +263,27 @@
 							<div class="col-5">
 								<button
 									th:disabled="${session.roleName != 'Concejo Municipal' and session.roleName != 'Secretaria de Alcaldia'}"
-									type="button" class="btn btn-outline-success" onclick='javascript:submitForm()' id="okButton">Guardar
+									type="button" class="btn btn-outline-success"
+									onclick='javascript:submitForm()' id="okButton">Guardar
 									Cambios</button>
-									<input type='hidden' name="jsonObject"id='hiddenId'>
+								<input type='hidden' name="jsonObject" id='hiddenId'>
 							</div>
 
 
-						<div class="col-sm-3"
-							th:if="${session.roleName == 'Concejo Municipal'}">
-							<button th:disabled="${session.roleName != 'Concejo Municipal'}"
-								type="button" class="btn btn-outline-danger" id="deleteButton"
-								onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
-								</div>
-								
+							<div class="col-sm-3"
+								th:if="${session.roleName == 'Concejo Municipal'}">
+								<button th:disabled="${session.roleName != 'Concejo Municipal'}"
+									type="button" class="btn btn-outline-danger" id="deleteButton"
+									onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
+							</div>
+
 							<div class="col-2">
 								<a th:href="@{/accords/list}"><button type="button"
 										class="btn btn-outline-danger" id="cancelButton">Cancelar</button></a>
-						
+
 							</div>
 
-	
+
 
 
 						</div>
@@ -346,7 +360,7 @@
 	<script
 		src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 	<script>
-	$(function() {
+		$(function() {
 			$("#deadline").datepicker({
 				dateFormat : 'dd-mm-yy'
 			});
