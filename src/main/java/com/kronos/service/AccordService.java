@@ -270,7 +270,7 @@ try {
     
     public List<Accord> searchByUser(String user) throws Exception {
     	Connection connection = jdbcTemplate.getDataSource().getConnection();
-       CallableStatement statement = connection.prepareCall("{call getAccordsByUser(?)}");
+       CallableStatement statement = connection.prepareCall("{call getAccordByUser(?)}");
        statement.setString(1,user);
        ResultSet rs = statement.executeQuery();
        Map<String, Accord> map = new HashMap();
@@ -304,7 +304,10 @@ try {
        
        statement.close();
        connection.close();
-      return new ArrayList<>(map.values());
+       ArrayList<Accord> result=new ArrayList<>(map.values());
+       System.out.println(result);  
+       return result;
+       
    }
     
     public List<Accord> searchByAccNumber(String accordNumber) throws Exception {
@@ -416,6 +419,18 @@ try {
         CallableStatement statement = connection.prepareCall("{call deleteAccord(?,?)}");
         statement.setString(1, accNumber);
         statement.setString(2, user);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    }
+    
+    
+    
+    public void updateAccordState(String accNumber, int state) throws Exception {
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+        CallableStatement statement = connection.prepareCall("{call updateAccordState(?,?)}");
+        statement.setString(1, accNumber);
+        statement.setInt(2,state);
         statement.executeUpdate();
         statement.close();
         connection.close();
@@ -721,5 +736,125 @@ try {
        connection.close();
       return new ArrayList<>(map.values());
    }
+    
+    
+    
+    public List<Accord> getBossAccords(String user) throws Exception{
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+       CallableStatement statement = connection.prepareCall("{call getBossAccords(?)}");
+       statement.setString(1, user);
+       ResultSet rs = statement.executeQuery();
+       Map<String, Accord> map = new HashMap<>();
+
+       while (rs.next()) {
+      
+           String accNumber = rs.getString("ACCNUMBER");
+           if (map.isEmpty() || ! map.containsKey(accNumber)) { //if the map is empty or the result isn't
+               Accord a = new Accord();                                                 //in the map
+               a.setAccNumber(accNumber);
+               a.setIncorporatedDate(rs.getDate("INCORDATE"));
+               a.setDeadline(rs.getDate("DEADLINE"));
+               a.setSessionDate(rs.getDate("SESSIONDATE")); 
+               a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
+               a.setObservations(rs.getString("OBSERVATIONS"));
+               a.setNotified(rs.getBoolean("NOTIFIED"));
+               a.setPublished(rs.getBoolean("PUBLIC"));
+               a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
+               map.put(accNumber, a);
+           }
+           else {
+                   //if the result isn't  in the map or the map isn't empty, just add the URL into result
+                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
+               
+           }
+       }
+       if(rs != null)
+    	   rs.close();
+       
+       statement.close();
+       connection.close();
+      return new ArrayList<>(map.values());
+   }
+  
+    
+    
+    public List<Accord> getAllBossAccords(String user) throws Exception{
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+       CallableStatement statement = connection.prepareCall("{call getAllBossAccords(?)}");
+       statement.setString(1, user);
+       ResultSet rs = statement.executeQuery();
+       Map<String, Accord> map = new HashMap<>();
+
+       while (rs.next()) {
+      
+           String accNumber = rs.getString("ACCNUMBER");
+           if (map.isEmpty() || ! map.containsKey(accNumber)) { //if the map is empty or the result isn't
+               Accord a = new Accord();                                                 //in the map
+               a.setAccNumber(accNumber);
+               a.setIncorporatedDate(rs.getDate("INCORDATE"));
+               a.setDeadline(rs.getDate("DEADLINE"));
+               a.setSessionDate(rs.getDate("SESSIONDATE")); 
+               a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
+               a.setObservations(rs.getString("OBSERVATIONS"));
+               a.setNotified(rs.getBoolean("NOTIFIED"));
+               a.setPublished(rs.getBoolean("PUBLIC"));
+               a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
+               map.put(accNumber, a);
+           }
+           else {
+                   //if the result isn't  in the map or the map isn't empty, just add the URL into result
+                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
+               
+           }
+       }
+       if(rs != null)
+    	   rs.close();
+       
+       statement.close();
+       connection.close();
+      return new ArrayList<>(map.values());
+   }
+    
+    
+    public List<Accord> getFinishedBossAccords(String user) throws Exception{
+    	Connection connection = jdbcTemplate.getDataSource().getConnection();
+       CallableStatement statement = connection.prepareCall("{call getFinishedBossAccords(?)}");
+       statement.setString(1, user);
+       ResultSet rs = statement.executeQuery();
+       Map<String, Accord> map = new HashMap<>();
+
+       while (rs.next()) {
+      
+           String accNumber = rs.getString("ACCNUMBER");
+           if (map.isEmpty() || ! map.containsKey(accNumber)) { //if the map is empty or the result isn't
+               Accord a = new Accord();                                                 //in the map
+               a.setAccNumber(accNumber);
+               a.setIncorporatedDate(rs.getDate("INCORDATE"));
+               a.setDeadline(rs.getDate("DEADLINE"));
+               a.setSessionDate(rs.getDate("SESSIONDATE")); 
+               a.setType(new Type(rs.getString("TYPE_ID").charAt(0), rs.getString("TYPE_DESC")));
+               a.setObservations(rs.getString("OBSERVATIONS"));
+               a.setNotified(rs.getBoolean("NOTIFIED"));
+               a.setPublished(rs.getBoolean("PUBLIC"));
+               a.setState(new State(rs.getInt("STATE"),rs.getString("STATE_DESC")));
+               a.getURL().add(new Pdf(rs.getString("URL"), rs.getBoolean("FINALRESPONSE")));
+               map.put(accNumber, a);
+           }
+           else {
+                   //if the result isn't  in the map or the map isn't empty, just add the URL into result
+                   map.get(accNumber).getURL().add(new Pdf(rs.getString("URL"),rs.getBoolean("FINALRESPONSE")));
+               
+           }
+       }
+       if(rs != null)
+    	   rs.close();
+       
+       statement.close();
+       connection.close();
+      return new ArrayList<>(map.values());
+   }
+  
   
 }

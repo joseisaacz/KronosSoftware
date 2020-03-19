@@ -24,8 +24,10 @@ $(document).ready(()=>{
 	})
 	.then(resp=>{
 		if(resp.length>0){
-			document.getElementById('selectDepartment').disabled=true;
-			document.getElementById('okButton').style.visibility='hidden';
+			//document.getElementById('selectDepartment').disabled=true;
+			//document.getElementById('okButton').style.visibility='hidden';
+			document.getElementById('okButton').style.visibility='show';
+			document.getElementById('accordFormPrin').action='/townHall/edit/newResponsables';
 		}
 		 var parent = $("#usersBody");
          parent.html("");
@@ -200,6 +202,8 @@ function initTable() {
         "info": false,
         "iDisplayLength": 3
     });
+    
+
 }
 
 
@@ -226,6 +230,22 @@ function initusersTable() {
         "info": false,
         "iDisplayLength": 3
     });
+    
+    let table=$('#usersTable').DataTable();
+    table.column( 0 ).visible( false );
+    $('#usersBody').on('dblclick', 'tr', function () {
+    	
+    	bootbox.confirm('Está seguro que desea eliminar este usuario',result => {
+    		console.log(result)
+    		if(result){
+    		    table
+    	        .row(this)
+    	        .remove()
+    	        .draw();
+    		}
+    	});
+
+    	} );
 }
 
 
@@ -259,45 +279,17 @@ function cleanPdfForm(){
 }
 
 
-function changeSelectUsers(select){
+function changeSelectDepartments(select){
+	let addDprmntButton=document.getElementById('addDprmntButton');
 	
-	if(parseInt(select.value,10) !== -1){
-		 document.getElementById('users').options.length=0;
-		showUsers();
-		let selectUsers= document.getElementById('users');
-		let url='/api/users/getUsersByDepartment/'+select.value;
-		fetch(url)
-		.then(data=>{
-			if(!data.ok)
-				throw "Ha ocurrido un error. Por favor intente más tarde.";
-			
-			return data.json();
-			})
-		.then(users=>{
-			if(users.length === 0)
-				throw "Por favor contacte al administrador para " +
-						"agregar usuarios a este departamento"
-				
-			for(let user of users){
-				let option=document.createElement('option');
-				option.text=user.tempUser.name;
-				option.value=user.tempUser.email;
-				selectUsers.appendChild(option);
-				
-			}
-		}).catch((error)=>{
-			hideUsers();
-			select.value='-1';
-			bootbox.alert(error);
-			
-		})
-		
-		
-	}
-	else{
-		hideUsers();
-	}
+	if(parseInt(select.value,10) !== -1)
+		addDprmntButton.style.visibility='';
+	
+	else
+		addDprmntButton.style.visibility='hidden';
 }
+		
+
 
 function hideUsers(){
 	 document.getElementById('users').style.visibility='hidden';
@@ -311,17 +303,16 @@ function showUsers(){
 	document.getElementById('userLabel').style.visibility='';
 }
 
-function addUser(){
+function addDprmnt(){
 	let table=document.getElementById('usersBody');
 	
 	
 	let selectDeps=document.getElementById('selectDepartment');
-	let selectUsers=document.getElementById('users');
 	let depName=selectDeps.options[selectDeps.selectedIndex].innerHTML;
-	let userName=selectUsers.options[selectUsers.selectedIndex].value;
+	let depID=selectDeps.options[selectDeps.selectedIndex].value;
 
 	
-	$('#usersTable').DataTable().row.add([userName,depName]).draw();
+	$('#usersTable').DataTable().row.add([depID,depName]).draw();
 }
 
 
@@ -353,6 +344,8 @@ async function JsontoString(){
 }
 
 async function submitForm(){
+    let table=$('#usersTable').DataTable();
+    table.column( 0 ).visible( true );
 	let a =await JsontoString();
 	$("#accordFormPrin").submit();
 }
@@ -370,4 +363,10 @@ function listUser(parent, item) {
     parent.append(tr);
   
 }
+
+async function submitFormEdit(){
+	let a =await JsontoString();
+	$("#accordFormPrin").submit();
+}
+
 

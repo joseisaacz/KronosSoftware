@@ -53,6 +53,8 @@ import com.kronos.model.State;
 import com.kronos.model.TempUser;
 import com.kronos.model.User;
 import com.kronos.pushNotification.FcmClient;
+import com.kronos.schedule.EmailServiceImpl;
+import com.kronos.service.AccordDepartmentService;
 import com.kronos.service.AccordService;
 import com.kronos.service.AccordTempUserService;
 import com.kronos.service.ActService;
@@ -97,18 +99,24 @@ public class AccordsController {
 	private NotificationService notiService;
 	
 	@Autowired
-	private UserService userService; 
+	private AccordDepartmentService AccDprmntRepo;
+	
+	@Autowired
+	private UserService userService;
+	
 	@Autowired
 	private FcmClient pushService;
 	
+	@Autowired
+	private EmailServiceImpl email;
+	
 	
 	@PostMapping("/saveAccord")
-	public String saveAccord(Accord accord, @RequestParam(value = "username", required = false) String username,
-
-			@RequestParam(value = "email", required = false) String email,
+	public String saveAccord(Accord accord, 
 
 			@RequestParam("accord") MultipartFile[] uploadingFiles, RedirectAttributes attributes,
-			 @SessionAttribute("roleName") String roleName) {
+			 @SessionAttribute("roleName") String roleName, 
+			 @RequestParam("responsables") Optional<String> optResponsables) {
 
 		try {
 			String fullAccName = "MSPH-CM-ACUER-" + accord.getAccNumber();
@@ -116,7 +124,7 @@ public class AccordsController {
 			accord.setIncorporatedDate(new Date());
 			accord.setIncorporatedTime(LocalTime.now());
 			accord.setState(new State(Accord.PENDING_STATE));
-
+			List<TempUser> tmpUsers=new ArrayList<>();
 			// System.out.println(accord);
 
 			if (!this.actRepo.isActInDB(accord.getSessionDate()))
@@ -124,27 +132,46 @@ public class AccordsController {
 
 			TempUser tmp = null;
 
-			if (accord.getType().getId() != Accord.ADMIN_TYPE) {
-
-				if (email.isEmpty() || username.isEmpty())
-					throw new Exception();
-
-				Optional<TempUser> opt = this.tempUserRepo.findByEmail(email);
-				if (opt.isPresent())
-					tmp = opt.get();
-
-				else {
-					tmp = new TempUser(username, email);
-					this.tempUserRepo.insertTempUser(tmp);
-				}
-
-			}
-
+		
+			List<String> urlPaths= new ArrayList<>();
 			for (MultipartFile uploadFile : uploadingFiles) {
 				String url = uploadFolder + uploadFile.getOriginalFilename();
 				File file = new File(url);
 				uploadFile.transferTo(file);
+				urlPaths.add(url);
 				accord.getURL().add(new Pdf(url));
+
+			}
+			
+			
+			if (accord.getType().getId() != Accord.ADMIN_TYPE) {
+
+				if(optResponsables.isPresent()) {
+					String json=optResponsables.get();
+					JSONArray jsonArr = new JSONArray(json);
+					
+					for(int i=0 ; i<jsonArr.length();i++) {
+					     JSONObject jsonObj = jsonArr.getJSONObject(i);
+					        TempUser data = new TempUser();
+					        data.setEmail(jsonObj.getString("email"));
+					        data.setName(jsonObj.getString("username"));
+					        tmpUsers.add(data);
+					}
+					DateFormat format= new SimpleDateFormat("dd-MM-yyyy");
+					for(TempUser tpUser: tmpUsers) {
+						Optional<TempUser> opt=this.tempUserRepo.findByEmail(tpUser.getEmail());
+						if(!opt.isPresent())
+							this.tempUserRepo.insertTempUser(tpUser);
+						
+						for(String url: urlPaths) {
+							this.email.sendMailWithAttachment(tpUser.getEmail(),
+									"Acuerdo Municipal", "Se le informa que ha sido notificado del siguiente acuerdo: "+
+							accord.getAccNumber()+ " con fecha límite de "+ format.format(accord.getDeadline())+".\n"
+									+ "Se adjunta el pdf del oficio", url);
+						}
+					}
+					
+				}
 
 			}
 			User user = new User();
@@ -153,8 +180,13 @@ public class AccordsController {
 			System.out.println(accord);
 			this.accordRepo.insertAccord(accord);
 
-			if (accord.getType().getId() != Accord.ADMIN_TYPE)
-				this.tUserAccRepo.insertAccord_TempUser(accord, tmp);
+			if (accord.getType().getId() != Accord.ADMIN_TYPE) {
+				for(TempUser tpUser: tmpUsers) {
+					this.tUserAccRepo.insertAccord_TempUser(accord, tpUser);
+				}
+				
+			}
+				
 			
 			  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 			  String body="Se ha agregado un nuevo Acuerdo\n"+
@@ -166,6 +198,7 @@ public class AccordsController {
 		}
 
 		catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			attributes.addFlashAttribute("msgError", "Ha Ocurrido un error");
 			return "redirect:/accords/list";
@@ -242,6 +275,7 @@ public class AccordsController {
 				throw new Exception("No se encontro el acuerdo");
 
 			Accord acc = opt.get();
+			System.out.println(acc.getDeadline());
 			model.addAttribute("accord", acc);
 			this.oldAccord=acc;
 			
@@ -273,42 +307,38 @@ public class AccordsController {
 				
 				if(department.isPresent()) {
 				String json= department.get(); 
-				//  System.out.println(json);
-				//ObjectMapper mapper = new ObjectMapper();
-				//mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-			//	DepUserDTO[] pp1 = mapper.readValue(json, DepUserDTO[].class);
-				
 				
 				JSONArray jsonArr = new JSONArray(json);
-				String body="Se le notifica que ha sido nombrado como resposable del"+
-						" acuerdo "+acc.getAccNumber()+". Por favor darle seguimiento al acuerdo";
-			    List<DepUserDTO> dataList = new ArrayList<DepUserDTO>();
+				String body="Se le notifica que su departamento ha recibido el"+
+						" acuerdo "+acc.getAccNumber()+". Por favor asignarle un responsable";
+			    List<Department> dataList = new ArrayList<>();
 			    for (int i = 0; i < jsonArr.length(); i++) {
 			        JSONObject jsonObj = jsonArr.getJSONObject(i);
-			        DepUserDTO data = new DepUserDTO();
-			        data.setNombre((jsonObj.getString("Usuario")));
-			        data.setDepartamento(jsonObj.getString("Departamento"));
+			        Department data = new Department();
+			        data.setId(jsonObj.getInt("ID"));
+			        data.setName(jsonObj.getString("Nombre"));
 			        dataList.add(data);
 			    }
-			//	List<DepUserDTO> ppl2 = Arrays.asList(mapper.readValue(json, DepUserDTO[].class));
-			  // for(DepUserDTO dto : ppl2 ) {
-				   for(DepUserDTO dto : dataList) {
-					   Optional<User> opt= this.userService.getUserByEmail(dto.getNombre());
-					   if(opt.isPresent()) {
-						   this.pushService.send(dto.getNombre(), "Acuerdo Recibido", body);
-						   this.notiService.insertNotification(acc, dto.getNombre());
-					   }
+				   for(Department dto : dataList) {
+					   Optional<User> opt= this.userService.getBossByDepartment(dto);
+					   if(opt.isPresent()) 
+						   this.pushService.send(opt.get().getTempUser().getEmail(), "Acuerdo Recibido", body);
+						  
+					 this.AccDprmntRepo.insertAccordDepartment(acc, dto);  
 				   }
+				   State state= new State(Accord.RECEIVED_STATE,"Recibido");
+				   acc.setState(state);
+				   this.accordRepo.updateAccordState(acc.getAccNumber(), state.getId());
 				   attributes.addFlashAttribute("msg", "Acuerdo Actualizado Correctamente");
-			   //}
-				}	
+				}
+				
+				return "redirect:/townHall/homeTownHall";
 			}
 			else {
 			Accord oldAccord= this.oldAccord;
 			
 			System.out.println("Viejo: "+ oldAccord);
-			//User user=(User) session.getAttribute("user");
-			//System.out.println(hola);
+
 			if (acc.getType().getId() != Accord.ADMIN_TYPE && oldAccord.getType().getId() == Accord.ADMIN_TYPE) {
 
 				if (!email.isEmpty() && !username.isEmpty()) {

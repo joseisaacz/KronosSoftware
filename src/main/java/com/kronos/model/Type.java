@@ -1,5 +1,8 @@
 package com.kronos.model;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Type {
 
     private char id;
@@ -36,4 +39,14 @@ public class Type {
 		return "Type [id=" + id + ", description=" + description + "]";
 	}
 	
+	public static char getNextId(List<Character> list) {
+		
+		Collections.sort(list);
+		char last=list.get(list.size()-1);
+		if(last=='Z')
+			return 'a';
+		
+		return  (char) (last+1);
+
+	}
 }

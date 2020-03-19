@@ -96,17 +96,29 @@ public class Accord {
 		this.user = user;
 	}
 
+
+
+
 	@Override
-	@SuppressWarnings(value = { "deprecation" })
 	public String toString() {
-		return "Acuerdo [Número de Oficio= " + accNumber + ", Fecha de Incorporación= " + incorporatedDate.getDate() +"/"+(incorporatedDate.getMonth()+1)+"/"+(incorporatedDate.getYear()+1900)+"\n"
-				+ ", Fecha de vencimiento= " + deadline.getDate() +"/"+(deadline.getMonth()+1)+"/"+(deadline.getYear()+1900)+  "]";
+		
+		return "Accord [accNumber=" + accNumber + ", incorporatedDate=" + incorporatedDate + ", incorporatedTime="
+				+ incorporatedTime + ", deadline=" + deadline + ", sessionDate=" + sessionDate + ", type=" + type
+				+ ", observations=" + observations + ", published=" + published + ", notified=" + notified + ", state="
+				+ state + ", user=" + user + ", URL=" + URL + "]";
+
 	}
 
 
 
+
 	public static final char ADMIN_TYPE = 'A';
+	public static final int DONE_STATE=1;
 	public static final int PENDING_STATE=2;
+	public static final int RECEIVED_STATE=3;
+	public static final int INCUMPLIDO_STATE=4;
+	public static final int DESESTIMADO_STATE=5;
+	public static final int VENCIDO_STATE=6;
 	
 	
 	

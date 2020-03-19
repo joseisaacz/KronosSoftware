@@ -30,11 +30,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kronos.model.Accord;
+import com.kronos.model.Department;
 import com.kronos.model.Pdf;
+import com.kronos.model.TempUser;
 import com.kronos.model.User;
 import com.kronos.pushNotification.FcmClient;
 import com.kronos.service.AccordService;
+import com.kronos.service.DeparmentService;
 import com.kronos.service.NotificationService;
+import com.kronos.service.TempUserService;
+import com.kronos.service.UserService;
 
 @RestController
 @RequestMapping("/api/accords")
@@ -45,12 +50,22 @@ public class AccordsRestController {
 
 	@Autowired
 	private AccordService accordRepo;
+	
+	@Autowired
+	private TempUserService tempUserRepo;
+
 
 	@Autowired
 	private FcmClient pushService;
 	
 	@Autowired
 	private NotificationService notiRepo;
+	
+	@Autowired
+	private DeparmentService depRepo;
+	
+	@Autowired
+	private UserService userRepo;
 	
 
 	@GetMapping("/allAccords")
@@ -234,8 +249,29 @@ public class AccordsRestController {
 				this.accordRepo.updateAccord(acc);
 				String body="Se le notifica que el Concejo Municipal ha dado por cumplido "
 						+ "el acuerdo "+ accNumber;
+				
+				Department dep=null;
+				if(!responsables.isEmpty()) {
+					Optional<Department>optDep=this.depRepo.getDepartmentByEmail(responsables.get(0));
+					if(optDep.isPresent())
+						dep=optDep.get();
+				}
+				
+				User userBoss=null;
+				if(dep != null) {	
+				Optional<User> optBoss=this.userRepo.getUserBossByDepartment(dep.getId());
+				if(opt.isPresent()) {
+					String bodyBoss="Se le notifica que el acuerdo "+acc.getAccNumber()+" en el que es responsable su departamento,"
+							+ "ha sido dado por cumplido";
+					userBoss=optBoss.get();
+					this.pushService.send(userBoss.getTempUser().getEmail(), "Ha finalizado el acuerdo "+acc.getAccNumber(),
+							bodyBoss);
+				}
+				
+				}
 				for(String userName : responsables) {
 				 this.pushService.send(userName, "Acuerdo "+accNumber+ " Finalizado", body);
+				 
 				}
 				
 				this.pushService.send("alcaldia@sanpablo.go.cr",  "Acuerdo "+accNumber+ " Finalizado", body); 
@@ -309,5 +345,17 @@ public class AccordsRestController {
 			System.out.println(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
+	}
+	
+	@GetMapping("/getResponsablesByAccord/{accNumber}")
+	public List<TempUser> getResponsablesByAccord(@PathVariable("accNumber") String accNumber){
+		try {
+			return this.tempUserRepo.getTempUsersByAccord(accNumber);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new ResponseStatusException(HttpStatus.valueOf(500), "Server Error");
+		}
+		
 	}
 }

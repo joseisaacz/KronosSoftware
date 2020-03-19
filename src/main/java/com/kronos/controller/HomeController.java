@@ -44,6 +44,7 @@ public class HomeController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
 	
 	@GetMapping("/")
 	public String mostrarHome( HttpSession session) {
@@ -81,7 +82,7 @@ public class HomeController {
 			if (opt.isPresent()) {
 				User user = opt.get();
 				user.setPassword(null);
-				if (session.getAttribute("user") == null)
+				
 					session.setAttribute("user", user);
 
 				String role = "";
@@ -90,7 +91,15 @@ public class HomeController {
 				}
 				session.setAttribute("roleName", role);
 				session.setAttribute("username", user.getTempUser().getEmail());
+				session.setAttribute("userDepartment", user.getDepartment().getId());
+
+				
+				if(user.getIsBoss())
+					return "redirect:/boss/home";
+				
+				
 				switch(role) {
+				
 				case "Concejo Municipal":
 					return "redirect:/accords/list";
 				case "Secretaria de Alcaldia":

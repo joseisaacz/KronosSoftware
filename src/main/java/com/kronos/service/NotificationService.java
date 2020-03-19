@@ -40,6 +40,23 @@ public class NotificationService {
 
 	}
 	
+	public void deleteNotification(Accord acc, String us) throws Exception {
+
+		
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+		CallableStatement statement = connection.prepareCall("{call  deleteNotification(?, ?) }");
+		statement.setString(1, acc.getAccNumber());
+		statement.setString(2, us);
+		
+		
+		// statement.registerOutParameter(1, new );
+		int aux = statement.executeUpdate();
+		statement.close();
+		connection.close();
+
+
+}
+	
 	
 	public boolean isInNotification(Accord acc, String us) throws Exception {
 		Connection connection = jdbcTemplate.getDataSource().getConnection();

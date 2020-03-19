@@ -13,51 +13,59 @@
 
 	<div class="collapse navbar-collapse justify-content-between" id="nav">
 		<ul class="navbar-nav">
-			<li th:if="${session.roleName != null and session.roleName=='Secretaria de Alcaldia'}" class="nav-item"><a
-				class="nav-link text-light font-weight-bold px-3" th:href="@{/townHall/homeTownHall}">Gestor
-					de Acuerdos</a></li>
-			<li th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"class="nav-item"><a
-				class="nav-link text-light font-weight-bold px-3" th:href="@{/}">Gestor
-					de Acuerdos</a></li>
-				<li class="nav-item dropdown"><a
-					class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
-					href="#" id="navbardrop" data-toggle="dropdown"> ACUERDOS </a>
-					<div class="dropdown-menu">
-						<a
-							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
-							class="dropdown-item" th:href="@{/accords/addAccord}">Agregar
-							Acuerdo</a> <a
-							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
-							class="dropdown-item" th:href="@{/accords/list}">Lista de
-							Acuerdo</a> <a
-							th:if="${session.roleName != null and session.roleName=='Secretaria de Alcaldia'}"
-							class="dropdown-item" th:href="@{/townHall/list}">Lista de
-							Acuerdo</a> <a class="dropdown-item" th:href="@{/accords/listDepart}">Lista
-							de Acuerdo por Departamentos</a>
-					</div></li>
+			<li th:if="${session.roleName != null and (session.roleName=='Secretaria de Alcaldia')}" class="nav-item"><a
+				class="nav-link text-light font-weight-bold px-3" th:href="@{/townHall/homeTownHall}">GESTOR
+					DE ACUERDOS</a></li>
+			<li th:if="${session.roleName != null and (session.roleName=='Concejo Municipal')}"class="nav-item"><a
+				class="nav-link text-light font-weight-bold px-3" th:href="@{/}">GESTOR
+					DE ACUERDOS</a></li>
+			<li class="nav-item dropdown"><a
+				class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
+				href="#" id="navbardrop" data-toggle="dropdown"> ACUERDOS </a>
+				<div class="dropdown-menu">
+					<a th:if="${session.roleName != null and (session.roleName=='Concejo Municipal' or session.roleName=='superuser') }" class="dropdown-item" th:href="@{/accords/addAccord}">Agregar
+						Acuerdo</a> 
+						<a th:if="${session.roleName != null and (session.roleName=='Concejo Municipal' or session.roleName=='superuser') }"class="dropdown-item" th:href="@{/accords/list}">Lista
+						de Acuerdo</a> 
+						
+						<a th:if="${session.roleName != null and (session.roleName=='Secretaria de Alcaldia' or session.roleName=='superuser') }"class="dropdown-item" th:href="@{/townHall/list}">Lista
+						de Acuerdo</a> 
+						<a class="dropdown-item" th:href="@{/accords/listDepart}">Lista
+						de Acuerdo por Departamentos</a>
+				</div></li>
 
-				<li class="nav-item dropdown"><a
-					class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
-					href="#" id="navbardrop" data-toggle="dropdown"> ACTAS</a>
-					<div class="dropdown-menu">
+			<li th:if="${session.roleName != null and (session.roleName=='Concejo Municipal' or session.roleName=='superuser')}"class="nav-item dropdown"><a
+				class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
+				href="#" id="navbardrop" data-toggle="dropdown"> ACTAS </a>
+				<div class="dropdown-menu">
 						<a
+
 							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
-							class="dropdown-item" th:href="@{/act/addAct}">Agregar Acta</a> <a
+							class="dropdown-item" th:href="@{/act/addAct}">Agregar Acta</a> 
+          <a
 							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
 							class="dropdown-item" th:href="@{/act/listAct}">Lista de Actas</a>
 
-					</div></li>
 
-				<li class="nav-item dropdown"><a
+					</div>
+				
+				
+				
+				
+				</li>
+				
+				<li th:if="${session.roleName != null and session.roleName=='superuser'}" class="nav-item dropdown"><a
 				class="nav-link text-light font-weight-bold px-3 dropdown-toggle"
 				href="#" id="navbardrop" data-toggle="dropdown"> ADMINISTRACIÓN </a>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" th:href="@{/administration/addUser}">Agregar
 						Usuario</a>
+						
+					<a class="dropdown-item" th:href="@{/administration/listUser}">Ver Usuarios</a>	
 				</div></li>
 
-			<li th:if="${session.user != null}" class="nav-item"><a
-				class="nav-link text-light font-weight-bold px-3" th:href="@{/profileAdmin/changePassword}">PERFIL</a>
+			<li  sec:authorize="!isAnonymous()" class="nav-item"><a
+				class="nav-link text-light font-weight-bold px-3" th:href="@{/administration/goToProfile}">PERFIL</a>
 
 			</li>
 
