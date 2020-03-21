@@ -9,16 +9,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kronos.model.Act;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
 
 import com.kronos.service.ActService;
 
@@ -28,6 +35,7 @@ import com.kronos.service.ActService;
 @RequestMapping(value="/act")
 public class ActController {
 	
+	private Act oldAct = new Act();
 	@Value("${kronos.path.folder}")
 	private String uploadFolder;
 	
@@ -61,9 +69,49 @@ public class ActController {
 	
 	
 	@GetMapping("/listAct")
-	public String listAct() {
-		return "/act/listAct";
+	public String listAct(Model model, HttpSession session, @SessionAttribute("roleName") String roleName ) {
+		if(roleName!= null && roleName.equals("Concejo Municipal")) {
+			model.addAttribute("listActs", actServiceRepo.findAll());
+		}else {
+			
+		}
+		return "act/actList";
 	}
+	
+	@GetMapping("/edit/{sessionDate}")
+	public String gotoEdit(@PathVariable("sessionDate") Date sessionDate, Model model,
+			RedirectAttributes attributes,@SessionAttribute("roleName") String roleName) {
+		try {
+			Optional<Act> opt= this.actServiceRepo.getAct(sessionDate);
+			if (!opt.isPresent())
+				throw new Exception("No se encontro el acuerdo");
+			Act act = opt.get();
+			System.out.println(opt.get().getSessionType());
+			model.addAttribute("act", act);
+			this.oldAct=act;
+			
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "act/editAct";
+	}
+	
+	@PostMapping("/saveEdit")
+	public String editAct(Act act, Model model) {
+		Act oldAct= this.oldAct;
+		System.out.println(act.getSessionType());
+		if(oldAct.getSessionType()!=act.getSessionType()||oldAct.getActive()!=act.getActive()||oldAct.getPublc()!=act.getPublc()) {
+		try {
+			this.actServiceRepo.updateAct(act);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		}else {
+			return"redirect:/act/listAct";
+		}
+		return "redirect:/act/listAct";
+	} 
+	
 	@InitBinder
 	public void initBinder(WebDataBinder webDataBinder) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");

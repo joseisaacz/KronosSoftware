@@ -13,6 +13,7 @@
 
 	<div class="collapse navbar-collapse justify-content-between" id="nav">
 		<ul class="navbar-nav">
+
 			<li th:if="${session.roleName != null and (session.roleName=='Secretaria de Alcaldia')}" class="nav-item"><a
 				class="nav-link text-light font-weight-bold px-3" th:href="@{/townHall/homeTownHall}">GESTOR
 					DE ACUERDOS</a></li>
@@ -39,10 +40,13 @@
 				href="#" id="navbardrop" data-toggle="dropdown"> ACTAS </a>
 				<div class="dropdown-menu">
 						<a
-							
+
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
 							class="dropdown-item" th:href="@{/act/addAct}">Agregar Acta</a> 
-							<a
-							class="dropdown-item" href="#">Lista de Actas</a>
+          <a
+							th:if="${session.roleName != null and session.roleName=='Concejo Municipal'}"
+							class="dropdown-item" th:href="@{/act/listAct}">Lista de Actas</a>
+
 
 					</div>
 				

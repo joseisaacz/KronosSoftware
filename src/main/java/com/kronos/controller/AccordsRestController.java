@@ -32,11 +32,13 @@ import org.springframework.web.server.ResponseStatusException;
 import com.kronos.model.Accord;
 import com.kronos.model.Department;
 import com.kronos.model.Pdf;
+import com.kronos.model.TempUser;
 import com.kronos.model.User;
 import com.kronos.pushNotification.FcmClient;
 import com.kronos.service.AccordService;
 import com.kronos.service.DeparmentService;
 import com.kronos.service.NotificationService;
+import com.kronos.service.TempUserService;
 import com.kronos.service.UserService;
 
 @RestController
@@ -48,6 +50,10 @@ public class AccordsRestController {
 
 	@Autowired
 	private AccordService accordRepo;
+	
+	@Autowired
+	private TempUserService tempUserRepo;
+
 
 	@Autowired
 	private FcmClient pushService;
@@ -125,6 +131,21 @@ public class AccordsRestController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
 	}
+	
+	
+	@GetMapping("/get/pendingDepart/{type}")
+	public List<Accord> searchByPendingDepart(@PathVariable("type") char type) {
+		try {
+
+			return this.accordRepo.searchByPendingAccordsDepartment(type);
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+		}
+	}
+
 
 	@GetMapping("/accNumber/{number}")
 	public List<Accord> searchByAccNumber(@PathVariable("number") String accNumber) {
@@ -339,5 +360,17 @@ public class AccordsRestController {
 			System.out.println(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
+	}
+	
+	@GetMapping("/getResponsablesByAccord/{accNumber}")
+	public List<TempUser> getResponsablesByAccord(@PathVariable("accNumber") String accNumber){
+		try {
+			return this.tempUserRepo.getTempUsersByAccord(accNumber);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new ResponseStatusException(HttpStatus.valueOf(500), "Server Error");
+		}
+		
 	}
 }
