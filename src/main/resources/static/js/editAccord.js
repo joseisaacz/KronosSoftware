@@ -37,11 +37,11 @@ $(document).ready(()=>{
 		})
 		.catch(err=>console.log(err))
 	}
-//	fetch('/api/notifications/getResponsables/'+name).
-//	then(response=>{
-//		if(response.status !== 200)
-//			throw 'Error al cargar los responsables';
-//	}).catch(ex=>console.log(ex))
+// fetch('/api/notifications/getResponsables/'+name).
+// then(response=>{
+// if(response.status !== 200)
+// throw 'Error al cargar los responsables';
+// }).catch(ex=>console.log(ex))
 })	
 
 
@@ -344,7 +344,8 @@ var $rows = $("#usersBody tr").each(function(index) {
   });    
 });
 
-// Let's put this in the object like you want and convert to JSON (Note: jQuery will also do this for you on the Ajax request)
+// Let's put this in the object like you want and convert to JSON (Note: jQuery
+// will also do this for you on the Ajax request)
 
 
 return myRows;
@@ -381,4 +382,74 @@ function accord_Responsables(username,email){
 	elmnt.appendChild(cln2);
 }
 
+function appendUser(user,element){
+	let str='Nombre: '+user.name+'<br>'+'Correo Electrónico: '+user.email+'<br><br>';
+	element.innerHTML+=str;
+	
+}
+
+
+function downloadPdf(){
+
+	console.log(new Date())
+	let img=new Image();
+	img.src='/images/logo.jpg';
+	console.log(img)
+	let doc = new jsPDF();
+	//doc.addImage(img, 'JPG', 10, 78, 12, 15)
+	doc.addImage(img,'JPG',10,10,60,15);
+	doc.setFontSize(20);
+	doc.setFont("times");
+	doc.setFontType("bold");
+	doc.setTextColor(0, 0, 0);
+	doc.text(40,40, 'Comprobante de Notificación del Acuerdo \n'+'             '
+			+document.getElementById('accNumber').value);
+	
+	
+	doc.setFontSize(14);
+	doc.setFontType("bold");
+	let date=new Date();
+	let month=parseInt(date.getMonth(),10)+1;
+	let strDate=date.getDate()+'/'+month+ '/'+date.getFullYear()+'      '+
+	date.getHours()+':'+date.getMinutes();
+	doc.text(10,70,'Fecha:  '+strDate);
+	doc.setFontType("normal");
+	if(document.getElementById('comboTypes').value=='A'){
+	doc.text(10,80,'El acuerdo '+ document.getElementById('accNumber').value
+			+ ' fue entregado con éxito a la secretaria de la municipalidad \n'
+			+'por medio del sistema.' );
+	}
+	else{
+		let names=document.getElementsByName('usernameResponsable');
+		let emails=document.getElementsByName('emailResponsable');
+		doc.text(10,80,'El acuerdo '+document.getElementById('accNumber').value+
+				' fue notificado con éxito por medio de correo electronico\n'+
+				'a las siguientes personas:');
+		let y=105
+		for(let i=0; i<names.length; i++){
+			doc.text(10,y,'Nombre: '+names[i].value+
+					'     Correo Electrónico: '+ emails[i].value);
+			y+=10;
+		}
+		
+	}
+	
+	let name='Comprobante del Acuerdo '+document.getElementById('accNumber').value + '.pdf';
+	doc.save(name);
+
+// html2canvas(document.body,{
+//		
+// onrendered:function (canvas){
+// console.log('Adios')
+// let img=canvas.toDataURL("image/png");
+// let doc = new jsPDF();
+// doc.addImage(img,'JPG',20,20);
+// let name='Comprobante del Acuerdo
+// '+document.getElementById('accNumber').value + '.pdf';
+// doc.save('test.pdf');
+// }
+// })
+// }
+
+}
 
