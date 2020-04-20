@@ -50,6 +50,7 @@ public class HomeController {
 
 	
 	
+	//redirect the user to the index page
 	@GetMapping("/")
 	public String mostrarHome( HttpSession session) {
 
@@ -61,7 +62,7 @@ public class HomeController {
 //			System.out.println(state);
 //		}
 		
-			return (role != null) ? "redirect:/accords/list": "redirect:/index";
+			return "redirect:/index";
 		
 			
 		
@@ -77,6 +78,9 @@ public class HomeController {
 		
 		return "login";
 	}
+	
+	//every role has a own index page
+	//this method gets the login credentials and store it in the session
 	@GetMapping("/index")
 	public String showIndex(Authentication auth, HttpSession session) {
 
@@ -125,6 +129,8 @@ public class HomeController {
 		}
 		return "index";
 	}
+	
+	//logout action
 	@GetMapping("/logout")
 	public String logout(HttpServletRequest request) {
 		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
@@ -132,6 +138,7 @@ public class HomeController {
 		return "redirect:/";
 	}
 	
+	//custom login error message
 	@GetMapping("/login-error")
     public String login(HttpServletRequest request, Model model) {
 		

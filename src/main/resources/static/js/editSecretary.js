@@ -49,8 +49,8 @@ async function listPdf(accNumber){
 		globalAccord=accord;
 		console.log(accord);
 		let parent=$("#pdfBody");
-		accord.url.forEach(url=>{
-			list(parent,url.url,url.finalResponse)
+		accord.url.forEach(urlObj=>{
+			list(parent,urlObj)
 		})
 	}).finally(()=>{
 		initTable()
@@ -65,29 +65,68 @@ function isInRole(){
 	return (role != 'Concejo Municipal') ? "disabled" : "";
 }
 
-function list(parent,url,finalResponse){
+function list(parent,urlObj){
 	console.log(isInRole());
-	console.log(url)
 	var tr=$("<tr/>");
-	let urlAux=url;
+	let urlAux=urlObj.url;
 	let role = document.getElementById('role').value;
 	let names=urlAux.split('/');
 	console.log(names);
-	console.log(url);
 	let finalName=names[names.length-1];
+	let approved=parseInt(urlObj.isApproved,10);
+	if(approved===1)
+		finalName+='(Pendiente)';
+	else
+		if(approved===2)
+			finalName+='(Aprobado)';
+		else
+			if(approved===3)
+				finalName+='(Rechazado)';
+				
+			
 	tr.html(
 	"<td>"+finalName+"</td>"+
-	"<td><button type=\"button\" class=\"btn btn-success\" onclick=\"javascript:openPdf('" + url + "')\">Abrir</button></td>"+	
-	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + url + "','"+finalName+"')\" "+isInRole()+">Eliminar</button></td>"+
-	"<td><input type=\"radio\" name=\"finalResponse\" id=\""+finalName+"checkBox\" value=\""+finalName+"\""+isInRole()+" style=\"text-aling: center; vertical-align:middle \"></td>"
+	"<td><button type=\"button\" class=\"btn btn-success\" onclick=\"javascript:openPdf('" + urlObj.url + "')\">Abrir</button></td>"+	
+	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + urlObj.url + "','"+finalName+"')\" "+isInRole()+">Eliminar</button></td>"+
+	"<td><input type=\"radio\" name=\"finalResponse\" id=\""+finalName+"checkBox\" value=\""+finalName+"\""+isInRole()+" style=\"text-aling: center; vertical-align:middle \"></td>"+
+	"<td><select class=\"form-control\" id=\"approvedPdf_"+finalName+"\""+disableSelect(urlObj)+" >"+
+	"<option value='-1'>Seleccionar Opcion</option>" +
+	"<option value='3'>Rechazar</option>" +
+	"<option value='2'>Aprobar</option>" +
+	"</select>" +
+	"</td>"
 	);
 	tr.attr('id',finalName);
 	parent.append(tr);
 	let checkBox=document.getElementById(finalName+"checkBox");
-	if(finalResponse)
+	if(urlObj.finalResponse)
 		checkBox.checked=true;
+		
+	let comboBox=document.getElementById('approvedPdf_'+finalName)
+	setSelectedIndex(comboBox,urlObj);
+		comboBox.onchange=(function(){
+			updateUrlObj(urlObj, comboBox);
+		});
 }
 
+function setSelectedIndex(comboBox,urlObj){
+	
+	let value=parseInt(urlObj.isApproved,10);
+	if(value===0 || value===1)
+		comboBox.selectedIndex=0;
+	else
+		if(value===2)
+			comboBox.selectedIndex=2;
+		else
+			if(value===3)
+				comboBox.selectedIndex=1;
+	
+}
+function disableSelect(urlObj){
+	let value=parseInt(urlObj.isApproved,10);
+	
+	return (value===1)? "": "disabled";
+}
 function openPdf(pdf){
 
 	let url='/api/accords/getPdf?path='+pdf;
@@ -369,4 +408,37 @@ async function submitFormEdit(){
 	$("#accordFormPrin").submit();
 }
 
+function updateUrlObj(urlObj,comboBox){
+	
+	let value=parseInt(comboBox.value,10);
+	
+	if(value!==-1){
+		
+		bootbox.confirm('Esta Accion no puede ser desecha. ¿Desea continuar?',confirm=>{
+			if(confirm){
+				let names=urlObj.url.split('/');
+				let fileName=names[names.length-1];
+				let dir='/api/accords/updateUrl/'+globalAccord.accNumber+'/'+fileName+'/'+value;
+				console.log(value);
+				fetch(dir).then(response=>{
+					if(!response.ok)
+						throw new Error();
+					
+					comboBox.disabled=true;
+					updateTable();
+					toastr.success('Solicitud Exitosa');
+					
+				}).catch(err=>{
+					bootbox.alert("Ha ocurrido un error. Por favor intentar luego");
+				})
+			}
+			else{
+				comboBox.selectedIndex=0;
+			}
+			
+		})	
+	
+	
+	}
+}
 
