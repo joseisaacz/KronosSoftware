@@ -37,7 +37,7 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers("/push/**","/images/**","/.well-known/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg").permitAll()
 				// Las vistas públicas no requieren autenticación
 				.antMatchers("/push/**","/accords/list/**","/images/**","/","/push/register","/api/accords/**","/api/notifications/**","/accords/edit/**",
-						"/api/accords/uploadPdf/**","/icon.jpg",
+						"/api/accords/uploadPdf/**","/icon.jpg","/api/accords/updateUrl/**",
 						"/api/users/**").permitAll()
 				// Todas las demás URLs de la Aplicación requieren autenticación
 				

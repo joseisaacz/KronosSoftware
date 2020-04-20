@@ -34,6 +34,15 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/act")
 public class ActRestController {
+	
+	/*
+	 * Rest Controller
+	 * Some actions are easier with restful services
+	 * And get better user experience avoiding the server to write the html code 
+	 * */
+	
+	
+	
 	@Value("${kronos.path.folder}")
 	private String uploadFolder;
 	

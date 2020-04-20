@@ -78,8 +78,11 @@ create table T_ACCPDF(
 ACCORD varchar(45),
 URL varchar(100),
 FINALRESPONSE boolean,
+ISAPPROVED int,
+CAN_DELETE boolean,
 constraint FK_ACCORD foreign key (ACCORD) references T_ACCORD(ACCNUMBER)
 );
+
 
 
 create table T_USERACC(
