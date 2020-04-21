@@ -37,18 +37,18 @@
 					<div class="col">
 						<select class="form-control" id="searchAct"
 							onchange="changeSelect(this.value)">
-
+							<option value="allActs">Todos las Actas</option>
 							<option value="sessionDate">Fecha de Sesión</option>
 							<option value="sessionType">Tipo de Sesión</option>
-							<option value="allActs">Todos las Actas</option>
+							
 						</select>
 					</div>
 					<div class="col-sm-4" id="searchDiv">
 						<input type="hidden" class="form-control" id="searchText">
 						<select class="form-control" id="selectType"
 							style="visibility: hidden">
-							<option th:value="ordinaria" th:text="ordinaria"></option>
-							<option th:value="extraordinaria" th:text="extraordinaria"></option>
+							<option th:value="ordinaria" th:text="Ordinaria"></option>
+							<option th:value="extraordinaria" th:text="Extraordinaria"></option>
 						</select>
 					</div>
 					<div class="col-sm-4" id="searchDiv">
