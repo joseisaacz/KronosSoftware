@@ -111,6 +111,8 @@ public class AccordsController {
 	private EmailServiceImpl email;
 	
 	
+	
+	//Save the accord in new action
 	@PostMapping("/saveAccord")
 	public String saveAccord(Accord accord, 
 
@@ -134,20 +136,24 @@ public class AccordsController {
 
 		
 			List<String> urlPaths= new ArrayList<>();
+			//Pdf documents in the form
 			for (MultipartFile uploadFile : uploadingFiles) {
 				String url = uploadFolder + uploadFile.getOriginalFilename();
 				File file = new File(url);
 				uploadFile.transferTo(file);
 				urlPaths.add(url);
-				accord.getURL().add(new Pdf(url));
+				accord.getURL().add(new Pdf(url,false,Pdf.NO_PERMISSION,true));
 
 			}
 			
-			
+			//if the accord isnt admin type it means it has emails in it
+			//as responsables
 			if (accord.getType().getId() != Accord.ADMIN_TYPE) {
 
 				if(optResponsables.isPresent()) {
 					String json=optResponsables.get();
+					
+					//get the responsables as a json array
 					JSONArray jsonArr = new JSONArray(json);
 					
 					for(int i=0 ; i<jsonArr.length();i++) {
@@ -163,7 +169,9 @@ public class AccordsController {
 						if(!opt.isPresent())
 							this.tempUserRepo.insertTempUser(tpUser);
 						
+						//send an email to the responsables
 						for(String url: urlPaths) {
+							
 							this.email.sendMailWithAttachment(tpUser.getEmail(),
 									"Acuerdo Municipal", "Se le informa que ha sido notificado del siguiente acuerdo: "+
 							accord.getAccNumber()+ " con fecha límite de "+ format.format(accord.getDeadline())+".\n"
@@ -192,7 +200,8 @@ public class AccordsController {
 			  String body="Se ha agregado un nuevo Acuerdo\n"+
 			  "Agregado por: "+roleName+"\n"+
 			  "En la fecha:" + LocalDateTime.now().format(formatter)+  "\n";
-			  
+			 
+			//notify the secretary of the new accord  
 			pushService.send("alcaldia@sanpablo.go.cr", "Acuerdo Agregado", body);
 
 		}
@@ -208,20 +217,25 @@ public class AccordsController {
 		return "redirect:/accords/list";
 	}
 
+	//delete the accord with the accordNumber
 	@GetMapping("/deleteAccord/{accNumber}")
 	public String deleteAccord(@PathVariable("accNumber") String accNumber, RedirectAttributes attributes) {
 
 		try {
 			System.out.println(accNumber);
 			String user = "concejomunicipal@sanpablo.go.cr";
+			//this also delete the pdfs in the database and the accord reference in other tables
 			this.accordRepo.deleteAccord(accNumber, user);
-			attributes.addFlashAttribute("msg", "Acuerdo Eliminado con exito");
+			
 		} catch (Exception e) {
-			attributes.addFlashAttribute("msgError", "El Acuerdo n pudo ser eliminado correctamente");
+			attributes.addFlashAttribute("msgError", "El Acuerdo no pudo ser eliminado correctamente");
 		}
+		attributes.addFlashAttribute("msg", "Acuerdo Eliminado con exito");
 		return "redirect:/accords/list";
 	}
 
+	
+	//set the view to the new accord form
 	@GetMapping("/addAccord")
 	public String createAccord(Accord accord, Model model) {
 
@@ -229,7 +243,7 @@ public class AccordsController {
 		return "accord/accordForm";
 	}
 
-	//list of all accords
+	//set the view to the list of all accords
 	@GetMapping("/list")
 	public String listAccord(Model model, HttpSession session,
 			@SessionAttribute("roleName") String roleName) {
@@ -250,26 +264,38 @@ public class AccordsController {
 
 		return "accord/listAccord";
 	}
+
 	
-	//Department list
+	
+	//set the view to the list of accords by department
 	@GetMapping("/listDepart")
-	public String listAccordDepart(Model model) {
+	public String listAccordDepart(Model model, Accord accord) {
 		try {
-			System.out.println("Entramos");
-			model.addAttribute("listAccordsDepart", this.accordRepo.searchAllAccords());
+			
+			model.addAttribute("accord", accord );
+			model.addAttribute("types", this.typesRepo.findAll());
+			//model.addAttribute("listAccordsDepart", this.accordRepo.searchByPendingAccordsDepartment('A'));
+			
 		} catch (Exception e) {
 
 			System.out.println(e.getMessage());
 		}
 		return "accord/listAccordDepartment";
 	}
+	
+	
 
+	
+	
+	
+	//go the the edit view with the accord
 	@GetMapping("/edit/{accNumber}")
 
 	public String goToEdit(@PathVariable("accNumber") String accNumber, Model model,
 			RedirectAttributes attributes,@SessionAttribute("roleName") String roleName) {
 
 		try {
+			//find the accord in the DB by its accord number 
 			Optional<Accord> opt = this.accordRepo.getAccord(accNumber);
 			if (!opt.isPresent())
 				throw new Exception("No se encontro el acuerdo");
@@ -277,6 +303,7 @@ public class AccordsController {
 			Accord acc = opt.get();
 			System.out.println(acc.getDeadline());
 			model.addAttribute("accord", acc);
+			//auxiliar variable
 			this.oldAccord=acc;
 			
 			
@@ -291,6 +318,7 @@ public class AccordsController {
 	}
 
 	
+	//Save the accord in the edit action
 	@PostMapping("/saveEdit")
 	public String editAccord(Accord acc, Model model,
 			@RequestParam(value = "username", required = false) String username,
@@ -303,11 +331,13 @@ public class AccordsController {
 
 		try {
 			
+			//if the role is the secretary we need to get the responsable(s) departement(s)
+			//and put them in the DB
 			if(roleName.equals("Secretaria de Alcaldia")) {
 				
 				if(department.isPresent()) {
 				String json= department.get(); 
-				
+				// got the responsables by a json array
 				JSONArray jsonArr = new JSONArray(json);
 				String body="Se le notifica que su departamento ha recibido el"+
 						" acuerdo "+acc.getAccNumber()+". Por favor asignarle un responsable";
@@ -321,6 +351,8 @@ public class AccordsController {
 			    }
 				   for(Department dto : dataList) {
 					   Optional<User> opt= this.userService.getBossByDepartment(dto);
+					   
+					   //notify the boss of the department
 					   if(opt.isPresent()) 
 						   this.pushService.send(opt.get().getTempUser().getEmail(), "Acuerdo Recibido", body);
 						  
@@ -382,12 +414,15 @@ public class AccordsController {
 		return "redirect:/accords/list";
 	}
 
+	
+	//Binder for the date
 	@InitBinder
 	public void initBinder(WebDataBinder webDataBinder) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
 	}
 
+	//some variables in the view
 	@ModelAttribute
 	public void setGenericos(Model model) {
 	

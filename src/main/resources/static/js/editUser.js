@@ -1,10 +1,10 @@
 /**
  * 
  */
+
 globalAccord=null;
 
 $(document).ready(()=>{
-	initusersTable();
 	let name = $("#accNumber").val();
 	(async ()=>{
 		let b = await listPdf(name);
@@ -14,34 +14,30 @@ $(document).ready(()=>{
 	
 
 )();
-	let type = $("#comboTypes").val();
-	if(type !=='A'){
-		fetch('/api/accords/getResponsablesByAccord/'+name)
-		.then(response=>{
-			console.log(response)
-			if(!response.ok)
-				throw new Exception();
-			
-			return response.json()
-		})
-		.then(users=>{
-			console.log(users);
-			document.getElementById('divTempUsers').style.visibility=''
-			document.getElementById('username').value=users[0].name
-			document.getElementById('email').value=users[0].email
-				
-			for(let i=1; i<users.length; i++)
-				accord_Responsables(users[i].name,users[i].email)
-			
-			
-		})
-		.catch(err=>console.log(err))
-	}
-// fetch('/api/notifications/getResponsables/'+name).
-// then(response=>{
-// if(response.status !== 200)
-// throw 'Error al cargar los responsables';
-// }).catch(ex=>console.log(ex))
+	
+	fetch('/api/notifications/getResponsables/'+name).
+	then(response=>{
+		console.log(response);
+		if(response.status !== 200)
+			throw 'Error al cargar los responsables';
+		return response.json();
+	})
+	.then(resp=>{
+		if(resp.length>0){
+			//document.getElementById('selectDepartment').disabled=true;
+			//document.getElementById('okButton').style.visibility='hidden';
+			document.getElementById('okButton').style.visibility='show';
+			document.getElementById('accordFormPrin').action='/townHall/edit/newResponsables';
+		}
+		 var parent = $("#usersBody");
+         parent.html("");
+         resp.forEach(item => {
+             listUser(parent, item);
+         });
+		
+	})
+	.then(()=>initusersTable())
+	.catch(ex=>console.log(ex))
 })	
 
 
@@ -52,11 +48,10 @@ async function listPdf(accNumber){
 	.then(accord => {
 		globalAccord=accord;
 		console.log(accord);
+		console.log(accord.url[0].approved)
 		let parent=$("#pdfBody");
-		accord.url.forEach(url=>{
-			if(url.approved){
-			list(parent,url.url,url.finalResponse)
-			}
+		accord.url.forEach(urlObj=>{
+				list(parent,urlObj)
 		})
 	}).finally(()=>{
 		initTable()
@@ -65,32 +60,55 @@ async function listPdf(accNumber){
 }
 
 
+function canEditPdf(urlObj){
+	if(parseInt(urlObj.approved,10) !==0 && parseInt(urlObj.approved,10) !==2 ){
+		let role = document.getElementById('role').value;
+		return  urlObj.canDelete ? "disabled" : "";
+	}
+	return "disabled";
+	
+}
 
 function isInRole(){
 	let role = document.getElementById('role').value;
 	return (role != 'Concejo Municipal') ? "disabled" : "";
 }
 
-function list(parent,url,finalResponse){
+function list(parent,urlObj){
 	console.log(isInRole());
-	console.log(url)
+	console.log(urlObj)
 	var tr=$("<tr/>");
-	let urlAux=url;
+	let urlAux=urlObj.url;
 	let role = document.getElementById('role').value;
 	let names=urlAux.split('/');
 	console.log(names);
-	console.log(url);
 	let finalName=names[names.length-1];
+	
+	console.log(urlObj)
+	let approved=parseInt(urlObj.isApproved,10)
+	console.log(approved);
+	if(!urlObj.CanDelete && approved !==0){
+		if(approved ===1)
+			finalName+='(Pendiente)'
+			else
+				if(approved===3)
+					finalName+='(Rechazado)'
+			
+	}
+	
+	
+		
+	
 	tr.html(
 	"<td>"+finalName+"</td>"+
-	"<td><button type=\"button\" class=\"btn btn-success\" onclick=\"javascript:openPdf('" + url + "')\">Abrir</button></td>"+	
-	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + url + "','"+finalName+"')\" "+isInRole()+">Eliminar</button></td>"+
+	"<td><button type=\"button\" class=\"btn btn-success\" onclick=\"javascript:openPdf('" + urlObj.url + "')\">Abrir</button></td>"+	
+	"<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"javascript:deletePdf('" + urlObj.url + "','"+finalName+"')\" "+canEditPdf(urlObj)+">Eliminar</button></td>"+
 	"<td><input type=\"radio\" name=\"finalResponse\" id=\""+finalName+"checkBox\" value=\""+finalName+"\""+isInRole()+" style=\"text-aling: center; vertical-align:middle \"></td>"
 	);
 	tr.attr('id',finalName);
 	parent.append(tr);
 	let checkBox=document.getElementById(finalName+"checkBox");
-	if(finalResponse)
+	if(urlObj.finalResponse)
 		checkBox.checked=true;
 }
 
@@ -146,7 +164,7 @@ function comboBoxType(){
 
 function uploadPdf(){
 	console.log(globalAccord);
-	let _url='/api/accords/uploadPdf/'+globalAccord.accNumber;
+	let _url='/api/accords/uploadPdf/permission/'+globalAccord.accNumber;
 	let form=document.getElementById('accordForm');
 	
 	let count= $("input:file")[0].files.length;
@@ -161,12 +179,11 @@ function uploadPdf(){
 	        processData: false,
 	        contentType: false,
 	        data: _data,
-	        success : accord=>{
+	        success : ()=>{
 
-	        		if(accord.state.id === 0){
-	        			document.getElementById('state').value=0;
-	        		}
 	        		updateTable();
+	        		toastr.success("Pdf subido con éxito. Esta pendiente de aprobación " +
+	        				"por parte de la secretaria municipal");
 
 	        },
             
@@ -208,6 +225,8 @@ function initTable() {
         "info": false,
         "iDisplayLength": 3
     });
+    
+
 }
 
 
@@ -234,6 +253,22 @@ function initusersTable() {
         "info": false,
         "iDisplayLength": 3
     });
+    
+    let table=$('#usersTable').DataTable();
+    table.column( 0 ).visible( false );
+    $('#usersBody').on('dblclick', 'tr', function () {
+    	
+    	bootbox.confirm('Está seguro que desea eliminar este usuario',result => {
+    		console.log(result)
+    		if(result){
+    		    table
+    	        .row(this)
+    	        .remove()
+    	        .draw();
+    		}
+    	});
+
+    	} );
 }
 
 
@@ -267,45 +302,17 @@ function cleanPdfForm(){
 }
 
 
-function changeSelectUsers(select){
+function changeSelectDepartments(select){
+	let addDprmntButton=document.getElementById('addDprmntButton');
 	
-	if(parseInt(select.value,10) !== -1){
-		 document.getElementById('users').options.length=0;
-		showUsers();
-		let selectUsers= document.getElementById('users');
-		let url='/api/users/getUsersByDepartment/'+select.value;
-		fetch(url)
-		.then(data=>{
-			if(!data.ok)
-				throw "Ha ocurrido un error. Por favor intente más tarde.";
-			
-			return data.json();
-			})
-		.then(users=>{
-			if(users.length === 0)
-				throw "Por favor contacte al administrador para " +
-						"agregar usuarios a este departamento"
-				
-			for(let user of users){
-				let option=document.createElement('option');
-				option.text=user.tempUser.name;
-				option.value=user.tempUser.email;
-				selectUsers.appendChild(option);
-				
-			}
-		}).catch((error)=>{
-			hideUsers();
-			select.value='-1';
-			bootbox.alert(error);
-			
-		})
-		
-		
-	}
-	else{
-		hideUsers();
-	}
+	if(parseInt(select.value,10) !== -1)
+		addDprmntButton.style.visibility='';
+	
+	else
+		addDprmntButton.style.visibility='hidden';
 }
+		
+
 
 function hideUsers(){
 	 document.getElementById('users').style.visibility='hidden';
@@ -319,17 +326,16 @@ function showUsers(){
 	document.getElementById('userLabel').style.visibility='';
 }
 
-function addUser(){
+function addDprmnt(){
 	let table=document.getElementById('usersBody');
 	
 	
 	let selectDeps=document.getElementById('selectDepartment');
-	let selectUsers=document.getElementById('users');
 	let depName=selectDeps.options[selectDeps.selectedIndex].innerHTML;
-	let userName=selectUsers.options[selectUsers.selectedIndex].value;
+	let depID=selectDeps.options[selectDeps.selectedIndex].value;
 
 	
-	$('#usersTable').DataTable().row.add([userName,depName]).draw();
+	$('#usersTable').DataTable().row.add([depID,depName]).draw();
 }
 
 
@@ -346,8 +352,6 @@ var $rows = $("#usersBody tr").each(function(index) {
   });    
 });
 
-// Let's put this in the object like you want and convert to JSON (Note: jQuery
-// will also do this for you on the Ajax request)
 
 
 return myRows;
@@ -363,95 +367,27 @@ async function JsontoString(){
 }
 
 async function submitForm(){
+    let table=$('#usersTable').DataTable();
+    table.column( 0 ).visible( true );
 	let a =await JsontoString();
 	$("#accordFormPrin").submit();
 }
 
-function accord_Responsables(username,email){
-	var elmnt = document.getElementById('responsable');
-	var name = document.getElementById('nameR');
-	var mail = document.getElementById('emailR');
-	var nameI = name.children[1];
-	var mailI = document.getElementById('email');
-	var line = document.getElementById('line');
-	var cln = name.cloneNode(true);
-	cln.children[1].value=username;
-	var cln1 = mail.cloneNode(true);
-	cln1.children[1].value=email;
-	var cln2 = line.cloneNode(true);
-	elmnt.appendChild(cln);
-	elmnt.appendChild(cln1);
-	elmnt.appendChild(cln2);
+
+function listUser(parent, item) {
+
+
+    var tr = $("<tr/>");
+    tr.html(
+            "<td>" +item.user + "</td>" +
+            "<td>" +item.dep.name + "</td>"
+
+            );
+    parent.append(tr);
+  
 }
 
-function appendUser(user,element){
-	let str='Nombre: '+user.name+'<br>'+'Correo Electrónico: '+user.email+'<br><br>';
-	element.innerHTML+=str;
-	
+async function submitFormEdit(){
+	let a =await JsontoString();
+	$("#accordFormPrin").submit();
 }
-
-
-function downloadPdf(){
-
-	console.log(new Date())
-	let img=new Image();
-	img.src='/images/logo.jpg';
-	console.log(img)
-	let doc = new jsPDF();
-	//doc.addImage(img, 'JPG', 10, 78, 12, 15)
-	doc.addImage(img,'JPG',10,10,60,15);
-	doc.setFontSize(20);
-	doc.setFont("times");
-	doc.setFontType("bold");
-	doc.setTextColor(0, 0, 0);
-	doc.text(40,40, 'Comprobante de Notificación del Acuerdo \n'+'             '
-			+document.getElementById('accNumber').value);
-	
-	
-	doc.setFontSize(14);
-	doc.setFontType("bold");
-	let date=new Date();
-	let month=parseInt(date.getMonth(),10)+1;
-	let strDate=date.getDate()+'/'+month+ '/'+date.getFullYear()+'      '+
-	date.getHours()+':'+date.getMinutes();
-	doc.text(10,70,'Fecha:  '+strDate);
-	doc.setFontType("normal");
-	if(document.getElementById('comboTypes').value=='A'){
-	doc.text(10,80,'El acuerdo '+ document.getElementById('accNumber').value
-			+ ' fue entregado con éxito a la secretaria de la municipalidad \n'
-			+'por medio del sistema.' );
-	}
-	else{
-		let names=document.getElementsByName('usernameResponsable');
-		let emails=document.getElementsByName('emailResponsable');
-		doc.text(10,80,'El acuerdo '+document.getElementById('accNumber').value+
-				' fue notificado con éxito por medio de correo electronico\n'+
-				'a las siguientes personas:');
-		let y=105
-		for(let i=0; i<names.length; i++){
-			doc.text(10,y,'Nombre: '+names[i].value+
-					'     Correo Electrónico: '+ emails[i].value);
-			y+=10;
-		}
-		
-	}
-	
-	let name='Comprobante del Acuerdo '+document.getElementById('accNumber').value + '.pdf';
-	doc.save(name);
-
-// html2canvas(document.body,{
-//		
-// onrendered:function (canvas){
-// console.log('Adios')
-// let img=canvas.toDataURL("image/png");
-// let doc = new jsPDF();
-// doc.addImage(img,'JPG',20,20);
-// let name='Comprobante del Acuerdo
-// '+document.getElementById('accNumber').value + '.pdf';
-// doc.save('test.pdf');
-// }
-// })
-// }
-
-}
-

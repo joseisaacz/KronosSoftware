@@ -23,9 +23,12 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import com.kronos.service.StateService;
 import com.kronos.service.TypeService;
 import com.kronos.service.UserService;
+import com.kronos.helper.PdfMaker;
+import com.kronos.model.Accord;
 import com.kronos.model.State;
 import com.kronos.model.Type;
 import com.kronos.model.User;
+import com.kronos.service.AccordService;;
 
 @Controller
 public class HomeController {
@@ -46,6 +49,8 @@ public class HomeController {
 	private PasswordEncoder passwordEncoder;
 
 	
+	
+	//redirect the user to the index page
 	@GetMapping("/")
 	public String mostrarHome( HttpSession session) {
 
@@ -57,7 +62,7 @@ public class HomeController {
 //			System.out.println(state);
 //		}
 		
-			return (role != null) ? "redirect:/accords/list": "redirect:/index";
+			return "redirect:/index";
 		
 			
 		
@@ -73,6 +78,9 @@ public class HomeController {
 		
 		return "login";
 	}
+	
+	//every role has a own index page
+	//this method gets the login credentials and store it in the session
 	@GetMapping("/index")
 	public String showIndex(Authentication auth, HttpSession session) {
 
@@ -92,6 +100,8 @@ public class HomeController {
 				session.setAttribute("roleName", role);
 				session.setAttribute("username", user.getTempUser().getEmail());
 				session.setAttribute("userDepartment", user.getDepartment().getId());
+
+				//PdfMaker.generatePdf("", new Accord());
 
 				
 				if(user.getIsBoss())
@@ -119,6 +129,8 @@ public class HomeController {
 		}
 		return "index";
 	}
+	
+	//logout action
 	@GetMapping("/logout")
 	public String logout(HttpServletRequest request) {
 		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
@@ -126,6 +138,7 @@ public class HomeController {
 		return "redirect:/";
 	}
 	
+	//custom login error message
 	@GetMapping("/login-error")
     public String login(HttpServletRequest request, Model model) {
 		

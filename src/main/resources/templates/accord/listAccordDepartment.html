@@ -21,6 +21,7 @@
 
 <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
 	rel="stylesheet">
+
 </head>
 <body>
 	<header th:insert="fragments/header :: header-prin"> </header>
@@ -34,16 +35,18 @@
 			<div class="container">
 				<div class="row">
 					<div class="col">
-						<select class="form-control" id="serchType"
-							onchange="changeSelect(this.value)">
-							<option value="Concejo Municipal">Concejo Municipal</option>
-							<option value="Alcaldia">Alcaldia</option>
-							<option value="DDH">Direccion de Desarrollo Humano</option>
-							<option value="DHM">Direccion de Hacienda Municipal</option>
-							<option value="DSP">Direccion de Servicios Publicos</option>
-							<option value="Proveeduria">Proveeduria</option>
-							<option value="Recursos Humanos">Recursos Humanos</option>
-						</select>
+						<h5>Acuerdos Pendientes por Departamento</h5>
+
+					</div>
+					<div class="col">
+						<form th:action="@{/accords/listDepart}" th:object="${accord}"
+							enctype="multipart/form-data" id="form1">
+							<select th:field=*{type.id} class="form-control" id="comboTypes"
+								name="type">
+								<option id="type"  th:each="type:${types}" th:value="${type.id}"
+									th:text="${type.description}"></option>
+							</select>
+						</form>
 					</div>
 					<!-- <div class="col-sm-4" id="searchDiv">
 						<input type="hidden" class="form-control" id="searchText">
@@ -52,12 +55,11 @@
 							<option th:each="type:${types}" th:value="${type.id}"
 								th:text="${type.description}"></option>
 						</select>
-					</div>
-					<div class="col-sm-4" id="searchDiv">
-						<button type="button" style="visibility: hidden"
-							class="btn btn-success" id="seacrhButton"
-							onclick="searchAccord()">Buscar</button>
 					</div> -->
+					<div class="col-sm-4" id="searchDiv">
+						<button type="button" class="btn btn-success" id="seacrhButton"
+							onclick="searchByPendingDeparment()">Buscar</button>
+					</div>
 				</div>
 			</div>
 			<div class="row">

@@ -16,7 +16,12 @@ import com.kronos.service.AccordService;
 @RestController
 @RequestMapping("/api/boss")
 public class BossRestController {
-
+	/*
+	 * Rest Controller
+	 * Some actions are easier with restful services
+	 * And get better user experience avoiding the server to write the html code 
+	 * */
+	
 	@Autowired
 	private AccordService accRepo;
 	
