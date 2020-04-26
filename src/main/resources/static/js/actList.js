@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initTable() {
-    $('#tableAcc').DataTable({
+    $('#tableAct').DataTable({
         "language": {
             "lengthMenu": "Mostrar _MENU_ Actas",
             "zeroRecords": "No se encontraron resultados",
@@ -102,7 +102,7 @@ function list(parent, act) {
     var tr = $("<tr/>");
     tr.html(
              "<td>" + formatDate(act.sessionDate) + "</td>"
-            + "<td>" + act.sessionType + "</td>"
+            + "<td>" + toUpper(act.sessionType) + "</td>"
             + "<td> <a href=\"/act/edit/"+ formatDate(act.sessionDate)+"\">" + "<button type=\"button\" style='text-align: center' class=\"btn btn-primary\">"
             + "Editar</button></a></td>"
             );
@@ -206,6 +206,12 @@ function formatDate(date) {
 function stringToDate(str){
 	return new Date(str.split('-').join('/'));
 	
+}
+
+function toUpper(str){
+	let first = str.charAt(0)
+	let upper = first.toUpperCase()
+	return upper+str.slice(1)
 }
 
 
