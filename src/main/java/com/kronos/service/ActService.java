@@ -196,5 +196,21 @@ public class ActService {
 		statement.close();
 		connection.close();
 	}
+
+	public List<Act> deactivatedActs() {
+		
+		try {
+			Connection connection = jdbcTemplate.getDataSource().getConnection();
+			CallableStatement statement = connection.prepareCall("{call deactivatedActs()}");
+			ResultSet rs = statement.executeQuery();
+			List<Act> result = this.mapRowList1(rs);
+			statement.close();
+			connection.close();
+			return result;
+		} catch (Exception e) {
+			System.out.println("\n\n\n\n\n\n\n\nERROR\n\n\n\n\n" + e.getMessage());
+		}
+		return null;
+	}
 	
 }

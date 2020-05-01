@@ -63,6 +63,20 @@ public class ActRestController {
 		}
 	}
 	
+	@GetMapping("/deactivatedActs")
+	public List<Act> deactivatedActs() {
+		
+		try {
+
+			return this.actRepo.deactivatedActs();
+
+		}
+
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+		}
+	}
+	
 	@GetMapping("/sessionDate/{date}")
 	public List<Act> searchActsbySessionDate(@PathVariable("date") String date){
 		try {
