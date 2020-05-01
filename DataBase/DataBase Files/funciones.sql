@@ -907,7 +907,7 @@ DELIMITER $$
 USE `KRONOS`$$
 create procedure searchAllActs()
 begin 
-select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT;
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT where ACTIVE=1;
 end$$
 DELIMITER ;
 
@@ -1011,7 +1011,25 @@ select T_TYPE.ID from T_TYPE order by T_TYPE.ID;
 end$$
 DELIMITER ; 
 
+USE `KRONOS`;
+DROP procedure  IF EXISTS deactivatedActs;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure deactivatedActs()
+begin
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT where ACTIVE=0;
+end$$
+DELIMITER ; 
 
+USE `KRONOS`;
+DROP procedure IF EXISTS lastIdInType;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure lastIdInType()
+begin
+select MAX(ID) from T_TYPE;
+end$$
+DELIMITER ;
 
 
 alter table T_ROLE auto_increment = 1;
