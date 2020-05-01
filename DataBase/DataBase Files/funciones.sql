@@ -4,7 +4,7 @@ DELIMITER $$
 USE `KRONOS`$$
 CREATE PROCEDURE insertAccord (IN accNumber VARCHAR(45), IN incorDate DATE, IN incorTime TIME, 
 IN deadLine DATE, IN sessionDate DATE, IN type_id
-CHAR(1), IN observations longtext, IN publics TINYINT(4),
+int, IN observations longtext, IN publics TINYINT(4),
 IN notified TINYINT(4), IN states INT, IN user_id VARCHAR(45))
 BEGIN
 INSERT INTO T_ACCORD (ACCNUMBER, INCORDATE,INCORTIME, 
@@ -69,7 +69,7 @@ USE `KRONOS`;
 DROP procedure IF EXISTS searchAccordType;
 DELIMITER $$
 USE `KRONOS`$$
-create procedure searchAccordType(in type_id char(1))
+create procedure searchAccordType(in type_id int)
 begin
 select ACCNUMBER, INCORDATE, 
 DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE, T_ACCPDF.ISAPPROVED AS ISAPPROVED, T_ACCPDF.CAN_DELETE AS CAN_DELETE from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND T_ACCORD.TYPE_ID = type_id;
@@ -842,7 +842,7 @@ USE `KRONOS`$$
 create procedure pendingAccordsDepartment(in _department varchar(1))
 begin
 select ACCNUMBER, INCORDATE, 
-DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL , T_ACCPDF.FINALRESPONSE AS FINALRESPONSE, T_ACCPDF.ISAPPROVED AS ISAPPROVED, T_ACCPDF.CAN_DELETE AS CAN_DELETE  from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND  T_ACCORD.STATE = 2 AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND  T_ACCORD.TYPE_ID= _department;
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL , T_ACCPDF.FINALRESPONSE AS FINALRESPONSE, T_ACCPDF.ISAPPROVED AS ISAPPROVED, T_ACCPDF.CAN_DELETE AS CAN_DELETE  from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND (T_ACCORD.STATE=2 OR T_ACCORD.STATE=3) AND T_ACCORD.TYPE_ID=T_TYPE.ID AND  T_ACCORD.TYPE_ID= _department;
 end$$
 DELIMITER ;
 
@@ -1017,16 +1017,16 @@ DELIMITER ;
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;
 
-insert into T_TYPE (ID, DESCRIPTION) values ('A', 'Administración Municipal');
-insert into T_TYPE (ID, DESCRIPTION) values ('B', 'Auditoria Interna');
-insert into T_TYPE (ID, DESCRIPTION) values ('C', 'Lic');
-insert into T_TYPE (ID, DESCRIPTION) values ('D', 'Obras');
-insert into T_TYPE (ID, DESCRIPTION) values ('E', 'Plan Regulador');
-insert into T_TYPE (ID, DESCRIPTION) values ('F', 'Hacienda');
-insert into T_TYPE (ID, DESCRIPTION) values ('G', 'Juridicos');
-insert into T_TYPE (ID, DESCRIPTION) values ('H', 'Sociales');
-insert into T_TYPE (ID, DESCRIPTION) values ('I', 'Ambiente');
-insert into T_TYPE (ID, DESCRIPTION) values ('J', 'Varios');
+insert into T_TYPE (DESCRIPTION) values ('Administración Municipal');
+insert into T_TYPE (DESCRIPTION) values ('Auditoria Interna');
+insert into T_TYPE (DESCRIPTION) values ('Lic');
+insert into T_TYPE (DESCRIPTION) values ('Obras');
+insert into T_TYPE (DESCRIPTION) values ('Plan Regulador');
+insert into T_TYPE (DESCRIPTION) values ('Hacienda');
+insert into T_TYPE (DESCRIPTION) values ('Juridicos');
+insert into T_TYPE (DESCRIPTION) values ('Sociales');
+insert into T_TYPE (DESCRIPTION) values ('Ambiente');
+insert into T_TYPE (DESCRIPTION) values ('Varios');
 
 
 insert into T_STATE (ID, DESCRIPTION)values (0, 'Cumplido');
