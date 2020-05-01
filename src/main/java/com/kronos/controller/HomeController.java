@@ -19,11 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
-
 import com.kronos.service.StateService;
 import com.kronos.service.TypeService;
 import com.kronos.service.UserService;
-//import com.kronos.helper.PdfMaker;
 import com.kronos.model.Accord;
 import com.kronos.model.State;
 import com.kronos.model.Type;

@@ -300,7 +300,7 @@ function searchAllAccords() {
 
 
 function searchByPendingDeparment(){
-	let type = document.getElementById('type').value;  
+	let type = document.getElementById('comboTypes').value;
 	let _url ="/api/accords/get/pendingDepart/"+type;
     fetch(_url)
     .then(res =>
