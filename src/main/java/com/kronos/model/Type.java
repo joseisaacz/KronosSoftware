@@ -3,26 +3,30 @@ package com.kronos.model;
 
 public class Type {
 
-    private char id;
+    private int id;
     private String description;
     
     public Type() {
     	
     }
     
-    public Type(char id) {
+    public Type(int id) {
     	this.id = id;
     }
     
-    public Type(char id, String description) {
+    public Type(String description) {
+    	
+    	this.description=description;
+    }
+    public Type(int id, String description) {
     	this.id = id;
     	this.description = description; 
     }
 
-	public char getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(char id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getDescription() {

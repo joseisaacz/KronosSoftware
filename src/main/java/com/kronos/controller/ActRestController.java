@@ -86,7 +86,6 @@ public class ActRestController {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String date2 = sdf.format(dateDb);
 			Date db2 = sdf.parse(date2);
-			System.out.println(db2);
 			return this.actRepo.searchBySessionDate(db2);
 
 		}
@@ -137,6 +136,7 @@ public class ActRestController {
 					.body(resource);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
@@ -152,10 +152,7 @@ public class ActRestController {
 		try {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date db2 = sdf.parse(date);
-
-			//System.out.println(accNumber);
 			Optional<Act> opt=this.actRepo.getAct(db2);
-			System.out.println(opt.get());
 			if(!opt.isPresent())
 				throw new Exception();
 			
@@ -176,6 +173,7 @@ public class ActRestController {
 			Act _act=optAct.get();
 			return ResponseEntity.ok(_act);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
 		}
