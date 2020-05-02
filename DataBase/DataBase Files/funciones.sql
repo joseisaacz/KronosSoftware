@@ -65,6 +65,62 @@ commit;
 end$$
 DELIMITER ;
 
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS insertForgotPassword;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertForgotPassword(
+in _user varchar(45), in _token varchar(6), in _datetime datetime)
+begin
+insert into T_FORGOT_PASSWORD (USER_ID, TOKEN, DATE_TIME) values (_user, _token, _datetime);
+commit; 
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS deleteForgotPassword;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure deleteForgotPassword(
+in _user varchar(45), in _token varchar(6))
+begin
+delete from T_FORGOT_PASSWORD WHERE USER_ID=_user AND TOKEN=_token;
+commit; 
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS getRecentToken;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure getRecentToken(
+in _user varchar(45))
+begin
+SELECT TOKEN from T_FORGOT_PASSWORD WHERE USER_ID=_user ORDER BY DATE_TIME DESC LIMIT 1;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updatePassword;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updatePassword(
+in _user varchar(45), in _password varchar(100))
+begin
+UPDATE T_USER SET PASSWORD=_password where TEMPUSER=_user;
+commit;
+end$$
+DELIMITER ;
+
+
+
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS searchAccordType;
 DELIMITER $$
@@ -1056,7 +1112,6 @@ insert into T_STATE (ID, DESCRIPTION)values (5, 'Vencido');
 
 insert into T_TEMPUSER(NAME,EMAIL) values ('SUPERUSER','superuser@superuser.com');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Concejo Municipal','concejomunicipal@sanpablo.go.cr');
-insert into T_TEMPUSER(NAME,EMAIL) values ('Secretaria de Alcaldia','alcaldia@sanpablo.go.cr');
 insert into T_DEPARTMENT (NAME) values ('SUPERUSER'); # 1
 insert into T_DEPARTMENT (NAME) values ('Concejo Municipal'); #2
 insert into T_DEPARTMENT (NAME) values ('Alcaldia'); #3
