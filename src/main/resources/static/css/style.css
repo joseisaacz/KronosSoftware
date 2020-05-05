@@ -1,3 +1,12 @@
+
+@font-face{
+    font-family: fuente_1;
+    font-style: normal;
+    font-weight: normal;
+    src: url(Arial.ttf);
+}
+
+
 *{
 	padding: 0;
 	margin: 0;
@@ -5,7 +14,7 @@
 }
 
 body{
-    font-family: 'Poppins', sans-serif;
+    font-family: fuente_1;
     overflow: hidden;
 }
 
@@ -140,7 +149,7 @@ form{
 	padding: 0.5rem 0.7rem;
 	font-size: 1.2rem;
 	color: #555;
-	font-family: 'poppins', sans-serif;
+	font-family: fuente_1; 
 }
 
 .input-div.pass{

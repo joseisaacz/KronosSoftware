@@ -8,6 +8,14 @@
 }
 
 
+@font-face{
+    font-family: fuente_1;
+    font-style: normal;
+    font-weight: normal;
+    src: url(Arial.ttf);
+}
+
+
 #wrapper {
     padding: 130px;
 }
@@ -80,7 +88,8 @@ html {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #BBC9D4 !important;
+    background: #FFFFFF !important;
+    font-family: fuente_1;
 }
 .user_card {
     height: 400px;
