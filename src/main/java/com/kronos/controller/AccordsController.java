@@ -356,7 +356,7 @@ public class AccordsController {
 
 				if (acc.getType().getId() != Accord.ADMIN_TYPE && oldAccord.getType().getId() == Accord.ADMIN_TYPE) {
 
-					if (!email.isEmpty() && !username.isEmpty()) {
+				if (!email.isEmpty() && !username.isEmpty()) {
 						this.tUserAccRepo.insertAccord_TempUser(acc, new TempUser(username, email));
 					}
 
