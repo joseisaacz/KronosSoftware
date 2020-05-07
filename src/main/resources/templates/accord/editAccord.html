@@ -17,7 +17,8 @@
 	href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"
 	rel="stylesheet">
 
-<link rel= "shortcut icon" th:href="@{/images/log4.ico}" type="image/x-icon"  >
+<link rel="shortcut icon" th:href="@{/images/log4.ico}"
+	type="image/x-icon">
 </head>
 <body>
 	<header th:insert="fragments/header :: header-prin"> </header>
@@ -230,14 +231,21 @@
 
 							</div>
 						</div>
-							<div class="col-2"></div>
-						<div class="col-4">
-						<br>
-						<br>
-						<a href="javascript:downloadPdf()"><button type="button" class="btn btn-info">Generar Comprobante</button></a>
-						
+						<div class="col-2">
 						</div>
-<!-- 						<div class="col-sm-4"
+						<div class="col-3">
+							<br> <br> <a href="javascript:downloadPdf()"><button
+									type="button" class="btn btn-info">Generar Comprobante</button></a>
+
+						</div>	
+						<div class="col-2">
+					<br><br>
+							<label class="checkbox-inline" > 
+							<input type="checkbox" id="publicAccord" name="publicAccord" > Publicar
+							</label>
+					</div>
+						
+						<!-- 						<div class="col-sm-4"
 							th:if="${(#strings.toString(accord.type.id) == 'A') and (session.roleName == 'Secretaria de Alcaldia') and accord.state.id != 0}">
 							<label id="labelEmail" for="form-control col-6"
 								class="form-label"> Usuarios Responsables </label>
@@ -392,8 +400,8 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
 		integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
 		crossorigin="anonymous"></script>
-		
-		<script th:src="@{/js/html2canvas.min.js}"></script>
+
+	<script th:src="@{/js/html2canvas.min.js}"></script>
 	<script th:src="@{/js/editAccord.js}"></script>
 	<script
 		src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>

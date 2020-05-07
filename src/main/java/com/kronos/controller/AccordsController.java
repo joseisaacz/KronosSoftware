@@ -367,42 +367,39 @@ public class AccordsController {
 				}
 				
 				return "redirect:/townHall/homeTownHall";
-			}
-			else {
-			Accord oldAccord= this.oldAccord;
-			
+			} else {
+				Accord oldAccord = this.oldAccord;
 
-			if (acc.getType().getId() != Accord.ADMIN_TYPE && oldAccord.getType().getId() == Accord.ADMIN_TYPE) {
+				if (acc.getType().getId() != Accord.ADMIN_TYPE && oldAccord.getType().getId() == Accord.ADMIN_TYPE) {
 
-				if (!email.isEmpty() && !username.isEmpty()) {
-					this.tUserAccRepo.insertAccord_TempUser(acc, new TempUser(username,email));
+					if (!email.isEmpty() && !username.isEmpty()) {
+						this.tUserAccRepo.insertAccord_TempUser(acc, new TempUser(username, email));
+					}
+
+				} else {
+					System.out.println(" TO DO");
+					// if temp user is in DB
+					// insert in DB if not
+					// update T_USERACC
 				}
-				
-			}
-			else {
-				System.out.println(" TO DO");
-				//if temp user is in DB
-				//insert in DB if not
-				//update T_USERACC
-			}
-			
-			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-			String newDate = format.format(acc.getSessionDate());
-			String oldDate = format.format(oldAccord.getSessionDate());
-			
-			if (!newDate.equals(oldDate)) {
-				if(!this.actRepo.isActInDB(acc.getSessionDate())) {
-					this.actRepo.insertAct(acc.getSessionDate());
+
+				DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+				String newDate = format.format(acc.getSessionDate());
+				String oldDate = format.format(oldAccord.getSessionDate());
+
+				if (!newDate.equals(oldDate)) {
+					if (!this.actRepo.isActInDB(acc.getSessionDate())) {
+						this.actRepo.insertAct(acc.getSessionDate());
+					}
 				}
-			}
-			acc.setUser(user);
-			this.accordRepo.updateAccord(acc);
-			if(roleName != null && roleName.equals("Secretaria de Alcaldia")) {
-				String body="El acuerdo "+acc.getAccNumber()+" ha sido editado\n";
-				
-				this.pushService.send("concejomunicipal@sanpablo.go.cr", "Acuerdo Actualizado", body);
-			}
-			attributes.addFlashAttribute("msg", "Acuerdo Editado Correctamente");
+				acc.setUser(user);
+				this.accordRepo.updateAccord(acc);
+				if (roleName != null && roleName.equals("Secretaria de Alcaldia")) {
+					String body = "El acuerdo " + acc.getAccNumber() + " ha sido editado\n";
+
+					this.pushService.send("concejomunicipal@sanpablo.go.cr", "Acuerdo Actualizado", body);
+				}
+				attributes.addFlashAttribute("msg", "Acuerdo Editado Correctamente");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
