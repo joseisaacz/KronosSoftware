@@ -128,4 +128,13 @@ public class TypeService {
 		}
 	}
 
+	public void addType(Type type) throws Exception {
+		Connection connection = jdbcTemplate.getDataSource().getConnection();
+		CallableStatement statement = connection.prepareCall("{call addType(?)}");
+		statement.setString(1, type.getDescription());
+		statement.executeUpdate();
+		statement.close();
+		connection.close();
+	}
+
 }
