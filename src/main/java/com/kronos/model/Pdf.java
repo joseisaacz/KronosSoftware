@@ -6,6 +6,7 @@ public class Pdf {
 	private boolean finalResponse=false;
 	private int Approved;
 	private boolean canDelete=false;
+	private boolean isAccord=true;
 	
 	public Pdf(String URL) {
 		this.URL=URL;
@@ -35,6 +36,15 @@ public class Pdf {
 		this.finalResponse=finalResponse;
 		this.Approved=isApproved;
 		this.canDelete=canDelete;
+		
+	}
+	
+	public Pdf(String URL, boolean finalResponse, int isApproved,boolean canDelete, boolean isAccord) {
+		this.URL=URL;
+		this.finalResponse=finalResponse;
+		this.Approved=isApproved;
+		this.canDelete=canDelete;
+		this.isAccord=isAccord;
 		
 	}
 	
@@ -68,6 +78,16 @@ public class Pdf {
 
 	public void setIsApproved(int isApproved) {
 		this.Approved = isApproved;
+	}
+	
+	
+
+	public boolean isAccord() {
+		return isAccord;
+	}
+
+	public void setAccord(boolean isAccord) {
+		this.isAccord = isAccord;
 	}
 
 	@Override

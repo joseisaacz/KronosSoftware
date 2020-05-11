@@ -59,6 +59,36 @@ public class TempUserService {
 	
 	}
 	
+	public void updateTempUserName(String email, String name) throws Exception {
+		
+		Connection connection=null;
+		CallableStatement statement=null;
+		
+		try {
+			
+			 connection = jdbcTemplate.getDataSource().getConnection();
+			statement = connection.prepareCall("{call updateTempUserName(?, ?)}");
+			statement.setString(1,email);
+			statement.setString(2, name);
+			statement.executeUpdate();
+			
+		}
+		catch(Exception e) {
+			throw e;
+		}
+		finally {
+			
+			if(statement != null )
+				statement.close();
+			
+			if(connection != null)
+				connection.close();
+				
+			
+		}
+		
+		
+	}
 	
 	public List<TempUser> getTempUsersByAccord(String accNumber) throws Exception {
 		Connection connection=null;
