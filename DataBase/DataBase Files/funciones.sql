@@ -20,9 +20,9 @@ DROP procedure IF EXISTS insertAccPdf;
 DELIMITER $$
 USE `KRONOS`$$
 create procedure insertAccPdf(
-in accord varchar(45), in url varchar(100),in final tinyint, in isApp int, in canDelete tinyint)
+in accord varchar(45), in url varchar(100),in final tinyint, in isApp int, in canDelete tinyint, in _isAccord tinyint)
 begin
-insert into T_ACCPDF (ACCORD, URL, FINALRESPONSE, ISAPPROVED,CAN_DELETE) values (accord, url, final,isApp,canDelete);
+insert into T_ACCPDF (ACCORD, URL, FINALRESPONSE, ISAPPROVED,CAN_DELETE, ISACCORD) values (accord, url, final,isApp,canDelete,_isAccord);
 commit;  
 end$$ 
 DELIMITER ;
@@ -113,6 +113,19 @@ create procedure updatePassword(
 in _user varchar(45), in _password varchar(100))
 begin
 UPDATE T_USER SET PASSWORD=_password where TEMPUSER=_user;
+commit;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateTempUserName;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateTempUserName(
+in _user varchar(45), in _name varchar(45))
+begin
+UPDATE T_TEMPUSER SET NAME=_name where EMAIL=_user;
 commit;
 end$$
 DELIMITER ;
@@ -1112,6 +1125,7 @@ insert into T_STATE (ID, DESCRIPTION)values (5, 'Vencido');
 
 insert into T_TEMPUSER(NAME,EMAIL) values ('SUPERUSER','superuser@superuser.com');
 insert into T_TEMPUSER(NAME,EMAIL) values ('Concejo Municipal','concejomunicipal@sanpablo.go.cr');
+insert into T_TEMPUSER(NAME,EMAIL) values ('Secretaria de Alcaldia','alcaldia@sanpablo.go.cr');
 insert into T_DEPARTMENT (NAME) values ('SUPERUSER'); # 1
 insert into T_DEPARTMENT (NAME) values ('Concejo Municipal'); #2
 insert into T_DEPARTMENT (NAME) values ('Alcaldia'); #3
