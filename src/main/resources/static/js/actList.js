@@ -58,7 +58,13 @@ function changeSelect(value) {
         button.style.visibility = 'visible';
         combo.value = 'A';
         combo.style.visibility = 'hidden';
-    }  else {
+    } else if (value==='deactivatedActs'){
+    	field.value = "";
+        field.type = 'hidden';
+        button.style.visibility = 'visible';
+        combo.value = 'A';
+        combo.style.visibility = 'hidden';
+    } else {
         field.value = "";
         combo.value = 'A';
         field.type = 'hidden';

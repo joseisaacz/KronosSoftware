@@ -20,9 +20,9 @@ DROP procedure IF EXISTS insertAccPdf;
 DELIMITER $$
 USE `KRONOS`$$
 create procedure insertAccPdf(
-in accord varchar(45), in url varchar(100),in final tinyint, in isApp int, in canDelete tinyint, in _isAccord tinyint)
+in accord varchar(45), in url varchar(100),in final tinyint, in isApp int, in canDelete tinyint)
 begin
-insert into T_ACCPDF (ACCORD, URL, FINALRESPONSE, ISAPPROVED,CAN_DELETE, ISACCORD) values (accord, url, final,isApp,canDelete,_isAccord);
+insert into T_ACCPDF (ACCORD, URL, FINALRESPONSE, ISAPPROVED,CAN_DELETE) values (accord, url, final,isApp,canDelete);
 commit;  
 end$$ 
 DELIMITER ;
@@ -1100,6 +1100,15 @@ select MAX(ID) from T_TYPE;
 end$$
 DELIMITER ;
 
+USE `KRONOS`;
+DROP procedure IF EXISTS addType;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure addType(in _type varchar(25))
+begin
+insert into T_TYPE (DESCRIPTION) values (_type);
+end$$
+DELIMITER ;
 
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;

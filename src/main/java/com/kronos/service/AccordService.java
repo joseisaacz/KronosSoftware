@@ -54,7 +54,6 @@ public class AccordService {
 				statement2.setBoolean(3, item.isFinalResponse());
 				statement2.setInt(4, item.getIsApproved());
 				statement2.setBoolean(5, item.isCanDelete());
-				statement2.setBoolean(6, item.isAccord());
 				int a = statement2.executeUpdate();
 
 				statement2.close();
@@ -443,7 +442,6 @@ public class AccordService {
 		statement.setBoolean(3, pdf.isFinalResponse());
 		statement.setInt(4, pdf.getIsApproved());
 		statement.setBoolean(5, pdf.isCanDelete());
-		statement.setBoolean(6, pdf.isAccord());
 		statement.executeUpdate();
 		statement.close();
 		connection.close();
