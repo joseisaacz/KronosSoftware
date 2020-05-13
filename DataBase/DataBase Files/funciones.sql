@@ -1100,6 +1100,15 @@ select MAX(ID) from T_TYPE;
 end$$
 DELIMITER ;
 
+USE `KRONOS`;
+DROP porcedure IF EXISTS addType;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure addType(in _type varchar(25))
+begin
+insert into T_TYPE (DESCRIPTION) values (_type);
+end$$
+DELIMITER ;
 
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;
