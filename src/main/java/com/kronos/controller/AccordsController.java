@@ -139,7 +139,7 @@ public class AccordsController {
 				File file = new File(url);
 				uploadFile.transferTo(file);
 				urlPaths.add(url);
-				accord.getURL().add(new Pdf(url, false, Pdf.NO_PERMISSION, true,true));
+				accord.getURL().add(new Pdf(url, false, Pdf.NO_PERMISSION, true));
 
 			}
 

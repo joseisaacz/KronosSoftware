@@ -20,9 +20,9 @@ DROP procedure IF EXISTS insertAccPdf;
 DELIMITER $$
 USE `KRONOS`$$
 create procedure insertAccPdf(
-in accord varchar(45), in url varchar(100),in final tinyint, in isApp int, in canDelete tinyint, in _isAccord tinyint)
+in accord varchar(45), in url varchar(100),in final tinyint, in isApp int, in canDelete tinyint)
 begin
-insert into T_ACCPDF (ACCORD, URL, FINALRESPONSE, ISAPPROVED,CAN_DELETE, ISACCORD) values (accord, url, final,isApp,canDelete,_isAccord);
+insert into T_ACCPDF (ACCORD, URL, FINALRESPONSE, ISAPPROVED,CAN_DELETE) values (accord, url, final,isApp,canDelete);
 commit;  
 end$$ 
 DELIMITER ;
@@ -1101,7 +1101,7 @@ end$$
 DELIMITER ;
 
 USE `KRONOS`;
-DROP porcedure IF EXISTS addType;
+DROP procedure IF EXISTS addType;
 DELIMITER $$
 USE `KRONOS`$$
 create procedure addType(in _type varchar(25))

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Sesiones en Vivo</title>
+<link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+<link rel='stylesheet prefetch'
+	href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+<link rel="shortcut icon"
+	href="https://www.sanpablo.go.cr/wp-content/uploads/2019/10/favicon.ico"
+	type="image/x-icon" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+	<div class="row">
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top"
+			style="background-color: rgb(25, 62, 107);">
+			<a class="navbar-brand" href="#">Municipalidad de San Pablo de
+				Heredia</a>
+		</nav>
+
+	</div>
+
+	<div
+		style=" margin-top: 5%; margin-left: 25%; margin-bottom: 5%">
+		<h2 class="display-6">Sesiones en vivo del Concejo Municipal</h2>
+
+
+	</div>
+	<div class='container'>
+
+		<div class="row">
+
+			<div class="col">
+
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<div class="embed-responsive embed-responsive-4by3">
+
+								<iframe width="560" height="315"
+								class="embed-responsive-item"
+									src="https://www.youtube.com/embed/live_stream?channel=UCSJ4gkVC6NrvII8umztf0Ow"
+									frameborder="0"
+									allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+									allowfullscreen></iframe>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<p>Lorem ipsum is simply dummy text of the printing and
+					typesetting industry. Lorem Ipsum has been the industry's standard
+					dummy text ever since the 1500s, when an unknown printer took a
+					galley of type and scrambled it to make a type specimen book. It
+					has survived not only five centuries, but also the leap into
+					electronic typesetting, remaining essentially unchanged. It was
+					popularised in the 1960s with the release of Letraset sheets
+					containing Lorem Ipsum passages, and more recently with desktop
+					publishing software like Aldus PageMaker including versions of
+					Lorem Ipsum</p>
+
+
+			</div>
+		</div>
+	</div>
+	<script th:src="@{/bootstrap/js/jquery.js}"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/live.js}"></script>
+
+
+</body>
+</html>
