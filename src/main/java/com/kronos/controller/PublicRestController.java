@@ -19,7 +19,7 @@ import com.kronos.service.AccordService;
 import com.kronos.service.ActService;
 
 @RestController
-@RequestMapping("/api/public")
+@RequestMapping("/public")
 public class PublicRestController {
 	
 	@Value("${kronos.path.folder}")

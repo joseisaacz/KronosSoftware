@@ -5,54 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 <link th:href="@{/css/default.css}" rel="stylesheet">
+<link th:href="@{/css/public.css}" rel="stylesheet">
+
 <link rel="shortcut icon" th:href="@{/images/log4.ico}"
 	type="image/x-icon">
 </head>
 <body>
 	<div class="container">
 		<div class="row">
-		<div>
-		
-		
-		</div>"
-		
+			<nav class="navbar navbar-expand-lg navbar-light fixed-top"
+				style="background-color: rgb(25, 62, 107);">
+				<a class="navbar-brand" href="#">Municipalidad de San Pablo de
+					Heredia</a>
+			</nav>
+			<button type="button" class="btn btn-success" id="searchButton"
+				onclick="searchAllActs()">Buscar</button>
 		</div>
-		<div class="row">
-			<div class="col-6">
-				<h4>Actas y Acuerdos Municipalidad San Pablo</h4>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="table-responsive">
+				<table id="publicTableAct"
+					class="table table-striped table-bordered border-info"
+					style="width: 100%">
+					<thead>
+						<tr>
+							<th style="text-align: center">Fecha de Sesión</th>
+							<th style="text-align: center">Tipo de Sesión</th>
+							<th style="text-align: center">Editar</th>
+						</tr>
+					</thead>
+					<tbody id='actList'>
+						<tr th:each="act:${listAct}">
 
-			</div>
-
-
-		</div>
-		<div class="row">
-			<div class="col-lg-12">
-				<div class="table-responsive">
-					<table id="tableAct"
-						class="table table-striped table-bordered border-info"
-						style="width: 100%">
-						<thead>
-							<tr>
-								<th style="text-align: center">Fecha de Sesión</th>
-								<th style="text-align: center">Tipo de Sesión</th>
-								<th style="text-align: center">Editar</th>
-							</tr>
-						</thead>
-						<tbody id='actList'>
-							<tr th:each="act:${listAct}">
-
-								<td th:text="${#dates.format(act.sessionDate,'dd-MM-yyyy')}"></td>
-								<td th:text="${act.type}"></td>
-								<td><a th:href="@{} (id=${act.sessionDate})}"><button
-											type='button' class='btn btn-primary'
-											style='text-align: center'>Ver Acuerdos</button></a></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+							<td th:text="${#dates.format(act.sessionDate,'dd-MM-yyyy')}"></td>
+							<td th:text="${act.type}"></td>
+							<td><a th:href="@{/} (id=${act.sessionDate})}"><button
+										type='button' class='btn btn-primary'
+										style='text-align: center'>Editar</button></a></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
+	</div>
+
+
+	<script th:src="@{/js/public.js}"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script th:src="@{/bootstrap/js/jquery.js}"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
 </body>
 </html>
