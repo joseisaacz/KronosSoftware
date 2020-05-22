@@ -148,38 +148,21 @@
 										type="text" class="form-control" name="username" id="username"
 										disabled> -->
 							<!-- ${session.roleName == 'Secretaria de Alcaldia'}" 
-
-
 										<label for="form-control col-6" class="form-label">Departamento
-
 											Responsable</label> <select class="form-control" name="department"
 											onchange="javascript:changeSelectUsers(this)" id='selectDepartment'>
 											<option value='-1'>Seleccione un Departamento</option>
 											<option th:each="department:${departments}"
 												th:value="${department.id}" th:text="${department.name}"></option>
 										</select>
-
-
-
-
 									</div>
 								</div>
-
 								<div class="col-6">
-
 									<label for="form-control col-6" class="form-label"
 										id='userLabel' style='visibility: hidden'>Usuario
 										Responsable</label> <select class="form-control" name="users"
 										id="users" style='visibility: hidden'>
-
 									</select>
-
-
-
-
-
-
-
 								</div>
 								<div class="col-sm-3">
 								<br>
@@ -187,7 +170,6 @@
 									<br>
 									<br>
 								</div>
-
 							</th:block>
 							 -->
 
@@ -254,7 +236,7 @@
 						<div class="col-2">
 							<br>
 							<br> <label class="checkbox-inline"> <input
-								type="checkbox" id="publicAccord" name="publicAccord">
+								type="checkbox" th:field="*{published}" id="publicAccord" name="publicAccord">
 								Publicar
 							</label>
 						</div>
@@ -269,11 +251,9 @@
 									<tr>
 										<th>Usuario</th>
 										<th>Departamento</th>
-
 									</tr>
 								</thead>
 								<tbody id="usersBody">
-
 								</tbody>
 							</table>
 					</div>
@@ -282,9 +262,6 @@
 							<br> <br>
 						</div>
 						<div class="row">
-
-
-
 							<div class="col-5">
 								<button
 									th:disabled="${session.roleName != 'Concejo Municipal' and session.roleName != 'Secretaria de Alcaldia'}"
@@ -293,29 +270,20 @@
 									Cambios</button>
 								<input type='hidden' name="jsonObject" id='hiddenId'>
 							</div>
-
-
 							<div class="col-sm-3"
 								th:if="${session.roleName == 'Concejo Municipal'}">
 								<button th:disabled="${session.roleName != 'Concejo Municipal'}"
 									type="button" class="btn btn-outline-danger" id="deleteButton"
 									onclick="javascript:deleteAccord()">Eliminar Acuerdo</button>
 							</div>
-
 							<div class="col-2">
 								<a th:href="@{/accords/list}"><button type="button"
 										class="btn btn-outline-danger" id="cancelButton">Cancelar</button></a>
-
 							</div>
-
-
-
-
 						</div>
 						<!-- <div class="container" id="notificationDiv" style="display: none">
 							<img th:src="@{/images/logo.jpg}" width="25%" height="25%">
 							<h4>Municipalidad de San Pablo de Heredia</h4>
-
 							<h4>Concejo Municipal</h4>
 							<br>
 							<h2 style="font-weight: bold">Comprobante de Notificación</h2>
@@ -326,17 +294,13 @@
 								<p style="font-size: x-large">
 									El acuerdo fue notificado con exito por medio del sistema a la
 									secretaria de la municipalidad. <br>
-
 								</p>
-
 							</th:block>
-
 							<th:block th:if="${(#strings.toString(accord.type.id) != 'A')}">
 								<p style="font-size: x-large" id="usersDescription">
 									Las siguientes personas fueron notificadas del acuerdo por
 									medio de correo electronico: <br>
 								</p>
-
 							</th:block>
 						</div> -->
 

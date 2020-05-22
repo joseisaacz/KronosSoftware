@@ -212,4 +212,40 @@ public class ActService {
 		return null;
 	}
 	
+	
+	public List<Act> searchAllActsPublish() {
+		try {
+			Connection connection = jdbcTemplate.getDataSource().getConnection();
+			CallableStatement statement = connection.prepareCall("{searchAllActsPublish()}");
+			ResultSet rs = statement.executeQuery();
+			List<Act> result = this.mapRowList1(rs);
+			statement.close();
+			connection.close();
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		}
+	
+	public List<Act> searchAllActsPublishYear(int year){
+		try {
+			Connection connection= jdbcTemplate.getDataSource().getConnection();
+			CallableStatement statement = connection.prepareCall("{call searchAllActsPublishYear(?)}");
+			statement.setInt(1, year);
+			ResultSet rs = statement.executeQuery();
+			List<Act> result = this.mapRowList1(rs);
+			statement.close();
+			connection.close();
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+		
+	}
+	
+	
 }

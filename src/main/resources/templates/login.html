@@ -17,7 +17,7 @@
 	<img class="wave" th:src="@{/images/wave.png}">
 	<div class="container">
 		<div class="img">
-			<img th:src="@{/images/muni1.png}">
+			<img th:src="@{/images/muni.png}">
 		</div>
 		<div class="login-content">
 			<form method="POST" id="loginForm" th:action="@{/login}">
@@ -44,6 +44,7 @@
 							th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 					</div>
 				</div>
+		
 	
 				<a  href="#" data-toggle="modal"
 		data-target="#exampleModal" >¿Olvidó la contraseña?</a>
@@ -55,10 +56,6 @@
 			</form>
 		</div>
 	</div>
-
-	<!-- Button trigger modal -->
-	<button type="button" class="btn btn-primary" data-toggle="modal"
-		data-target="#exampleModal">Launch demo modal</button>
 
 	<!-- Modal for forgot password -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
