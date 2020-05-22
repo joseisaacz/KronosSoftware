@@ -58,8 +58,8 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 
 			
 		.sessionManagement()
-	    .maximumSessions(1)
-	     .expiredUrl("/logout").and();
+	    .maximumSessions(30)
+	     .expiredUrl("/logout");
 
 	}
 	@Bean

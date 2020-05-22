@@ -876,6 +876,19 @@ end$$
 DELIMITER ;
 
 
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateAccPdfState;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateAccPdfState(in _accord varchar(100), in _url varchar(100), in _state int)
+begin
+update T_ACCPDF set ISAPPROVED=_state where ACCORD=_accord AND URL=_url;
+ commit;
+end$$
+DELIMITER ;
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS searchAllUsersWithoutRole;
 DELIMITER $$

@@ -417,6 +417,8 @@ public class AccordsRestController {
 				throw new Exception("User does not have permission");
 
 		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 
 			throw new ResponseStatusException(HttpStatus.valueOf(500), e.getMessage());
 		}
@@ -450,6 +452,8 @@ public class AccordsRestController {
 			return ResponseEntity.ok().build();
 		}
 		catch(Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.valueOf(500), e.getMessage());
 		}
 	}
