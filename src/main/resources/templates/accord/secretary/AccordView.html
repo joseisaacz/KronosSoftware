@@ -145,7 +145,7 @@
 						</div>
 						<div class="col">
 							<th:block
-								th:if="${(#strings.toString(accord.type.id) == 'A') and accord.state.id != 0}">
+								th:if="${accord.type.id == 1 and accord.state.id != 0}">
 								<div class="col-8">
 									<div class="form-group ">
 
@@ -199,7 +199,7 @@
 						<div class="col-4">
 
 							<div
-								th:if="${(#strings.toString(accord.type.id) == 'A') and accord.state.id != 0}">
+								th:if="${accord.type.id == 1 and accord.state.id != 0}">
 								<label id="labelEmail" for="form-control col-6"
 									class="form-label"> Departamentos Responsables </label>
 								<table id="usersTable"

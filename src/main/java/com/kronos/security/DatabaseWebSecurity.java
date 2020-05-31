@@ -36,7 +36,7 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 		 
 				// Los recursos estáticos no requieren autenticación
 				.antMatchers("/error/**","/streaming/**","/push/**","/images/**","/.well-known/**","/bootstrap/**", "/sw.js","/js/**", "/css/**","/push/register","/api/accords/uploadPdf/**","/icon.jpg","icon.jpg"
-						,"/forgotPassword/**","/api/password/**").permitAll()
+						,"/forgotPassword/**","/api/password/**", "/MunicipalidadSanPablo/**" ).permitAll()
 				// Las vistas públicas no requieren autenticación
 				.antMatchers("/push/**","/forgotPassword/**","/accords/list/**","/images/**","/","/push/register","/api/accords/**","/api/notifications/**","/accords/edit/**",
 						"/api/accords/uploadPdf/**","/icon.jpg","/api/accords/updateUrl/**").permitAll()
@@ -58,8 +58,8 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter {
 
 			
 		.sessionManagement()
-	    .maximumSessions(1)
-	     .expiredUrl("/logout").and();
+	    .maximumSessions(30)
+	     .expiredUrl("/logout");
 
 	}
 	@Bean
