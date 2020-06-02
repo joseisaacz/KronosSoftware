@@ -56,13 +56,30 @@ function isValidDate(date) {
 }
 
 
-function validationDeadLine(){
-	let confirm = document.getElementById('deadline').value;
-	if(confirm===''){
+function validationAccord(){
+	let confirmDeadLine = document.getElementById('deadline').value;
+	if(confirmDeadLine===''){
 		 alert('Por Favor Confirmar Fecha de Vencimiento!!');
 	      return false;
 	}
+	let confirmSesion = document.getElementById('sessionDate').value;
+	if(confirmSesion===''){
+		 alert('Por Favor Insertar Fecha de Sesion!!');
+	      return false;
+	}
+	let confirmOffice = document.getElementById('accNumber').value;
+	if(confirmOffice===''){
+		 alert('Por Favor Insertar Numero de Oficio!!');
+	      return false;
+	}
+	let confirmPdf = document.getElementById('accord').value;
+	if(confirmPdf===''){
+		 alert('Por Favor Insertar PDF!!');
+	      return false;
+	}
 }
+
+
 
 
 
