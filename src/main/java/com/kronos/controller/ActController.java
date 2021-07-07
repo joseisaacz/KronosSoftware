@@ -64,7 +64,7 @@ public class ActController {
 		}catch(Exception e) {
 			
 		}
-		return "redirect:/accords/list";
+		return "redirect:/act/listAct";
 	}
 	
 	

@@ -65,6 +65,75 @@ commit;
 end$$
 DELIMITER ;
 
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS insertForgotPassword;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure insertForgotPassword(
+in _user varchar(45), in _token varchar(6), in _datetime datetime)
+begin
+insert into T_FORGOT_PASSWORD (USER_ID, TOKEN, DATE_TIME) values (_user, _token, _datetime);
+commit; 
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS deleteForgotPassword;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure deleteForgotPassword(
+in _user varchar(45), in _token varchar(6))
+begin
+delete from T_FORGOT_PASSWORD WHERE USER_ID=_user AND TOKEN=_token;
+commit; 
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS getRecentToken;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure getRecentToken(
+in _user varchar(45))
+begin
+SELECT TOKEN,DATE_TIME from T_FORGOT_PASSWORD WHERE USER_ID=_user ORDER BY DATE_TIME DESC LIMIT 1;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updatePassword;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updatePassword(
+in _user varchar(45), in _password varchar(100))
+begin
+UPDATE T_USER SET PASSWORD=_password where TEMPUSER=_user;
+commit;
+end$$
+DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateTempUserName;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateTempUserName(
+in _user varchar(45), in _name varchar(45))
+begin
+UPDATE T_TEMPUSER SET NAME=_name where EMAIL=_user;
+commit;
+end$$
+DELIMITER ;
+
+
+
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS searchAccordType;
 DELIMITER $$
@@ -167,6 +236,10 @@ begin
 delete from T_USERACC where T_USERACC.ACCORD = accord;
 commit;
 delete from T_ACCPDF where T_ACCPDF.ACCORD = accord;
+commit;
+delete from T_NOTIFICATION where T_NOTIFICATION.ACCORD=accord;
+commit;
+delete from T_ACCDPRMNT where T_ACCDPRMNT.ACCORD=accord;
 commit;
 INSERT INTO T_DELETEDACCORDS values (accord,_user,CURRENT_TIMESTAMP());
 commit;
@@ -416,7 +489,7 @@ from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE
 where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID 
 AND ACCNUMBER not in(select ACCORD from T_NOTIFICATION)
 AND STATE=2
-AND TYPE_ID='A';
+AND TYPE_ID=1;
 end$$
 DELIMITER ;
 
@@ -447,6 +520,19 @@ select T_NOTIFICATION.ACCORD,T_NOTIFICATION.USER, T_DEPARTMENT.ID AS DEP_ID, T_D
 WHERE T_NOTIFICATION.ACCORD=_accord AND T_NOTIFICATION.USER=T_USER.TEMPUSER AND T_USER.DEPARTMENT=T_DEPARTMENT.ID;
 end$$
 DELIMITER ;
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS resposableDepartments;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure resposableDepartments(in _accord varchar(45))
+begin
+select T_ACCDPRMNT.DEPARTMENT AS DEP_ID ,T_ACCDPRMNT.ACCORD, T_DEPARTMENT.NAME AS DEP_NAME FROM T_ACCDPRMNT,T_DEPARTMENT
+WHERE T_ACCDPRMNT.ACCORD=_accord  AND T_ACCDPRMNT.DEPARTMENT=T_DEPARTMENT.ID;
+end$$
+DELIMITER ;
+
 
 
 USE `KRONOS`;
@@ -803,6 +889,19 @@ end$$
 DELIMITER ;
 
 
+
+USE `KRONOS`;
+DROP procedure IF EXISTS updateAccPdfState;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure updateAccPdfState(in _accord varchar(100), in _url varchar(100), in _state int)
+begin
+update T_ACCPDF set ISAPPROVED=_state where ACCORD=_accord AND URL=_url;
+ commit;
+end$$
+DELIMITER ;
+
+
 USE `KRONOS`;
 DROP procedure IF EXISTS searchAllUsersWithoutRole;
 DELIMITER $$
@@ -855,7 +954,7 @@ USE `KRONOS`$$
 create procedure aMSearchAccords()
 begin
 select ACCNUMBER, INCORDATE, 
-DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE, T_ACCPDF.ISAPPROVED AS ISAPPROVED, T_ACCPDF.CAN_DELETE AS CAN_DELETE   from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID='A';
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE, T_ACCPDF.ISAPPROVED AS ISAPPROVED, T_ACCPDF.CAN_DELETE AS CAN_DELETE   from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=1;
 end$$
 DELIMITER ;  
 
@@ -1032,7 +1131,7 @@ end$$
 DELIMITER ;
 
 USE `KRONOS`;
-DROP porcedure IF EXISTS addType;
+DROP procedure IF EXISTS addType;
 DELIMITER $$
 USE `KRONOS`$$
 create procedure addType(in _type varchar(25))
@@ -1040,6 +1139,67 @@ begin
 insert into T_TYPE (DESCRIPTION) values (_type);
 end$$
 DELIMITER ;
+
+
+
+-- search public Acts
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllActsPublish;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllActsPublish()
+begin
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT where T_ACT.PUBLIC=1;
+end$$
+DELIMITER ; 
+
+-- search public Act by year
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllActsPublishByYear;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllActsPublishYear(in _year int)
+begin
+select SESSIONTYPE, SESSIONDATE, URL, T_ACT.PUBLIC, ACTIVE from T_ACT where T_ACT.PUBLIC=1 
+AND YEAR(T_ACT.SESSIONDATE) = _year;
+end$$
+DELIMITER ; 
+
+
+
+-- search public Accords
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAccordsessionDatePublish;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAccordsessionDatePublish(in sessionDate date)
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL, T_ACCPDF.FINALRESPONSE AS FINALRESPONSE, T_ACCPDF.ISAPPROVED AS ISAPPROVED, T_ACCPDF.CAN_DELETE AS CAN_DELETE   from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND T_ACCORD.SESSIONDATE = sessionDate AND T_ACC0RD.PUBLIC=1;
+end$$
+DELIMITER ; 
+
+
+USE `KRONOS`;
+DROP procedure IF EXISTS searchAllAccordsPublish;
+DELIMITER $$
+USE `KRONOS`$$
+create procedure searchAllAccordsPublish()
+begin
+select ACCNUMBER, INCORDATE, 
+DEADLINE, SESSIONDATE, TYPE_ID,T_TYPE.DESCRIPTION AS TYPE_DESC, OBSERVATIONS, PUBLIC, NOTIFIED,  STATE,T_STATE.DESCRIPTION AS STATE_DESC,  T_ACCPDF.URL , T_ACCPDF.FINALRESPONSE AS FINALRESPONSE, T_ACCPDF.ISAPPROVED AS ISAPPROVED, T_ACCPDF.CAN_DELETE AS CAN_DELETE  from T_ACCORD, T_ACCPDF,T_STATE, T_TYPE where T_ACCORD.ACCNUMBER= T_ACCPDF.ACCORD AND T_ACCORD.STATE=T_STATE.ID AND T_ACCORD.TYPE_ID=T_TYPE.ID AND T_ACCORD.PUBLIC = 1;
+end$$
+DELIMITER ; 
+
+
+
+
+
+
+
+
 
 alter table T_ROLE auto_increment = 1;
 alter table T_DEPARTMENT auto_increment = 1;

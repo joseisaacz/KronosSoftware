@@ -39,6 +39,7 @@ public class Pdf {
 	}
 	
 	
+	
 	public String getURL() {
 		return URL;
 	}
@@ -69,6 +70,8 @@ public class Pdf {
 	public void setIsApproved(int isApproved) {
 		this.Approved = isApproved;
 	}
+	
+	
 
 	@Override
 	public String toString() {

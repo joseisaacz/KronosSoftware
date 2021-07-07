@@ -124,6 +124,13 @@ constraint FK_ROLE_UR foreign key(ROLE_NAME) references T_ROLE(NAME)
 
 );
 
+create table T_FORGOT_PASSWORD(
+USER_ID varchar(45),
+TOKEN varchar(6),
+DATE_TIME datetime,
+constraint FK_T_FORGOT foreign key (USER_ID) references T_USER(TEMPUSER)
+);
+
 
 USE `KRONOS`;
 DELIMITER ;

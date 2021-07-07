@@ -55,6 +55,32 @@ public class UserService {
         statement.executeUpdate();
         statement.close();
 	}
+	
+	
+	public void updatePassword(String user, String password) throws Exception {
+		Connection connection = null;
+        CallableStatement statement =null;
+        
+        try {
+        	 connection = jdbcTemplate.getDataSource().getConnection();
+        	 statement = connection.prepareCall("{call updatePassword(?, ?)}");
+        	 statement.setString(1, user);
+        	 statement.setString(2, password);
+        	 statement.executeUpdate();
+        	
+        }
+        catch(Exception e) {
+        	throw e;
+        }
+        finally {
+        	if(statement != null)
+        		statement.close();
+        	
+        	if(connection != null)
+        		connection.close();
+        	
+        }
+	}
 
 	public List<User> searchAllUsersWithoutRole(){
 		try {

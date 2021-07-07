@@ -56,13 +56,34 @@ function isValidDate(date) {
 }
 
 
-function validationDeadLine(){
-	let confirm = document.getElementById('deadline').value;
-	if(confirm===''){
-		 alert('Por Favor Confirmar Fecha de Vencimiento!!');
+function validationAccord(){
+
+	
+	let confirmDeadLine = document.getElementById('deadline').value;
+	if(confirmDeadLine===''){
+		 bootbox.alert('Por Favor Confirmar Fecha de Vencimiento!!');
 	      return false;
 	}
+	let confirmSesion = document.getElementById('sessionDate').value;
+	if(confirmSesion===''){
+		bootbox.alert('Por Favor Insertar Fecha de Sesion!!');
+	      return false;
+	}
+	let confirmOffice = document.getElementById('accNumber').value;
+	if(confirmOffice===''){
+		bootbox.alert('Por Favor Insertar Numero de Oficio!!');
+	      return false;
+	}
+	if(document.getElementById('accord').files.length<1){
+		bootbox.alert('Por Favor Insertar Uno o Varios PDFs!!');
+		return false;
+	}
+	
+
+	return true;
 }
+
+
 
 
 
@@ -298,9 +319,13 @@ function changeSwitch(input) {
 }
 
 async function submitForm(){
+	
+	if(validationAccord()){
 	let json = await toJson();
 	document.getElementById('responsables').value=json;
 	$("#form1").submit();
+	}
+
 }
 
 
